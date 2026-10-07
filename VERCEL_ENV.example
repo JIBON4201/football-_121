@@ -59,4 +59,10 @@ ADMIN_BYPASS_AUTH=false
 # MEDIA_MAX_UPLOAD_BYTES=5000000
 # SEO_SITEMAP_MAX_URLS=5000
 # SEO_NEWS_WINDOW_HOURS=48
+# External football-data provider (OPTIONAL). Only required when
+# PROVIDER_ENABLED=true; the site boots fine without them.
+# PROVIDER_ENABLED=false
+# PROVIDER_BASE_URL=
+# PROVIDER_API_KEY=
+# PROVIDER_KEY_HEADER=X-Api-Key
 # Full template: backend/.env.example (placeholders only).

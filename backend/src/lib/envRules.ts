@@ -54,6 +54,8 @@ interface Rule {
   forbidMessage?: string;
   /** Value must be a syntactically valid absolute http(s) URL in production. */
   urlInProd?: boolean;
+  /** Only enforced when the matching `<PREFIX>_ENABLED` env is truthy. */
+  providerScoped?: boolean;
 }
 
 const PROVIDER_PREFIXES = ['PROVIDER'];
@@ -61,8 +63,10 @@ const PROVIDER_PREFIXES = ['PROVIDER'];
 function providerRules(): Rule[] {
   const rules: Rule[] = [];
   for (const prefix of PROVIDER_PREFIXES) {
-    rules.push({ variable: `${prefix}_BASE_URL`, requiredOutsideDev: true, urlInProd: true });
-    rules.push({ variable: `${prefix}_API_KEY`, requiredInProd: true, forbidInProd: PLACEHOLDER_VALUES });
+    // Required only when the provider is explicitly enabled; evaluated
+    // conditionally in evaluateEnv via `providerScoped`.
+    rules.push({ variable: `${prefix}_BASE_URL`, requiredOutsideDev: true, urlInProd: true, providerScoped: true });
+    rules.push({ variable: `${prefix}_API_KEY`, requiredInProd: true, forbidInProd: PLACEHOLDER_VALUES, providerScoped: true });
     rules.push({ variable: `${prefix}_ENABLED`, requiredOutsideDev: false });
   }
   return rules;
@@ -123,7 +127,16 @@ export function evaluateEnv(env: Record<string, string | undefined>): EnvViolati
   const mode = resolveEnvMode(env.NODE_ENV);
   const violations: EnvViolation[] = [];
 
+  const truthy = (v: string | undefined): boolean => {
+    const raw = (v ?? '').trim().toLowerCase();
+    return raw === '1' || raw === 'true' || raw === 'yes' || raw === 'on';
+  };
+  // Provider credentials are only mandatory when the provider is enabled.
+  const providerEnabled = truthy(env.PROVIDER_ENABLED);
+
   for (const rule of envRules()) {
+    if (rule.providerScoped && !providerEnabled) continue;
+
     const raw = env[rule.variable];
     const value = raw?.trim() ?? '';
     const set = value.length > 0;
