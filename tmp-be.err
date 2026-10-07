@@ -1,0 +1,26 @@
+node:events:505
+    throw er; // Unhandled 'error' event
+    ^
+
+Error: listen EADDRINUSE: address already in use :::4000
+    at Server.setupListenHandle [as _listen2] (node:net:2328:16)
+    at listenInCluster (node:net:2437:12)
+    at Server.listen (node:net:2562:7)
+    at app.listen (C:\Users\Dev\Downloads\football\backend\node_modules\express\lib\application.js:635:24)
+    at <anonymous> (C:\Users\Dev\Downloads\football\backend\src\server.ts:12:5)
+    at Object.<anonymous> (C:\Users\Dev\Downloads\football\backend\src\server.ts:14:2)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object.transformer (C:\Users\Dev\Downloads\football\backend\node_modules\tsx\dist\register-B1c7OH6V.cjs:22:2188)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:2416:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 4000
+}
+
+Node.js v24.21.0

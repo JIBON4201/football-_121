@@ -1,0 +1,122 @@
+
+> football-web@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1555ms
+ ✓ Compiled /src/middleware in 290ms (73 modules)
+ ✓ Compiled /robots.txt in 186ms (61 modules)
+ GET /robots.txt 200 in 256ms
+ ✓ Compiled /sitemap.xml in 46ms (65 modules)
+ GET /sitemap.xml 200 in 304ms
+ ✓ Compiled /sitemaps/[file] in 41ms (67 modules)
+ GET /sitemaps/news.xml 200 in 446ms
+ GET /sitemaps/articles.xml 200 in 181ms
+ GET /sitemaps/matches.xml 200 in 162ms
+ GET /sitemaps/teams.xml 200 in 158ms
+ GET /sitemaps/players.xml 200 in 154ms
+ GET /sitemaps/competitions.xml 200 in 164ms
+ GET /sitemaps/transfers.xml 200 in 196ms
+ GET /sitemaps/categories.xml 200 in 153ms
+ GET /sitemaps/tags.xml 200 in 149ms
+ GET /sitemaps/pages.xml 200 in 15ms
+ ○ Compiling / ...
+ ✓ Compiled / in 2.5s (581 modules)
+ GET / 200 in 3532ms
+ ○ Compiling /news ...
+ ✓ Compiled /news in 1475ms (640 modules)
+ GET /news 200 in 1614ms
+ ✓ Compiled /transfers in 261ms (653 modules)
+ GET /transfers 200 in 356ms
+ ✓ Compiled /matches in 160ms (656 modules)
+ GET /matches 200 in 385ms
+ ✓ Compiled /live in 183ms (659 modules)
+ GET /live 200 in 254ms
+ ✓ Compiled /competitions in 212ms (667 modules)
+ GET /competitions 200 in 279ms
+ ✓ Compiled /teams in 245ms (671 modules)
+ GET /teams 200 in 309ms
+ ✓ Compiled /players in 222ms (677 modules)
+ GET /players 200 in 330ms
+ ✓ Compiled /breaking-news in 241ms (680 modules)
+ GET /breaking-news 200 in 343ms
+ GET / 200 in 63ms
+ ✓ Compiled /news/[slug] in 278ms (688 modules)
+ GET /news/bennett-keepers-clean-sheet 200 in 866ms
+ GET /news/eastvale-manager-under-pressure 200 in 191ms
+ GET /news/eastvale-thrash-northbridge 200 in 219ms
+ GET /news/ferreira-completes-move-to-eastvale 200 in 196ms
+ GET /news/northbridge-thornton-seizes-leadership 200 in 226ms
+ ✓ Compiled /matches/[slug] in 465ms (715 modules)
+ GET /matches/seed-team-nbu-vs-seed-team-evc-2026-09-12 200 in 1652ms
+ GET /matches/seed-team-nbu-vs-seed-team-spr-2030-02-01 200 in 770ms
+ GET /matches/seed-team-spr-vs-seed-team-wfa-2026-09-13 200 in 791ms
+ ✓ Compiled /teams/[slug] in 239ms (719 modules)
+ GET /teams/evc 200 in 575ms
+ GET /teams/nbu 200 in 63ms
+ GET /teams/spr 200 in 73ms
+ GET /teams/wfa 200 in 63ms
+ ✓ Compiled /players/[slug] in 281ms (722 modules)
+ GET /players/carlos-mendez 200 in 644ms
+ GET /players/daniel-okafor 200 in 57ms
+ GET /players/harry-collins 200 in 47ms
+ GET /players/james-thornton 200 in 75ms
+ GET /players/lucas-ferreira 200 in 57ms
+ ✓ Compiled /competitions/[slug] in 295ms (726 modules)
+ GET /competitions/premier-league 200 in 684ms
+ ✓ Compiled /transfers/[id] in 310ms (737 modules)
+ GET /transfers/07d865b0-6fae-41ba-bfaf-bc523b2f1c1c 200 in 1360ms
+ ✓ Compiled /_not-found in 230ms (738 modules)
+ GET /NEWS 404 in 326ms
+ GET /news/no-such-article-xyz 200 in 343ms
+ GET /teams/no-such-team-xyz 200 in 63ms
+ ○ Compiling /search ...
+ ✓ Compiled /search in 849ms (795 modules)
+ GET /search?q=test 200 in 1246ms
+ GET /news/no-such-article-xyz 200 in 395ms
+ GET /teams/no-such-team-xyz 200 in 47ms
+ GET /news/no-such-article-xyz 200 in 370ms
+ GET /news/no-such-article-xyz 200 in 372ms
+ GET /news/no-such-article-xyz 200 in 404ms
+ GET /news/no-such-article-xyz 200 in 433ms
+ GET /teams/no-such-team-xyz 200 in 60ms
+ GET /definitely-not-a-route-xyz 404 in 53ms
+ GET /matches/no-such-match-xyz 200 in 638ms
+ GET /players/no-such-player-xyz 200 in 60ms
+ GET /matches/no-such-match-xyz 200 in 386ms
+ GET /matches/no-such-match-xyz 200 in 340ms
+ GET /__probe__/anything 404 in 55ms
+ GET /__probe__/anything2 404 in 58ms
+ ✓ Compiled in 419ms (382 modules)
+ GET /news/no-such-article-xyz2 200 in 680ms
+ GET /teams/no-such-team-xyz2 200 in 72ms
+ ✓ Compiled in 278ms (383 modules)
+ GET /__probe__/slowtest 404 in 72ms
+ GET /__probe__/slowtest2 404 in 25ms
+ GET /teams/no-such-team-xyz2 200 in 82ms
+ GET /__probe2__/slowtest3 404 in 58ms
+ GET /__probe2__/slowtest4 404 in 62ms
+ GET /__probe2__/slowtest5 404 in 40ms
+ GET /teams/no-such-team-xyz3 200 in 1280ms
+ GET /__probe2__/slowtest6 404 in 69ms
+ ✓ Compiled in 387ms (347 modules)
+ GET /teams/real-team-evc 200 in 67ms
+ GET /__probe2__/slowtest7 404 in 43ms
+ GET /__probe2__/slowtest8 404 in 62ms
+ GET /teams/real-team-evc 200 in 247ms
+ GET /teams/whatever-xyz 200 in 498ms
+ GET /teams/whatever-xyz2 200 in 44ms
+ ✓ Compiled in 166ms (347 modules)
+ ✓ Compiled in 105ms (347 modules)
+ ✓ Compiled in 101ms (347 modules)
+ GET /teams/no-such-team-xyz9 200 in 307ms
+ ✓ Compiled in 74ms (346 modules)
+ GET /teams/no-such-team-xyz10 200 in 273ms
+ GET /teams/no-such-team-xyz11 200 in 473ms
+ ✓ Compiled /_not-found in 44ms (347 modules)
+ GET /__probe2__/slowtest12 404 in 111ms
+ GET /__probe2__/slowtest12 404 in 70ms

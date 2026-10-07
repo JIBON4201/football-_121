@@ -1,0 +1,104 @@
+
+> football-web@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.18
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1939ms
+ ✓ Compiled /src/middleware in 128ms (73 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 937ms (496 modules)
+ GET / 200 in 1207ms
+ GET / 200 in 67ms
+ ✓ Compiled /matches in 473ms (581 modules)
+ GET /matches 200 in 663ms
+ ✓ Compiled in 1342ms (346 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 895ms (626 modules)
+ GET /_next/static/css/app/layout.css?v=1791254070257 404 in 978ms
+ GET /_next/static/css/app/layout.css?v=1791254071345 404 in 22ms
+ GET /_next/static/css/app/layout.css?v=1791254071345 404 in 17ms
+ GET /_next/static/css/app/layout.css?v=1791254071816 404 in 35ms
+ GET /matches 200 in 1113ms
+ ✓ Compiled in 228ms (347 modules)
+ GET /_next/static/css/app/layout.css?v=1791254083859 404 in 77ms
+ GET /_next/static/css/app/layout.css?v=1791254083859 404 in 61ms
+ ✓ Compiled in 128ms (347 modules)
+ GET /_next/static/css/app/layout.css?v=1791254138169 404 in 101ms
+ GET /_next/static/css/app/layout.css?v=1791254138169 404 in 18ms
+ ✓ Compiled in 103ms (347 modules)
+ GET /_next/static/css/app/layout.css?v=1791254141532 404 in 67ms
+ GET /_next/static/css/app/layout.css?v=1791254141532 404 in 47ms
+ ✓ Compiled in 344ms (346 modules)
+ ✓ Compiled /_not-found in 63ms (347 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 872ms (812 modules)
+ GET /_next/static/css/app/layout.css?v=1791254851269 500 in 2071ms
+ GET /_next/static/css/app/layout.css?v=1791254853510 500 in 16ms
+ GET /_next/static/css/app/layout.css?v=1791254853510 500 in 12ms
+ ✓ Compiled in 126ms (387 modules)
+ GET /_next/static/css/app/layout.css?v=1791254875139 500 in 9ms
+ GET /_next/static/css/app/layout.css?v=1791254875139 500 in 6ms
+ ✓ Compiled /robots.txt in 338ms (423 modules)
+ GET /robots.txt 200 in 394ms
+ ✓ Compiled /sitemap.xml in 96ms (426 modules)
+ GET /sitemap.xml 200 in 122ms
+ ✓ Compiled /sitemaps/[file] in 83ms (428 modules)
+ GET /sitemaps/news.xml 200 in 1522ms
+ GET /sitemaps/articles.xml 200 in 220ms
+ GET /sitemaps/matches.xml 200 in 182ms
+ GET /sitemaps/teams.xml 200 in 173ms
+ GET /sitemaps/players.xml 200 in 173ms
+ GET /sitemaps/competitions.xml 200 in 176ms
+ GET / 500 in 28ms
+ ✓ Compiled /news in 481ms (870 modules)
+ GET /news 200 in 1036ms
+ ✓ Compiled /transfers in 211ms (883 modules)
+ GET /transfers 200 in 340ms
+ GET /matches 200 in 173ms
+ ✓ Compiled /live in 198ms (886 modules)
+ GET /live 200 in 295ms
+ ✓ Compiled /competitions in 213ms (894 modules)
+ GET /competitions 200 in 296ms
+ ✓ Compiled /teams in 192ms (898 modules)
+ GET /teams 200 in 279ms
+ ✓ Compiled /players in 197ms (904 modules)
+ GET /players 200 in 266ms
+ ✓ Compiled /breaking-news in 211ms (907 modules)
+ GET /breaking-news 200 in 279ms
+ GET / 500 in 25ms
+ ✓ Compiled /news/[slug] in 295ms (915 modules)
+ GET /news/bennett-keepers-clean-sheet 500 in 555ms
+ GET /news/eastvale-manager-under-pressure 500 in 234ms
+ GET /news/eastvale-thrash-northbridge 500 in 215ms
+ GET /news/ferreira-completes-move-to-eastvale 500 in 217ms
+ GET /news/northbridge-thornton-seizes-leadership 500 in 233ms
+ ○ Compiling /matches/[slug] ...
+ ✓ Compiled /matches/[slug] in 639ms (942 modules)
+ GET /matches/seed-team-nbu-vs-seed-team-evc-2026-09-12 200 in 1781ms
+ GET /matches/seed-team-nbu-vs-seed-team-spr-2030-02-01 200 in 798ms
+ GET /matches/seed-team-spr-vs-seed-team-wfa-2026-09-13 200 in 790ms
+ ✓ Compiled /teams/[slug] in 380ms (946 modules)
+ GET /teams/evc 500 in 612ms
+ GET /teams/nbu 500 in 207ms
+ GET /teams/spr 500 in 205ms
+ GET /teams/wfa 500 in 212ms
+ ✓ Compiled /players/[slug] in 313ms (948 modules)
+ GET /players/carlos-mendez 500 in 581ms
+ GET /players/daniel-okafor 500 in 216ms
+ GET /players/harry-collins 500 in 215ms
+ GET /players/james-thornton 500 in 213ms
+ GET /players/lucas-ferreira 500 in 224ms
+ ✓ Compiled /competitions/[slug] in 336ms (952 modules)
+ GET /competitions/premier-league 500 in 562ms
+ ✓ Compiled /_not-found in 205ms (512 modules)
+ GET /NEWS 500 in 239ms
+ GET /news/no-such-article-xyz 500 in 211ms
+ GET /teams/no-such-team-xyz 500 in 224ms
+ ○ Compiling /search ...
+ ✓ Compiled /search in 559ms (1010 modules)
+ GET /search?q=test 200 in 990ms
+ GET / 500 in 15ms

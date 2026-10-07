@@ -1,0 +1,6 @@
+
+> football-api@1.0.0 dev
+> tsx --env-file=.env src/server.ts
+
+{"ts":"2026-10-05T03:06:30.314Z","msg":"football-api listening","port":4000,"env":"development"}
+{"ts":"2026-10-05T03:06:30.315Z","msg":"WARNING: ADMIN_BYPASS_AUTH is active - every /api/v1/admin/* request is granted super_admin without authentication","env":"development"}

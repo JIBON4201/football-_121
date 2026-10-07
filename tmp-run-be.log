@@ -1,0 +1,8 @@
+
+> football-api@1.0.0 dev
+> tsx --env-file=.env src/server.ts
+
+{"ts":"2026-10-05T03:05:16.122Z","msg":"football-api listening","port":4000,"env":"development"}
+{"ts":"2026-10-05T03:05:16.123Z","msg":"WARNING: ADMIN_BYPASS_AUTH is active - every /api/v1/admin/* request is granted super_admin without authentication","env":"development"}
+{"ts":"2026-10-05T03:05:26.963Z","requestId":"74b9bdf7-4be1-4eb3-8491-3435444bd69f","method":"GET","route":"/api/v1/health","status":200,"latencyMs":3,"userId":null}
+{"ts":"2026-10-05T03:05:36.313Z","requestId":"dd4ed62a-3361-46da-b21c-d0c61e64775f","method":"POST","route":"/api/v1/admin/articles","status":503,"latencyMs":841,"userId":"00000000-0000-0000-0000-000000000000"}

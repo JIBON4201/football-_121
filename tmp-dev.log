@@ -1,0 +1,18 @@
+  ▲ Next.js 14.2.18
+  - Local:        http://localhost:3210
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.5s
+ ○ Compiling /src/middleware ...
+ ✓ Compiled /src/middleware in 613ms (72 modules)
+ ○ Compiling /matches ...
+ ✓ Compiled /matches in 3.4s (613 modules)
+ GET /matches 200 in 3831ms
+ GET /matches 200 in 69ms
+ ✓ Compiled /live in 398ms (576 modules)
+ GET /live 200 in 1006ms
+ ✓ Compiled / in 306ms (495 modules)
+ GET / 200 in 2365ms
+ ✓ Compiled /_not-found in 121ms (496 modules)
+ GET /_next/static/css/app/layout.css 404 in 201ms

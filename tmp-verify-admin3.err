@@ -1,0 +1,30 @@
+Error: Connection closed.
+    at eQ (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:175316)
+    at e.exports.<anonymous> (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:177297)
+    at e.exports.emit (node:events:526:24)
+    at finish (node:internal/streams/writable:957:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  digest: '4281153379'
+}
+ ⨯ TypeError: Invalid URL
+    at new URL (node:internal/url:895:25)
+    at rE (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:15:6577)
+    at r7 (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:18:1150)
+    at C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:19:726
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:65:14)
+    at Object.wrap (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:13:17831)
+    at C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:19:616
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:65:14)
+    at Object.wrap (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:13:16935)
+    at ne (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:19:543) {
+  code: 'ERR_INVALID_URL',
+  input: 'null'
+}
+Error: Connection closed.
+    at eQ (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:175316)
+    at e.exports.<anonymous> (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:177297)
+    at e.exports.emit (node:events:526:24)
+    at finish (node:internal/streams/writable:957:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  digest: '4281153379'
+}

@@ -1,0 +1,1330 @@
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⨯ Error: Cannot find module './8948.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at __webpack_require__.f.require (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:198:28)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:111:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:162:22)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3420
+    at Object.<anonymous> (C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3473)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at requirePage (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:84
+    at async loadComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:709:36)
+    at async DevServer.findPageComponents (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2077:30)
+    at async pipe.req.req (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2043:30)
+    at async DevServer.pipeImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:921:25)
+    at async C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:173:21)
+    at async handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:365:24)
+    at async requestHandlerImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:374:13)
+    at async Server.requestListener (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\_not-found\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ]
+}
+ ⨯ Error: Cannot find module './8948.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\matches\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at __webpack_require__.f.require (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:198:28)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:111:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:162:22)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3420
+    at Object.<anonymous> (C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3473)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at requirePage (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:84
+    at async loadComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:709:36)
+    at async DevServer.findPageComponents (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2077:30)
+    at async pipe.req.req (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2043:30)
+    at async DevServer.pipeImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:921:25)
+    at async C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:173:21)
+    at async handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:365:24)
+    at async requestHandlerImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:374:13)
+    at async Server.requestListener (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\matches\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ]
+}
+ ⨯ Error: Cannot find module './8948.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\matches\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at __webpack_require__.f.require (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:198:28)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:111:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:162:22)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3420
+    at Object.<anonymous> (C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3473)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at requirePage (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:84
+    at async loadComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:709:36)
+    at async DevServer.findPageComponents (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2077:30)
+    at async pipe.req.req (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2043:30)
+    at async DevServer.pipeImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:921:25)
+    at async C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:173:21)
+    at async handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:365:24)
+    at async requestHandlerImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:374:13)
+    at async Server.requestListener (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\matches\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ]
+}
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\dayjs.js'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/dayjs' in C:\Users\Dev\Downloads\football\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\dayjs.js', but to 'Error: Can't resolve './vendor-chunks/dayjs' in 'C:\Users\Dev\Downloads\football\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/dayjs (expected C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\dayjs.js)
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\matches\page.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\matches\page.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\plugins\define-env-plugin.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\plugins\define-env-plugin.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\swc\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\swc\index.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/deepmerge' in C:\Users\Dev\Downloads\football\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\deepmerge.js', but to 'Error: Can't resolve './vendor-chunks/deepmerge' in 'C:\Users\Dev\Downloads\football\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/deepmerge (expected C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\deepmerge.js)
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\matches\page.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\matches\page.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\plugins\define-env-plugin.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\plugins\define-env-plugin.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\swc\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\swc\index.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/escape-string-regexp' in C:\Users\Dev\Downloads\football\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\escape-string-regexp.js', but to 'Error: Can't resolve './vendor-chunks/escape-string-regexp' in 'C:\Users\Dev\Downloads\football\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/escape-string-regexp (expected C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\escape-string-regexp.js)
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\matches\page.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\matches\page.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\plugins\define-env-plugin.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\plugins\define-env-plugin.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\swc\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\swc\index.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ⨯ Error: Cannot find module './8948.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\matches\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at __webpack_require__.f.require (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:198:28)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:111:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:162:22)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3420
+    at Object.<anonymous> (C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3473)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at requirePage (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:84
+    at async loadComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:709:36)
+    at async DevServer.findPageComponents (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2077:30)
+    at async pipe.req.req (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2043:30)
+    at async DevServer.pipeImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:921:25)
+    at async C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:173:21)
+    at async handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:365:24)
+    at async requestHandlerImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:374:13)
+    at async Server.requestListener (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\matches\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ]
+}
+ ⨯ Error: Cannot find module './8948.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\matches\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at __webpack_require__.f.require (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:198:28)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:111:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:162:22)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3420
+    at Object.<anonymous> (C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3473)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at requirePage (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:84
+    at async loadComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:709:36)
+    at async DevServer.findPageComponents (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2077:30)
+    at async pipe.req.req (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2043:30)
+    at async DevServer.pipeImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:921:25)
+    at async C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:173:21)
+    at async handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:365:24)
+    at async requestHandlerImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:374:13)
+    at async Server.requestListener (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\matches\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ]
+}
+ ⨯ Error: Cannot find module './8948.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\sitemaps\[file]\route.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at __webpack_require__.f.require (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:203:28)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:116:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:167:22)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\page.js:1:17297
+    at Object.<anonymous> (C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\page.js:1:17365)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at requirePage (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:84
+    at async loadComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:709:36)
+    at async DevServer.findPageComponents (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:1897:24)
+    at async DevServer.renderToResponseImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:1949:32)
+    at async DevServer.pipeImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:921:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:817:17)
+    at async C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:173:21)
+    at async handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:350:24)
+    at async requestHandlerImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:374:13)
+    at async Server.requestListener (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\sitemaps\\[file]\\route.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ],
+  page: '/'
+}
+ ⨯ Error: Cannot find module './8948.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\breaking-news\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at __webpack_require__.f.require (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:203:28)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:116:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:167:22)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\page.js:1:17297
+    at Object.<anonymous> (C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\page.js:1:17365)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at requirePage (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:84
+    at async loadComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:709:36)
+    at async DevServer.findPageComponents (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:1897:24)
+    at async DevServer.renderToResponseImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:1949:32)
+    at async DevServer.pipeImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:921:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:817:17)
+    at async C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:173:21)
+    at async handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:350:24)
+    at async requestHandlerImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:374:13)
+    at async Server.requestListener (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\breaking-news\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ],
+  page: '/'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\news\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\news\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/news/bennett-keepers-clean-sheet'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\news\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\news\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/news/eastvale-manager-under-pressure'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\news\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\news\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/news/eastvale-thrash-northbridge'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\news\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\news\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/news/ferreira-completes-move-to-eastvale'
+}
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\escape-string-regexp.js'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/escape-string-regexp' in C:\Users\Dev\Downloads\football\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\escape-string-regexp.js', but to 'Error: Can't resolve './vendor-chunks/escape-string-regexp' in 'C:\Users\Dev\Downloads\football\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/escape-string-regexp (expected C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\escape-string-regexp.js)
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/nanoid' in C:\Users\Dev\Downloads\football\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\nanoid.js', but to 'Error: Can't resolve './vendor-chunks/nanoid' in 'C:\Users\Dev\Downloads\football\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/nanoid (expected C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\nanoid.js)
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/is-plain-object' in C:\Users\Dev\Downloads\football\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\is-plain-object.js', but to 'Error: Can't resolve './vendor-chunks/is-plain-object' in 'C:\Users\Dev\Downloads\football\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/is-plain-object (expected C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\is-plain-object.js)
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/domelementtype' in C:\Users\Dev\Downloads\football\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\domelementtype.js', but to 'Error: Can't resolve './vendor-chunks/domelementtype' in 'C:\Users\Dev\Downloads\football\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/domelementtype (expected C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\domelementtype.js)
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/picocolors' in C:\Users\Dev\Downloads\football\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\picocolors.js', but to 'Error: Can't resolve './vendor-chunks/picocolors' in 'C:\Users\Dev\Downloads\football\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/picocolors (expected C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\picocolors.js)
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/deepmerge' in C:\Users\Dev\Downloads\football\frontend\.next\server for build dependencies doesn't lead to expected result 'C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\deepmerge.js', but to 'Error: Can't resolve './vendor-chunks/deepmerge' in 'C:\Users\Dev\Downloads\football\frontend\.next\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/deepmerge (expected C:\Users\Dev\Downloads\football\frontend\.next\server\vendor-chunks\deepmerge.js)
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\.next\server\pages\_error.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+<w>  at file dependencies C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at resolve commonjs C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\news\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\news\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/news/northbridge-thornton-seizes-leadership'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\teams\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\teams\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/teams/evc'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\teams\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\teams\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/teams/nbu'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\teams\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\teams\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/teams/spr'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\teams\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\teams\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/teams/wfa'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\players\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\players\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/players/carlos-mendez'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\players\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\players\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/players/daniel-okafor'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\players\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\players\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/players/harry-collins'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\players\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\players\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/players/james-thornton'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\players\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\players\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/players/lucas-ferreira'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\competitions\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\competitions\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/competitions/premier-league'
+}
+ ⨯ Error: Cannot find module './8948.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at __webpack_require__.f.require (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:203:28)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:116:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:167:22)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3420
+    at Object.<anonymous> (C:\Users\Dev\Downloads\football\frontend\.next\server\app\_not-found\page.js:1:3473)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at requirePage (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:84
+    at async loadComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:709:36)
+    at async DevServer.findPageComponents (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderErrorToResponseImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2077:30)
+    at async pipe.req.req (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:2043:30)
+    at async DevServer.pipeImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:921:25)
+    at async C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:173:21)
+    at async handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:365:24)
+    at async requestHandlerImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:374:13)
+    at async Server.requestListener (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\_not-found\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ]
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\news\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\news\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/news/no-such-article-xyz'
+}
+ ⨯ Error: Cannot find module './vendor-chunks/sanitize-html.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\teams\[slug]\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\static-paths-worker.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16) {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\teams\\[slug]\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\static-paths-worker.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\compiled\\jest-worker\\processChild.js'
+  ],
+  page: '/teams/no-such-team-xyz'
+}
+ ⨯ Error: Cannot find module './8948.js'
+Require stack:
+- C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js
+- C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\search\page.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\build\utils.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-middleware.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1564:15)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at __webpack_require__.f.require (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:203:28)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:116:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (C:\Users\Dev\Downloads\football\frontend\.next\server\webpack-runtime.js:167:22)
+    at C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\page.js:1:17297
+    at Object.<anonymous> (C:\Users\Dev\Downloads\football\frontend\.next\server\app\(site)\page.js:1:17365)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Object..js (node:internal/modules/cjs/loader:2060:10)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1674:12)
+    at mod.require (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:157:16)
+    at requirePage (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\require.js:109:84)
+    at C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:84
+    at async loadComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:709:36)
+    at async DevServer.findPageComponents (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:1897:24)
+    at async DevServer.renderToResponseImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:1949:32)
+    at async DevServer.pipeImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:921:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\next-server.js:272:17)
+    at async DevServer.handleRequestImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\base-server.js:817:17)
+    at async C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:339:20
+    at async Span.traceAsyncFn (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\trace\trace.js:154:20)
+    at async DevServer.handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\dev\next-dev-server.js:336:24)
+    at async invokeRender (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:173:21)
+    at async handleRequest (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:350:24)
+    at async requestHandlerImpl (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:374:13)
+    at async Server.requestListener (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\webpack-runtime.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\.next\\server\\app\\(site)\\search\\page.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\require.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\load-components.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\build\\utils.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-middleware.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\dev\\hot-reloader-webpack.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-utils\\setup-dev-bundler.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\router-server.js',
+    'C:\\Users\\Dev\\Downloads\\football\\frontend\\node_modules\\next\\dist\\server\\lib\\start-server.js'
+  ],
+  page: '/'
+}

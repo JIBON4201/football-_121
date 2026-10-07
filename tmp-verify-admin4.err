@@ -1,0 +1,8 @@
+Error: Connection closed.
+    at eQ (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:175316)
+    at e.exports.<anonymous> (C:\Users\Dev\Downloads\football\admin\node_modules\next\dist\compiled\next-server\app-page.runtime.prod.js:12:177297)
+    at e.exports.emit (node:events:526:24)
+    at finish (node:internal/streams/writable:957:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  digest: '4281153379'
+}

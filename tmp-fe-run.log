@@ -1,0 +1,202 @@
+
+> football-web@0.1.0 dev
+> next dev -p 3000
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1839ms
+ ○ Compiling / ...
+ ✓ Compiled / in 912ms (500 modules)
+ GET / 200 in 1260ms
+ GET / 200 in 80ms
+ GET / 200 in 56ms
+ ✓ Compiled in 358ms (261 modules)
+ ✓ Compiled /src/middleware in 126ms (73 modules)
+ ✓ Compiled in 154ms (261 modules)
+ GET / 200 in 549ms
+ ✓ Compiled /robots.txt in 291ms (297 modules)
+ GET /robots.txt 200 in 344ms
+ ✓ Compiled /sitemap.xml in 110ms (300 modules)
+ GET /sitemap.xml 200 in 1223ms
+ ✓ Compiled /sitemaps/[file] in 52ms (302 modules)
+ GET /sitemaps/news.xml 200 in 521ms
+ GET /sitemaps/articles.xml 200 in 161ms
+ GET /sitemaps/matches.xml 200 in 154ms
+ GET /sitemaps/teams.xml 200 in 165ms
+ GET /sitemaps/players.xml 200 in 151ms
+ GET /sitemaps/competitions.xml 200 in 174ms
+ GET /sitemaps/transfers.xml 200 in 160ms
+ GET /sitemaps/categories.xml 200 in 159ms
+ GET /sitemaps/tags.xml 200 in 155ms
+ GET /sitemaps/pages.xml 200 in 16ms
+ GET / 200 in 112ms
+ ○ Compiling /news ...
+ ✓ Compiled /news in 580ms (646 modules)
+ ✓ Compiled /_not-found in 141ms (647 modules)
+ GET /news 200 in 966ms
+ GET /_next/static/webpack/8f1b7107323e182e.webpack.hot-update.json 404 in 273ms
+ GET / 200 in 125ms
+ ✓ Compiled /transfers in 386ms (661 modules)
+ GET /transfers 200 in 756ms
+ ✓ Compiled /matches in 200ms (664 modules)
+ GET /matches 200 in 306ms
+ ✓ Compiled /live in 191ms (667 modules)
+ GET /live 200 in 267ms
+ ✓ Compiled /competitions in 230ms (675 modules)
+ GET /competitions 200 in 324ms
+ ✓ Compiled /teams in 224ms (679 modules)
+ GET /teams 200 in 432ms
+ ✓ Compiled /players in 234ms (685 modules)
+ GET /players 200 in 313ms
+ ✓ Compiled /breaking-news in 235ms (688 modules)
+ GET /breaking-news 200 in 327ms
+ ✓ Compiled /news/[slug] in 237ms (696 modules)
+ GET /news/bennett-keepers-clean-sheet 200 in 1828ms
+ GET /news/eastvale-manager-under-pressure 200 in 1171ms
+ GET /news/eastvale-thrash-northbridge 200 in 187ms
+ GET /news/ferreira-completes-move-to-eastvale 200 in 1186ms
+ GET /news/northbridge-thornton-seizes-leadership 200 in 1153ms
+ ✓ Compiled /matches/[slug] in 498ms (719 modules)
+ GET /matches/seed-team-nbu-vs-seed-team-evc-2026-09-12 200 in 1619ms
+ GET /matches/seed-team-nbu-vs-seed-team-spr-2030-02-01 200 in 781ms
+ GET /matches/seed-team-spr-vs-seed-team-wfa-2026-09-13 200 in 779ms
+ ✓ Compiled /teams/[slug] in 250ms (723 modules)
+ GET /teams/evc 200 in 1109ms
+ GET /teams/nbu 200 in 478ms
+ GET /teams/spr 200 in 466ms
+ GET /teams/wfa 200 in 465ms
+ ✓ Compiled /players/[slug] in 267ms (726 modules)
+ GET /players/carlos-mendez 200 in 3150ms
+ GET /players/daniel-okafor 200 in 2540ms
+ GET /players/harry-collins 200 in 2515ms
+ GET /players/james-thornton 200 in 2547ms
+ GET /players/lucas-ferreira 200 in 2495ms
+ ✓ Compiled /competitions/[slug] in 351ms (730 modules)
+ GET /competitions/premier-league 200 in 1178ms
+ ✓ Compiled /transfers/[id] in 337ms (740 modules)
+ GET /transfers/07d865b0-6fae-41ba-bfaf-bc523b2f1c1c 200 in 1104ms
+ GET /teams?page=2 200 in 1257ms
+ GET /players?page=2 200 in 1267ms
+ GET /competitions?page=2 200 in 1266ms
+ GET /news/no-such-article-xyz 200 in 348ms
+ GET /teams/no-such-team-xyz 200 in 375ms
+ ✓ Compiled /search in 435ms (796 modules)
+ GET /search?q=test 200 in 844ms
+ GET /news 200 in 49ms
+ GET /news 200 in 73ms
+ GET /robots.txt 200 in 17ms
+ GET /sitemap.xml 200 in 11ms
+ GET /sitemaps/news.xml 200 in 16ms
+ GET /sitemaps/articles.xml 200 in 8ms
+ GET /sitemaps/matches.xml 200 in 8ms
+ GET /sitemaps/teams.xml 200 in 8ms
+ GET /sitemaps/players.xml 200 in 8ms
+ GET /sitemaps/competitions.xml 200 in 9ms
+ GET /sitemaps/transfers.xml 200 in 9ms
+ GET /sitemaps/categories.xml 200 in 8ms
+ GET /sitemaps/tags.xml 200 in 8ms
+ GET /sitemaps/pages.xml 200 in 9ms
+ GET / 200 in 424ms
+ GET /news 200 in 40ms
+ GET /transfers 200 in 52ms
+ GET /matches 200 in 181ms
+ GET /live 200 in 63ms
+ GET /competitions 200 in 52ms
+ GET /teams 200 in 38ms
+ GET /players 200 in 42ms
+ GET /breaking-news 200 in 45ms
+ GET /news/bennett-keepers-clean-sheet 200 in 65ms
+ GET /news/eastvale-manager-under-pressure 200 in 54ms
+ GET /news/eastvale-thrash-northbridge 200 in 72ms
+ GET /news/ferreira-completes-move-to-eastvale 200 in 55ms
+ GET /news/northbridge-thornton-seizes-leadership 200 in 64ms
+ GET /matches/seed-team-nbu-vs-seed-team-evc-2026-09-12 200 in 782ms
+ GET /matches/seed-team-nbu-vs-seed-team-spr-2030-02-01 200 in 745ms
+ GET /matches/seed-team-spr-vs-seed-team-wfa-2026-09-13 200 in 768ms
+ GET /teams/evc 200 in 49ms
+ GET /teams/nbu 200 in 61ms
+ GET /teams/spr 200 in 72ms
+ GET /teams/wfa 200 in 70ms
+ GET /players/carlos-mendez 200 in 2545ms
+ GET /players/daniel-okafor 200 in 2585ms
+ GET /players/harry-collins 200 in 2530ms
+ GET /players/james-thornton 200 in 2527ms
+ GET /players/lucas-ferreira 200 in 2545ms
+ GET /competitions/premier-league 200 in 79ms
+ GET /transfers/07d865b0-6fae-41ba-bfaf-bc523b2f1c1c 200 in 57ms
+ GET /teams?page=2 200 in 1246ms
+ GET /players?page=2 200 in 1229ms
+ GET /competitions?page=2 200 in 1260ms
+ GET /news/no-such-article-xyz 200 in 360ms
+ GET /teams/no-such-team-xyz 200 in 362ms
+ GET /search?q=test 200 in 352ms
+ GET /sitemap.xml 200 in 7ms
+ GET /robots.txt 200 in 8ms
+ GET /robots.txt 200 in 6ms
+ GET /sitemap.xml 200 in 6ms
+ GET /sitemaps/news.xml 200 in 13ms
+ GET /sitemaps/articles.xml 200 in 11ms
+ GET /sitemaps/matches.xml 200 in 8ms
+ GET /sitemaps/teams.xml 200 in 7ms
+ GET /sitemaps/players.xml 200 in 7ms
+ GET /sitemaps/competitions.xml 200 in 9ms
+ GET /sitemaps/transfers.xml 200 in 7ms
+ GET /sitemaps/categories.xml 200 in 8ms
+ GET /sitemaps/tags.xml 200 in 8ms
+ GET /sitemaps/pages.xml 200 in 8ms
+ GET / 200 in 219ms
+ GET /news 200 in 48ms
+ GET /transfers 200 in 32ms
+ GET /matches 200 in 315ms
+ GET /live 200 in 72ms
+ GET /competitions 200 in 45ms
+ GET /teams 200 in 59ms
+ GET /players 200 in 30ms
+ GET /breaking-news 200 in 71ms
+ GET /news/bennett-keepers-clean-sheet 200 in 33ms
+ GET /news/eastvale-manager-under-pressure 200 in 61ms
+ GET /news/eastvale-thrash-northbridge 200 in 70ms
+ GET /news/ferreira-completes-move-to-eastvale 200 in 48ms
+ GET /news/northbridge-thornton-seizes-leadership 200 in 61ms
+ GET /news/okafor-assists-three 200 in 1203ms
+ GET /news/premier-league-table-explainer 200 in 1187ms
+ GET /news/southport-rovers-stake-claim 200 in 1160ms
+ GET /news/venue-guide-northbridge-park 200 in 167ms
+ GET /news/westfield-need-points 200 in 1174ms
+ GET /matches/seed-team-nbu-vs-seed-team-evc-2026-09-12 200 in 749ms
+ GET /matches/seed-team-nbu-vs-seed-team-spr-2030-02-01 200 in 760ms
+ GET /matches/seed-team-spr-vs-seed-team-wfa-2026-09-13 200 in 744ms
+ GET /teams/evc 200 in 41ms
+ GET /teams/nbu 200 in 33ms
+ GET /teams/spr 200 in 60ms
+ GET /teams/wfa 200 in 74ms
+ GET /players/carlos-mendez 200 in 2550ms
+ GET /players/daniel-okafor 200 in 2510ms
+ GET /players/harry-collins 200 in 3033ms
+ GET /players/james-thornton 200 in 2525ms
+ GET /players/lucas-ferreira 200 in 2513ms
+ GET /players/oliver-bennett 200 in 2543ms
+ GET /players/thomas-wright 200 in 2527ms
+ GET /players/yusuf-demir 200 in 2551ms
+ GET /competitions/premier-league 200 in 44ms
+ GET /transfers/07d865b0-6fae-41ba-bfaf-bc523b2f1c1c 200 in 43ms
+ GET /teams?page=2 200 in 1261ms
+ GET /players?page=2 200 in 1247ms
+ GET /competitions?page=2 200 in 1228ms
+ GET /news/no-such-article-xyz 200 in 360ms
+ GET /teams/no-such-team-xyz 200 in 361ms
+ GET /search?q=test 200 in 350ms
+ GET /sitemap.xml 200 in 7ms
+ GET /sitemaps/news.xml 200 in 14ms
+ GET /sitemaps/articles.xml 200 in 9ms
+ GET /sitemaps/matches.xml 200 in 7ms
+ GET /sitemaps/teams.xml 200 in 8ms
+ GET /sitemaps/players.xml 200 in 8ms
+ GET /sitemaps/competitions.xml 200 in 7ms
+ GET /sitemaps/transfers.xml 200 in 9ms
+ GET /sitemaps/categories.xml 200 in 8ms
+ GET /sitemaps/tags.xml 200 in 9ms
+ GET /sitemaps/pages.xml 200 in 8ms

@@ -1,0 +1,41 @@
+# Vercel environment — variable names only, NO secret values.
+# Copy into Vercel Dashboard → Project → Settings → Environment Variables (Production).
+# See VERCEL_DEPLOYMENT.md for scoping. Never commit real values.
+
+# ── PUBLIC (NEXT_PUBLIC_* — inlined into client JS at build time) ──
+# Required. Canonical site origin. Must be https://, no trailing slash.
+# Example: https://football.example.com
+NEXT_PUBLIC_SITE_URL=
+# Required. Backend API base reachable from browsers.
+# Example: https://api-football.example.com
+NEXT_PUBLIC_API_URL=
+# Optional. Defaults to "Football".
+NEXT_PUBLIC_SITE_NAME=
+# Optional feature flags (defaults noted in frontend/.env.example).
+NEXT_PUBLIC_FEATURE_LIVE=
+NEXT_PUBLIC_FEATURE_BREAKING=
+NEXT_PUBLIC_FEATURE_TRANSFERS=
+NEXT_PUBLIC_FEATURE_SEARCH=
+NEXT_PUBLIC_FEATURE_BOTTOM_NAV=
+# DEV-ONLY. Must be false or UNSET on Vercel production (forced false when NODE_ENV=production).
+NEXT_PUBLIC_ADMIN_BYPASS=
+
+# ── SERVER-ONLY (frontend SSR / route handlers / middleware — never NEXT_PUBLIC_) ──
+# Required in production. Internal API base for server components + /sitemap.xml proxy.
+# Usually same as NEXT_PUBLIC_API_URL. Falls back to it when unset.
+API_URL=
+
+# ── BACKEND (separately hosted API — NOT on Vercel; listed here for completeness) ──
+# All server-only. Never prefix with NEXT_PUBLIC_. Set on the API host, not Vercel.
+# PORT=
+# NODE_ENV=production
+# SUPABASE_URL=
+# SUPABASE_ANON_KEY=
+# SUPABASE_SERVICE_ROLE_KEY=
+# CORS_ORIGINS=https://<vercel-app-domain>
+# SITE_BASE_URL=https://<vercel-app-domain>
+# SITE_NAME=
+# ADMIN_BYPASS_AUTH=false
+# PROVIDER_BASE_URL= / PROVIDER_API_KEY= / PROVIDER_ENABLED= (required BLOCKERs in prod)
+# PAGINATION_DEFAULT_LIMIT= / PAGINATION_MAX_LIMIT= / RATE_LIMIT_* / CACHE_TTL_* / MEDIA_* / SEO_*
+# Full template: backend/.env.example (placeholders only).

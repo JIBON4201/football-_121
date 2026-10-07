@@ -1,0 +1,8 @@
+# Step 40 verification artifacts
+# Regenerate with: cd backend && npm run verify -- --out ../reports
+reports/
+
+# Local secrets — never commit. See backend/.env.example and frontend/.env.example.
+.env
+.env.local
+.env.*.local

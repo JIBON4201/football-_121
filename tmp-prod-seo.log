@@ -1,0 +1,10 @@
+
+> football-web@0.1.0 start
+> next start --port 3001
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3001
+
+ ✓ Starting...
+ ✓ Ready in 336ms
+^C^C

@@ -1,0 +1,47 @@
+/*
+ * Legacy token bridge.
+ *
+ * The design system was reskinned to the pine/lime editorial palette. Components
+ * that predate that reskin still reference the previous custom-property names, so
+ * each one is aliased to its new equivalent here. This keeps every route rendering
+ * with correct colour and spacing without editing each component, and means a
+ * component only has to move to the new names when it is next touched.
+ *
+ * Names that both palettes define (e.g. --color-surface, --color-muted,
+ * --color-live) are intentionally omitted: the new palette already supplies them
+ * and wins by cascade order.
+ */
+:root {
+  color-scheme: light;
+
+  /* Surfaces and text */
+  --color-background: var(--color-surface);
+  --color-text: var(--color-ink);
+  --color-text-secondary: var(--color-ink-2);
+
+  /* Lines */
+  --color-border: var(--color-line);
+  --color-border-strong: var(--color-line-strong);
+
+  /* Brand */
+  --color-primary: var(--color-pine-2);
+  --color-primary-contrast: #ffffff;
+  --color-accent: var(--color-breaking);
+  /* Focus must stay clearly visible against both paper and pine surfaces. */
+  --color-focus: #1d4ed8;
+
+  /* Status. Live is reserved for in-play only. */
+  --color-success: var(--color-lime-deep);
+  --color-warning: #b54708;
+  --color-error: var(--color-breaking);
+  --color-info: #175cd3;
+
+  /* Inverse surfaces */
+  --surface-inverse: var(--color-pine);
+  --surface-inverse-text: #ffffff;
+
+  /* Elevation and rhythm */
+  --shadow-sm: 0 1px 2px rgba(13, 31, 20, 0.06);
+  --shadow-md: 0 4px 12px rgba(13, 31, 20, 0.08);
+  --container-max: var(--container);
+}

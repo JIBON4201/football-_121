@@ -1,0 +1,8 @@
+Error: Refusing to start with an unsafe production domain configuration:
+  - NEXT_PUBLIC_SITE_URL must use https:// in production (got "http://localhost:3000")
+    at assertProductionDomain (file:///C:/Users/Dev/Downloads/football/frontend/next.config.mjs:37:11)
+    at nextConfig (file:///C:/Users/Dev/Downloads/football/frontend/next.config.mjs:88:3)
+    at normalizeConfig (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\config-shared.js:156:18)
+    at loadConfig (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\config.js:727:68)
+    at async initialize (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\router-server.js:55:20)
+    at async Server.<anonymous> (C:\Users\Dev\Downloads\football\frontend\node_modules\next\dist\server\lib\start-server.js:249:36)

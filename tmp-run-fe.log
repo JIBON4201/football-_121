@@ -1,0 +1,213 @@
+
+> football-web@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.18
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1774ms
+ ✓ Compiled /src/middleware in 300ms (73 modules)
+ ○ Compiling /control-center/dashboard ...
+ ✓ Compiled /control-center/dashboard in 2.5s (641 modules)
+ GET /control-center/dashboard 200 in 4036ms
+ GET /control-center/dashboard 200 in 798ms
+ GET /control-center/dashboard 200 in 682ms
+ GET /control-center/dashboard 200 in 739ms
+ ○ Compiling /control-center/matches ...
+ ✓ Compiled /control-center/matches in 519ms (625 modules)
+ GET /control-center/matches 200 in 888ms
+ ✓ Compiled /control-center/media in 192ms (634 modules)
+ ✓ Compiled /control-center/articles in 278ms (649 modules)
+ ○ Compiling /control-center/articles/new ...
+ ✓ Compiled /control-center/articles/new in 504ms (720 modules)
+ GET /control-center/dashboard 200 in 1022ms
+ ✓ Compiled in 309ms (697 modules)
+ ✓ Compiled /control-center/media in 96ms (424 modules)
+ ✓ Compiled /control-center/audit-logs in 473ms (712 modules)
+ ✓ Compiled /control-center/roles in 250ms (714 modules)
+ ✓ Compiled /control-center/users in 214ms (716 modules)
+ ✓ Compiled /control-center/settings in 421ms (729 modules)
+ ✓ Compiled /control-center/transfers in 382ms (740 modules)
+ ✓ Compiled /control-center/dashboard in 162ms (449 modules)
+ ✓ Compiled in 542ms (731 modules)
+ ✓ Compiled in 229ms (731 modules)
+ ✓ Compiled in 269ms (731 modules)
+ ✓ Compiled in 192ms (731 modules)
+ ✓ Compiled in 337ms (731 modules)
+ GET /control-center/dashboard 200 in 2587ms
+ ○ Compiling /control-center/articles ...
+ ✓ Compiled /control-center/articles in 550ms (451 modules)
+ ✓ Compiled /control-center/media in 177ms (454 modules)
+ ✓ Compiled /control-center/matches in 185ms (451 modules)
+ ✓ Compiled /control-center/teams in 504ms (754 modules)
+ ✓ Compiled /control-center/players in 358ms (741 modules)
+ ✓ Compiled /control-center/players/new in 295ms (754 modules)
+ ✓ Compiled /control-center/competitions in 300ms (756 modules)
+ ✓ Compiled /control-center/seasons in 255ms (758 modules)
+ ✓ Compiled /control-center/venues in 319ms (760 modules)
+ ✓ Compiled /control-center/transfers in 210ms (474 modules)
+ ✓ Compiled /control-center/transfers/new in 392ms (787 modules)
+ ✓ Compiled /control-center/settings in 141ms (455 modules)
+ ✓ Compiled /control-center/audit-logs in 134ms (458 modules)
+ ✓ Compiled /control-center/dashboard in 177ms (458 modules)
+ ✓ Compiled /control-center/articles in 122ms (460 modules)
+ ○ Compiling /matches/[slug] ...
+ ✓ Compiled /matches/[slug] in 591ms (793 modules)
+ GET /matches/seed-team-nbu-vs-seed-team-spr-2030-02-01 200 in 1858ms
+ ○ Compiling /live ...
+ ✓ Compiled /live in 622ms (883 modules)
+ GET /live 200 in 887ms
+ ✓ Compiled /matches in 294ms (875 modules)
+ GET /matches 200 in 1434ms
+ ○ Compiling / ...
+ ✓ Compiled / in 510ms (788 modules)
+ GET / 200 in 1830ms
+ GET / 200 in 70ms
+ GET /matches 200 in 345ms
+ ○ Compiling /news ...
+ GET /matches/seed-team-nbu-vs-seed-team-spr-2030-02-01 200 in 1794ms
+ ✓ Compiled /news in 886ms (795 modules)
+ GET /news 200 in 1460ms
+ GET /news 200 in 63ms
+ ✓ Compiled /breaking-news in 490ms (805 modules)
+ GET /breaking-news 200 in 748ms
+ GET /breaking-news 200 in 71ms
+ ✓ Compiled /transfers in 437ms (818 modules)
+ GET /transfers 200 in 534ms
+ GET /transfers 200 in 73ms
+ GET /matches 200 in 68ms
+ GET /matches 200 in 59ms
+ GET /live 200 in 65ms
+ GET /live 200 in 78ms
+ ✓ Compiled /competitions in 441ms (818 modules)
+ GET /competitions 200 in 522ms
+ GET /competitions 200 in 55ms
+ ✓ Compiled /teams in 344ms (822 modules)
+ GET /teams 200 in 421ms
+ GET /teams 200 in 66ms
+ GET /matches 200 in 230ms
+ ✓ Compiled /players in 343ms (828 modules)
+ GET /players 200 in 426ms
+ GET /players 200 in 244ms
+ GET /live 200 in 34ms
+ ○ Compiling /search ...
+ ✓ Compiled /search in 950ms (885 modules)
+ GET /search 200 in 1215ms
+ GET /transfers 200 in 93ms
+ GET /search 200 in 51ms
+ GET /teams 200 in 53ms
+ GET /competitions 200 in 66ms
+ ✓ Compiled /competitions/[slug] in 454ms (891 modules)
+ GET /competitions/premier-league 200 in 828ms
+ ○ Compiling /control-center/competitions ...
+ ✓ Compiled /control-center/competitions in 677ms (568 modules)
+ ✓ Compiled /control-center/competitions/new in 471ms (981 modules)
+ GET /news 200 in 835ms
+ GET /matches 200 in 233ms
+ GET /teams 200 in 54ms
+ GET /players 200 in 65ms
+ GET /competitions 200 in 53ms
+ GET /transfers 200 in 44ms
+ GET /live 200 in 49ms
+ GET /transfers 200 in 57ms
+ ✓ Compiled / in 260ms (622 modules)
+ GET / 200 in 489ms
+ GET /live 200 in 258ms
+ GET /matches 200 in 495ms
+ GET /transfers 200 in 1021ms
+ GET /transfers 200 in 56ms
+ GET /matches 200 in 3055ms
+ GET /live 200 in 50ms
+ GET /transfers 200 in 408ms
+ GET /news 200 in 81ms
+ GET /transfers 200 in 47ms
+ ○ Compiling /players/[slug] ...
+ ✓ Compiled /players/[slug] in 769ms (889 modules)
+ GET /players/lucas-ferreira 200 in 1253ms
+ ✓ Compiled /teams in 150ms (517 modules)
+ GET /teams 200 in 297ms
+ ✓ Compiled /players in 225ms (520 modules)
+ GET /players 200 in 359ms
+ GET /teams 200 in 44ms
+ ✓ Compiled /teams/[slug] in 362ms (865 modules)
+ GET /teams/nbu 200 in 752ms
+ GET /teams/spr 200 in 281ms
+ GET /live 200 in 1857ms
+ GET /matches 200 in 1028ms
+ GET /news 200 in 1123ms
+ GET /transfers 200 in 1210ms
+ ○ Compiling /competitions ...
+ ✓ Compiled /competitions in 731ms (505 modules)
+ GET /competitions 200 in 1687ms
+ ✓ Compiled /competitions/[slug] in 186ms (511 modules)
+ GET /competitions/premier-league 200 in 776ms
+ GET /competitions 200 in 44ms
+ GET /competitions/premier-league 200 in 251ms
+ GET /competitions 200 in 43ms
+ GET /competitions/premier-league 200 in 1145ms
+ ✓ Compiled /teams in 289ms (509 modules)
+ GET /teams 200 in 841ms
+ ✓ Compiled /teams/[slug] in 118ms (504 modules)
+ GET /teams/nbu 200 in 700ms
+ ✓ Compiled /players in 351ms (507 modules)
+ GET /players 200 in 649ms
+ ✓ Compiled /players/[slug] in 250ms (503 modules)
+ GET /players/carlos-mendez 200 in 397ms
+ GET /players/carlos-mendez 200 in 2456ms
+ ○ Compiling /live ...
+ ✓ Compiled /live in 556ms (501 modules)
+ GET /live 200 in 805ms
+ ✓ Compiled in 708ms (838 modules)
+ ✓ Compiled in 424ms (497 modules)
+ ✓ Compiled in 444ms (838 modules)
+ ✓ Compiled / in 321ms (504 modules)
+ GET / 200 in 1839ms
+ GET / 200 in 1673ms
+ ✓ Compiled in 903ms (854 modules)
+ GET / 200 in 310ms
+ ✓ Compiled in 653ms (854 modules)
+ GET / 200 in 318ms
+ GET / 200 in 49ms
+ ✓ Compiled in 602ms (854 modules)
+ GET / 200 in 303ms
+ ✓ Compiled in 385ms (854 modules)
+ GET / 200 in 637ms
+ ✓ Compiled in 383ms (854 modules)
+ GET / 200 in 277ms
+ ✓ Compiled in 431ms (854 modules)
+ GET / 200 in 1455ms
+ ○ Compiling /news/[slug] ...
+ ✓ Compiled /news/[slug] in 630ms (845 modules)
+ GET /news/northbridge-thornton-seizes-leadership 200 in 1252ms
+ GET /news/northbridge-thornton-seizes-leadership 200 in 488ms
+ GET /news/northbridge-thornton-seizes-leadership 200 in 251ms
+ GET /news/northbridge-thornton-seizes-leadership 200 in 773ms
+ GET /news/northbridge-thornton-seizes-leadership 200 in 263ms
+ GET / 200 in 91ms
+ ✓ Compiled in 1008ms (850 modules)
+ GET / 200 in 1226ms
+ GET / 200 in 831ms
+ GET /control-center/competitions/new 200 in 299ms
+ GET /live 200 in 326ms
+ ○ Compiling /news ...
+ ✓ Compiled /news in 619ms (504 modules)
+ GET /news 200 in 891ms
+ GET / 200 in 78ms
+ ✓ Compiled /transfers in 330ms (508 modules)
+ GET /transfers 200 in 474ms
+ ✓ Compiled /competitions in 185ms (514 modules)
+ GET /competitions 200 in 295ms
+ ✓ Compiled /teams in 148ms (518 modules)
+ GET /teams 200 in 257ms
+ ✓ Compiled /players in 147ms (523 modules)
+ GET /players 200 in 249ms
+ GET / 200 in 1169ms
+ GET / 200 in 1502ms
+ GET / 200 in 516ms
+ ✓ Compiled in 657ms (728 modules)
+ ✓ Compiled in 368ms (728 modules)
+ ✓ Compiled in 393ms (373 modules)
+ GET /news/northbridge-thornton-seizes-leadership 200 in 542ms
+ GET /news/northbridge-thornton-seizes-leadership 200 in 83ms
