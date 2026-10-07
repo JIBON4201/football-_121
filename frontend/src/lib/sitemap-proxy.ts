@@ -26,7 +26,8 @@ const XML_HEADERS = {
  * masquerading as an upstream failure.
  */
 export async function proxyBackendSitemap(path: string): Promise<Response> {
-  const upstream = process.env.API_URL ?? siteConfig.apiUrl;
+  // `||` (not `??`): an empty API_URL must fall back to the configured base.
+  const upstream = process.env.API_URL || siteConfig.apiUrl;
   const url = `${upstream.replace(/\/$/, '')}/api/v1${path}`;
 
   try {

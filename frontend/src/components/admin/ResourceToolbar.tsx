@@ -26,7 +26,7 @@ export function ResourceToolbar({
   filters?: Array<{ param: string; label: string; options: Array<{ value: string; label: string }> }>;
 }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams() ?? new URLSearchParams();
   const [term, setTerm] = useState(searchParams.get('q') ?? '');
 
   // Keep the box in step with back/forward navigation and filter changes.

@@ -1,13 +1,15 @@
-# Vercel environment — variable names only, NO secret values.
-# Copy into Vercel Dashboard → Project → Settings → Environment Variables (Production).
-# See VERCEL_DEPLOYMENT.md for scoping. Never commit real values.
+# Vercel environment - variable names only, NO secret values.
+# Copy into Vercel Dashboard -> Project -> Settings -> Environment Variables (Production).
+# Single deployment: public site + /api/v1 API + Admin panel are ONE Vercel project.
+# Never commit real values. See VERCEL_FULLSTACK_SETUP.md.
 
-# ── PUBLIC (NEXT_PUBLIC_* — inlined into client JS at build time) ──
+# -- PUBLIC (NEXT_PUBLIC_* - inlined into client JS at build time) ----------------
 # Required. Canonical site origin. Must be https://, no trailing slash.
-# Example: https://football.example.com
+# Drives canonical URLs, robots.txt, sitemaps and the default API base (same origin).
 NEXT_PUBLIC_SITE_URL=
-# Required. Backend API base reachable from browsers.
-# Example: https://api-football.example.com
+# Optional. Browser-visible API base. Leave EMPTY on Vercel: the API is served
+# by this same deployment, so the browser calls the same origin (/api/v1/...).
+# Only set it if the API is ever moved to another host.
 NEXT_PUBLIC_API_URL=
 # Optional. Defaults to "Football".
 NEXT_PUBLIC_SITE_NAME=
@@ -20,22 +22,38 @@ NEXT_PUBLIC_FEATURE_BOTTOM_NAV=
 # DEV-ONLY. Must be false or UNSET on Vercel production (forced false when NODE_ENV=production).
 NEXT_PUBLIC_ADMIN_BYPASS=
 
-# ── SERVER-ONLY (frontend SSR / route handlers / middleware — never NEXT_PUBLIC_) ──
-# Required in production. Internal API base for server components + /sitemap.xml proxy.
-# Usually same as NEXT_PUBLIC_API_URL. Falls back to it when unset.
+# -- SERVER-ONLY (SSR / route handlers / middleware - never NEXT_PUBLIC_) ---------
+# Optional. Internal API base for server components + the /sitemap.xml proxy.
+# Leave EMPTY on Vercel: defaults to NEXT_PUBLIC_SITE_URL (same origin).
+# Only needed when SSR should call a different host than the public site.
 API_URL=
 
-# ── BACKEND (separately hosted API — NOT on Vercel; listed here for completeness) ──
-# All server-only. Never prefix with NEXT_PUBLIC_. Set on the API host, not Vercel.
-# PORT=
-# NODE_ENV=production
-# SUPABASE_URL=
-# SUPABASE_ANON_KEY=
-# SUPABASE_SERVICE_ROLE_KEY=
-# CORS_ORIGINS=https://<vercel-app-domain>
-# SITE_BASE_URL=https://<vercel-app-domain>
-# SITE_NAME=
-# ADMIN_BYPASS_AUTH=false
-# PROVIDER_BASE_URL= / PROVIDER_API_KEY= / PROVIDER_ENABLED= (required BLOCKERs in prod)
-# PAGINATION_DEFAULT_LIMIT= / PAGINATION_MAX_LIMIT= / RATE_LIMIT_* / CACHE_TTL_* / MEDIA_* / SEO_*
+# -- BACKEND (runs as the /api/v1 serverless function of THIS deployment) --------
+# All server-only. Read inside the Vercel function; never NEXT_PUBLIC_.
+# PORT / NODE_ENV are managed by Vercel - do not set.
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+# Must list the production site origin. Same-origin requests also work when the
+# list only contains the public origin.
+CORS_ORIGINS=
+# Canonical origin used by backend-generated SEO (sitemaps). Same value as
+# NEXT_PUBLIC_SITE_URL in production.
+SITE_BASE_URL=
+SITE_NAME=
+# Must stay false/unset in production (the function refuses to boot otherwise).
+ADMIN_BYPASS_AUTH=false
+# Optional tuning (sane defaults ship in backend/src/config.ts):
+# TRUST_PROXY_HOPS=1
+# PAGINATION_DEFAULT_LIMIT=20
+# PAGINATION_MAX_LIMIT=100
+# RATE_LIMIT_PUBLIC_MAX=120
+# RATE_LIMIT_AUTHED_MAX=600
+# CACHE_TTL_STATIC=300
+# CACHE_TTL_NEWS=60
+# CACHE_TTL_MATCHES=30
+# MEDIA_BUCKET=media
+# MEDIA_MAX_UPLOAD_BYTES=5000000
+# SEO_SITEMAP_MAX_URLS=5000
+# SEO_NEWS_WINDOW_HOURS=48
 # Full template: backend/.env.example (placeholders only).

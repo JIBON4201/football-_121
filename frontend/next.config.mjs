@@ -73,6 +73,12 @@ export default function nextConfig(phase) {
     reactStrictMode: true,
     poweredByHeader: false,
     trailingSlash: false,
+    experimental: {
+      // The API route bridges to the Express app living one directory up
+      // (../backend/src). Next only transpiles files inside the project root
+      // unless this is set; without it the import below fails to resolve.
+      externalDir: true,
+    },
     async headers() {
       return [
         {

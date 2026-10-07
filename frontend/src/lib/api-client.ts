@@ -77,13 +77,17 @@ const DEFAULT_TIMEOUT_MS = 10_000;
 const MAX_RETRIES = 2;
 
 function buildUrl(baseUrl: string, path: string, query?: ApiRequestOptions['query']): string {
-  const url = new URL(`${baseUrl.replace(/\/$/, '')}/api/v1${path.startsWith('/') ? path : `/${path}`}`);
+  const suffix = `/api/v1${path.startsWith('/') ? path : `/${path}`}`;
+  // An empty base means "same origin as the current request" (the API is
+  // served by this same deployment), which keeps production off localhost.
+  const url = new URL(baseUrl ? `${baseUrl.replace(/\/$/, '')}${suffix}` : suffix, 'http://internal.invalid');
   if (query) {
     for (const [key, value] of Object.entries(query)) {
       if (value !== undefined) url.searchParams.set(key, String(value));
     }
   }
-  return url.toString();
+  const absolute = url.toString();
+  return baseUrl ? absolute : absolute.replace('http://internal.invalid', '');
 }
 
 function sleep(ms: number): Promise<void> {
@@ -229,11 +233,31 @@ export function createApiClient(config: ApiClientConfig) {
   };
 }
 
+/**
+ * Resolve the default API base.
+ *
+ * Order: `API_URL` (server-only, preferred) -> `NEXT_PUBLIC_API_URL` ->
+ * same-origin in production -> `http://localhost:4000` in development only.
+ * The API is a serverless function of this same deployment, so same-origin is
+ * the correct zero-config production default and no request ever leaves for
+ * localhost.
+ *
+ * The browser can call a relative `/api/v1/...` URL, but Node `fetch` (server
+ * components, route handlers, server actions) requires an absolute one, so the
+ * server falls back to the deployment's own public origin.
+ */
+function resolveDefaultBaseUrl(): string {
+  const configured = (typeof process !== 'undefined' && process.env.API_URL) || process.env.NEXT_PUBLIC_API_URL;
+  if (configured) return configured;
+  if (process.env.NODE_ENV !== 'production') return 'http://localhost:4000';
+  if (typeof window !== 'undefined') return '';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (siteUrl) return siteUrl.replace(/\/$/, '');
+  const vercelUrl = process.env.VERCEL_URL;
+  return vercelUrl ? `https://${vercelUrl}` : '';
+}
+
 /** Default client bound to environment config (lazy base URL). */
 export function createDefaultClient(getToken?: ApiClientConfig['getToken']) {
-  const baseUrl =
-    (typeof process !== 'undefined' && process.env.API_URL) ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    'http://localhost:4000';
-  return createApiClient({ baseUrl, getToken });
+  return createApiClient({ baseUrl: resolveDefaultBaseUrl(), getToken });
 }

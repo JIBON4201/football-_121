@@ -45,7 +45,9 @@ export function middleware(request: NextRequest) {
   // the app freezes on its streaming loading skeleton.
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   const isProd = process.env.NODE_ENV === 'production';
-  const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+  // `||` (not `??`): an empty Vercel variable means "unset", not "empty origin".
+  const apiUrl =
+    process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || (isProd ? '' : 'http://localhost:4000');
   const csp = [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isProd ? '' : " 'unsafe-eval'"}`,
