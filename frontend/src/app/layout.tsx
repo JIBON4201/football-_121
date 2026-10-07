@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Analytics } from '@vercel/analytics/next';
 import { siteConfig } from '@/config/site';
 /**
  * Cascade order is deliberate: legacy component styles load first so routes that
@@ -43,7 +42,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body>
         {children}
-        <Analytics />
       </body>
     </html>
   );
