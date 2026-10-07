@@ -4,12 +4,13 @@
 # Never commit real values. See VERCEL_FULLSTACK_SETUP.md.
 
 # -- PUBLIC (NEXT_PUBLIC_* - inlined into client JS at build time) ----------------
-# Required. Canonical site origin. Must be https://, no trailing slash.
-# Drives canonical URLs, robots.txt, sitemaps and the default API base (same origin).
-NEXT_PUBLIC_SITE_URL=
-# Optional. Browser-visible API base. Leave EMPTY on Vercel: the API is served
-# by this same deployment, so the browser calls the same origin (/api/v1/...).
-# Only set it if the API is ever moved to another host.
+# Required. Canonical site origin, must be https://, no trailing slash.
+# Drives canonical URLs, robots.txt, sitemaps and the server-side API base
+# (same origin). Non-sensitive by design - it is the site's public address.
+NEXT_PUBLIC_SITE_URL=https://football-121.vercel.app
+# Optional. Leave EMPTY on Vercel: the API is this same deployment, so the
+# browser calls the same-origin /api/v1/* path. Only set if the API moves
+# to another host.
 NEXT_PUBLIC_API_URL=
 # Optional. Defaults to "Football".
 NEXT_PUBLIC_SITE_NAME=
@@ -24,8 +25,7 @@ NEXT_PUBLIC_ADMIN_BYPASS=
 
 # -- SERVER-ONLY (SSR / route handlers / middleware - never NEXT_PUBLIC_) ---------
 # Optional. Internal API base for server components + the /sitemap.xml proxy.
-# Leave EMPTY on Vercel: defaults to NEXT_PUBLIC_SITE_URL (same origin).
-# Only needed when SSR should call a different host than the public site.
+# Leave EMPTY on Vercel: falls back to NEXT_PUBLIC_SITE_URL (same origin).
 API_URL=
 
 # -- BACKEND (runs as the /api/v1 serverless function of THIS deployment) --------
@@ -34,12 +34,15 @@ API_URL=
 SUPABASE_URL=
 SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-# Must list the production site origin. Same-origin requests also work when the
-# list only contains the public origin.
-CORS_ORIGINS=
-# Canonical origin used by backend-generated SEO (sitemaps). Same value as
-# NEXT_PUBLIC_SITE_URL in production.
-SITE_BASE_URL=
+# Server-only. REQUIRED in production. Same-origin POST/PUT/PATCH still send an
+# Origin header, so the Express allowlist must include the deployment origin.
+# Comma-separate to add preview/custom domains. Never '*'.
+CORS_ORIGINS=https://football-121.vercel.app
+# Server-only. REQUIRED in production. Canonical origin used by backend SEO
+# (sitemap <loc>, robots Host/Sitemap). Same value as NEXT_PUBLIC_SITE_URL.
+# Keep explicit: Vercel's VERCEL_URL is the per-deployment hostname, not the
+# stable canonical origin, so it must NOT replace this.
+SITE_BASE_URL=https://football-121.vercel.app
 SITE_NAME=
 # Must stay false/unset in production (the function refuses to boot otherwise).
 ADMIN_BYPASS_AUTH=false
