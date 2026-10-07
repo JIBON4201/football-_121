@@ -4,9 +4,9 @@
   "private": true,
   "description": "Production frontend foundation for the global football website (Phase 1-ready architecture).",
   "scripts": {
-    "predev": "npm --prefix ../backend install --no-audit --no-fund",
+    "predev": "npm --prefix ../backend install --no-audit --no-fund --include=dev",
     "dev": "next dev",
-    "prebuild": "npm --prefix ../backend install --no-audit --no-fund",
+    "prebuild": "npm --prefix ../backend install --no-audit --no-fund --include=dev",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
