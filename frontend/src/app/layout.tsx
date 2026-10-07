@@ -33,7 +33,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang={siteConfig.locale}>
       <head>
-        <meta name="google-site-verification" content="google653d1da704712ed9" />
+        <meta name="google-site-verification" content="G_VYwkSN2BObG97FIZc_7vhmDzOlb95fvLzAGhxNq3c" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
