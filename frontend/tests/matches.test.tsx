@@ -381,13 +381,10 @@ describe('match listing data layer', () => {
 });
 
 describe('match detail data layer', () => {
-  it('resolves the aggregate payload and a state-aware cache window', async () => {
+  it('resolves the aggregate payload with a conservative default cache window', async () => {
     const seen: Array<{ url: string; init?: unknown }> = [];
     mockApi(
       (pathname) => {
-        if (pathname === '/matches/fc-example-vs-real-sample') {
-          return { status: 200, body: envelope({ ...match(), status: 'live' }) };
-        }
         if (pathname === '/matches/fc-example-vs-real-sample/details') {
           return { status: 200, body: envelope(detailsBody({ match: match({ status: 'live' }) })) };
         }
@@ -399,7 +396,8 @@ describe('match detail data layer', () => {
     expect(result.status).toBe('ready');
     expect(result.details?.homeTeam.slug).toBe('fc-example');
     const detailsCall = seen.find((call) => call.url.endsWith('/details'));
-    expect((detailsCall?.init as { next?: { revalidate?: number } }).next?.revalidate).toBe(MATCH_REVALIDATE.live);
+    // Uses conservative scheduled revalidation; no extra status-hint request
+    expect((detailsCall?.init as { next?: { revalidate?: number } }).next?.revalidate).toBe(MATCH_REVALIDATE.scheduled);
   });
 
   it('maps a missing fixture to not-found and 404s invalid slugs without fetching', async () => {

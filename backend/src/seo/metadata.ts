@@ -25,7 +25,6 @@ export interface SeoMetadata {
 export interface EntitySnapshot {
   title?: string | null;
   excerpt?: string | null;
-  content?: string | null;
   slug?: string | null;
   name?: string | null;
   displayName?: string | null;
@@ -130,7 +129,7 @@ function entityDefaultTitle(entityType: CanonicalEntityType, entity: EntitySnaps
 function entityDefaultDescription(entityType: CanonicalEntityType, entity: EntitySnapshot): string {
   switch (entityType) {
     case 'news':
-      return toPlainText(entity.excerpt || entity.content || '', 160) || config.site.defaultDescription;
+      return toPlainText(entity.excerpt || '', 160) || config.site.defaultDescription;
     case 'match': {
       const when = entity.scheduledAtMatch ? ` Kick-off ${entity.scheduledAtMatch}.` : '';
       const comp = entity.competitionName ? ` ${entity.competitionName}.` : '';
@@ -146,7 +145,7 @@ function entityDefaultDescription(entityType: CanonicalEntityType, entity: Entit
     case 'season':
       return `${entity.name ?? 'Season'} fixtures and standings.`;
     case 'transfer':
-      return toPlainText(entity.excerpt || entity.content || '', 160) || config.site.defaultDescription;
+      return toPlainText(entity.excerpt || '', 160) || config.site.defaultDescription;
     default:
       return config.site.defaultDescription;
   }

@@ -6,7 +6,7 @@ import { cacheable } from '../../lib/cache';
 import { ok } from '../../lib/respond';
 import { CANONICAL_ENTITY_TYPES } from '../../seo/canonical';
 import { validateRequest } from '../../middleware/validateRequest';
-import { seoService, type SeoEntityType } from '../../services/seo.service';
+import { seoService, type SeoEntityType, SeoRequestScope } from '../../services/seo.service';
 
 const router = Router();
 
@@ -21,7 +21,7 @@ router.get(
   cacheable(config.seo.cacheTtl),
   asyncHandler(async (req, res) => {
     const q = req.query as unknown as { type: SeoEntityType; slug: string };
-    ok(res, await seoService.getMetadata(q.type, q.slug));
+    ok(res, await seoService.getMetadata(q.type, q.slug, new SeoRequestScope()));
   }),
 );
 
@@ -31,7 +31,7 @@ router.get(
   cacheable(config.seo.cacheTtl),
   asyncHandler(async (req, res) => {
     const q = req.query as unknown as { type: SeoEntityType; slug: string };
-    ok(res, await seoService.getStructuredData(q.type, q.slug));
+    ok(res, await seoService.getStructuredData(q.type, q.slug, undefined, new SeoRequestScope()));
   }),
 );
 
@@ -41,7 +41,7 @@ router.get(
   cacheable(config.seo.cacheTtl),
   asyncHandler(async (req, res) => {
     const q = req.query as unknown as { type: SeoEntityType; slug: string };
-    ok(res, await seoService.getBreadcrumbs(q.type, q.slug));
+    ok(res, await seoService.getBreadcrumbs(q.type, q.slug, undefined, new SeoRequestScope()));
   }),
 );
 
@@ -63,21 +63,17 @@ router.get(
   cacheable(60),
   asyncHandler(async (req, res) => {
     const q = req.query as unknown as { type: SeoEntityType; slug: string };
-    ok(res, await seoService.validate(q.type, q.slug));
+    ok(res, await seoService.validate(q.type, q.slug, new SeoRequestScope()));
   }),
 );
 
 /**
  * Resolve a previously-published path to its current canonical destination.
  *
- * The redirect table is populated whenever a slug changes, but nothing could
- * serve it: old URLs simply 404'd, which loses accumulated link equity and
- * strands indexed results. The frontend calls this after an article lookup
- * misses and issues a permanent redirect.
- *
- * Returns 200 with `{ redirect: null }` for an unknown path so the caller can
- * distinguish "no redirect recorded" from "redirect service unavailable"
- * (which surfaces as a 5xx).
+ * Redirects are recorded whenever a slug changes, but until now nothing
+ * served them, so an old URL 404'd instead of issuing a 301. Returns null
+ * when no redirect exists, and also when following the chain would loop —
+ * in which case the caller should 404 rather than redirect forever.
  */
 router.get(
   '/redirect',

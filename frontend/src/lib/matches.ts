@@ -581,36 +581,16 @@ export interface MatchDetailResult {
   details: MatchDetails | null;
 }
 
-function revalidateForStatus(status: string | null): number {
-  if (status !== null && isLiveStatus(status)) return MATCH_REVALIDATE.live;
-  if (status === 'finished') return MATCH_REVALIDATE.finished;
-  return MATCH_REVALIDATE.scheduled;
-}
-
-/** The raw fixture row, used to pick the detail cache window. */
-async function fetchStatusHint(slug: string): Promise<string | null> {
-  try {
-    const envelope = await fetchServer<unknown>(`/matches/${slug}`, {
-      revalidate: MATCH_REVALIDATE.live,
-      tags: [`match:${slug}`],
-    });
-    return isRecord(envelope.data) ? asString(envelope.data.status) : null;
-  } catch {
-    return null;
-  }
-}
-
 /**
- * Canonical single-match fetch. Only the aggregate endpoint supplies page
- * content, so the two views can never disagree. A cheap status probe selects
- * the cache window: live fixtures refresh in 30s, settled ones much less often.
+ * Canonical single-match fetch. The aggregate endpoint supplies page content.
+ * Uses a conservative default revalidation; the status from the details response
+ * could be used for finer-grained ISR but requires an extra request we avoid.
  */
 export async function fetchMatchDetail(slug: string, revalidateSeconds?: number): Promise<MatchDetailResult> {
   if (!isValidSlug(slug)) return { status: 'not-found', details: null };
-  const revalidate = revalidateSeconds ?? revalidateForStatus(await fetchStatusHint(slug));
   try {
     const envelope = await fetchServer<unknown>(`/matches/${slug}/details`, {
-      revalidate,
+      revalidate: revalidateSeconds ?? MATCH_REVALIDATE.scheduled,
       tags: [`match-details:${slug}`],
     });
     const details = toMatchDetails(envelope.data);

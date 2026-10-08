@@ -20,7 +20,7 @@ import {
   parseCanonicalPath,
   type CanonicalEntityType,
 } from '../seo/canonical';
-import { entityLinksForArticle, relatedArticles, type LinkTarget } from '../seo/linking';
+import { createArticleLinkContext, entityLinksForArticle, relatedArticles, type ArticleLinkContext, type LinkTarget } from '../seo/linking';
 import {
   resolveMetadata,
   robotsFor,
@@ -60,6 +60,29 @@ interface ResolvedEntity {
   };
 }
 
+/**
+ * Request-scoped memoization for entity resolution.
+ *
+ * Within a single request, `getMetadata`, `getStructuredData`, `getBreadcrumbs`,
+ * and `validate` may all need the same resolved entity. Without memoization,
+ * each call re-reads from the database. This scope deduplicates those reads
+ * so each (entityType, slug) pair is resolved at most once per request.
+ *
+ * No module-level state is used; callers create a scope per request and thread
+ * it through every SEO method that needs it.
+ */
+export class SeoRequestScope {
+  private readonly memo = new Map<string, Promise<ResolvedEntity>>();
+
+  resolve(key: string, loader: () => Promise<ResolvedEntity>): Promise<ResolvedEntity> {
+    const existing = this.memo.get(key);
+    if (existing) return existing;
+    const promise = loader();
+    this.memo.set(key, promise);
+    return promise;
+  }
+}
+
 function absolutizeImage(url: string | null | undefined): string | null {
   if (!url) return null;
   const trimmed = String(url).trim();
@@ -73,7 +96,7 @@ async function customSeoFor(entityType: SeoEntityType, entityId: string, client:
   if (entityType !== 'news') return null;
   const { data } = await client
     .from('seo_metadata')
-    .select('*')
+    .select('meta_title,meta_description,canonical_url,robots_index,robots_follow,og_title,og_description,og_image,twitter_title,twitter_description,twitter_image')
     .eq('entity_type', 'article')
     .eq('entity_id', entityId)
     .maybeSingle();
@@ -92,27 +115,36 @@ function isPublishedArticle(row: Record<string, unknown>): boolean {
   return !Number.isNaN(t) && t <= Date.now();
 }
 
-async function resolveArticle(slug: string, client: DbClient): Promise<ResolvedEntity> {
-  const { data, error } = await client.from('articles').select('*').eq('slug', slug).maybeSingle();
+async function resolveArticle(
+  slug: string,
+  client: DbClient,
+  links?: ArticleLinkContext,
+): Promise<ResolvedEntity> {
+  const { data, error } = await client
+    .from('articles')
+    .select('id,slug,title,excerpt,article_type,status,published_at,updated_at,featured_image_id')
+    .eq('slug', slug)
+    .maybeSingle();
   if (error) throw upstream('Failed to load article');
   const row = (data as Record<string, unknown> | null) ?? null;
   if (!row) throw notFound('Article');
   if (!isPublishedArticle(row)) throw notFound('Article');
   const custom = await customSeoFor('news', String(row.id), client).catch(() => null);
   const image = absolutizeImage((await mediaUrl(row.featured_image_id as string | null, client).catch(() => null)) ?? null);
-  // First linked competition/team for breadcrumb context.
+  // First linked competition/team for breadcrumb context. When the caller shares a
+  // link context, these relation rows are already loaded for the related-content
+  // builders, so the same read serves all three.
+  const linked = await (links ?? createArticleLinkContext(client)).entityIdsFor(String(row.id), ['competition', 'team']);
   let competition: { name: string; slug: string } | null = null;
   let team: { name: string; slug: string } | null = null;
-  const compLinks = await client.from('article_competitions').select('competition_id').eq('article_id', String(row.id)).range(0, 0);
-  const compId = ((compLinks.data as Array<{ competition_id: string }> | null) ?? [])[0]?.competition_id;
+  const compId = linked.competition[0];
   if (compId) {
     const comp = await client.from('competitions').select('name,slug').eq('id', compId).maybeSingle();
     const c = (comp.data as { name?: string; slug?: string } | null) ?? null;
     if (c?.slug) competition = { name: c.name ?? c.slug, slug: c.slug };
   }
   if (!competition) {
-    const teamLinks = await client.from('article_teams').select('team_id').eq('article_id', String(row.id)).range(0, 0);
-    const teamId = ((teamLinks.data as Array<{ team_id: string }> | null) ?? [])[0]?.team_id;
+    const teamId = linked.team[0];
     if (teamId) {
       const t = await client.from('teams').select('name,slug').eq('id', teamId).maybeSingle();
       const teamRow = (t.data as { name?: string; slug?: string } | null) ?? null;
@@ -126,7 +158,6 @@ async function resolveArticle(slug: string, client: DbClient): Promise<ResolvedE
     snapshot: {
       title: (row.title as string) ?? null,
       excerpt: (row.excerpt as string) ?? null,
-      content: (row.content as string) ?? null,
       slug: String(row.slug),
       articleType: (row.article_type as string) ?? null,
       status: (row.status as string) ?? null,
@@ -145,7 +176,24 @@ async function resolveSimple(
   client: DbClient,
 ): Promise<ResolvedEntity> {
   const table = { match: 'matches', team: 'teams', player: 'players', competition: 'competitions' }[entityType];
-  const { data, error } = await client.from(table).select('*').eq('slug', slug).maybeSingle();
+  let columns: string;
+  switch (entityType) {
+    case 'team':
+      columns = 'id,slug,name,short_name,logo_url,is_active';
+      break;
+    case 'player':
+      columns = 'id,slug,display_name,photo_url,status';
+      break;
+    case 'competition':
+      columns = 'id,slug,name,short_name,logo_url,is_active';
+      break;
+    case 'match':
+      columns = 'id,slug,status,scheduled_at,competition_id,home_team_id,away_team_id,venue_id,home_score,away_score';
+      break;
+    default:
+      columns = '*';
+  }
+  const { data, error } = await client.from(table).select(columns).eq('slug', slug).maybeSingle();
   if (error) throw upstream(`Failed to load ${entityType}`);
   const row = (data as Record<string, unknown> | null) ?? null;
   if (!row) throw notFound(entityType);
@@ -197,11 +245,11 @@ async function resolveSeasonOrTransfer(
 ): Promise<ResolvedEntity> {
   const table = entityType === 'season' ? 'seasons' : 'transfers';
   let row: Record<string, unknown> | null = null;
-  const byId = await client.from(table).select('*').eq('id', idOrSlug).maybeSingle();
+  const byId = await client.from(table).select('id,name,slug,status,title,display_name').eq('id', idOrSlug).maybeSingle();
   row = (byId.data as Record<string, unknown> | null) ?? null;
   if (!row && isValidSlug(idOrSlug)) {
     try {
-      const bySlug = await client.from(table).select('*').eq('slug', idOrSlug).maybeSingle();
+      const bySlug = await client.from(table).select('id,name,slug,status,title,display_name').eq('slug', idOrSlug).maybeSingle();
       row = (bySlug.data as Record<string, unknown> | null) ?? null;
     } catch {
       row = null;
@@ -223,8 +271,27 @@ async function resolveSeasonOrTransfer(
   return { entityType, slug, row, snapshot, customSeo: null, image: null, context: {} };
 }
 
-async function resolveEntity(entityType: SeoEntityType, slug: string, client: DbClient): Promise<ResolvedEntity> {
-  if (entityType === 'news') return resolveArticle(slug, client);
+async function resolveEntity(
+  entityType: SeoEntityType,
+  slug: string,
+  client: DbClient,
+  links?: ArticleLinkContext,
+  scope?: SeoRequestScope,
+): Promise<ResolvedEntity> {
+  const key = `${entityType}:${slug}`;
+  if (scope) {
+    return scope.resolve(key, () => resolveEntityUncached(entityType, slug, client, links));
+  }
+  return resolveEntityUncached(entityType, slug, client, links);
+}
+
+async function resolveEntityUncached(
+  entityType: SeoEntityType,
+  slug: string,
+  client: DbClient,
+  links?: ArticleLinkContext,
+): Promise<ResolvedEntity> {
+  if (entityType === 'news') return resolveArticle(slug, client, links);
   if (entityType === 'season' || entityType === 'transfer') return resolveSeasonOrTransfer(entityType, slug, client);
   return resolveSimple(entityType, slug, client);
 }
@@ -240,14 +307,14 @@ async function guarded<T>(loader: () => Promise<T>, message: string): Promise<T>
 }
 
 export const seoService = {
-  async getMetadata(entityType: SeoEntityType, slug: string): Promise<SeoMetadata> {
+  async getMetadata(entityType: SeoEntityType, slug: string, scope?: SeoRequestScope): Promise<SeoMetadata> {
     return guarded(
       () =>
         cached(SEO_NS, { kind: 'metadata', type: entityType, slug }, SEO_TTL, async () => {
           if (!(CANONICAL_ENTITY_TYPES as readonly string[]).includes(entityType)) throw notFound('Content');
           if (!isValidSlug(slug)) throw notFound('Content');
           const client = serviceClient();
-          const resolved = await resolveEntity(entityType, slug, client);
+          const resolved = await resolveEntity(entityType, slug, client, undefined, scope);
           const robots = robotsFor(entityType, resolved.snapshot);
           return resolveMetadata(entityType, resolved.slug, resolved.snapshot, resolved.customSeo, robots);
         }),
@@ -255,38 +322,38 @@ export const seoService = {
     );
   },
 
-  async getStructuredData(entityType: SeoEntityType, slug: string): Promise<JsonLd[]> {
+  async getStructuredData(entityType: SeoEntityType, slug: string, resolved?: ResolvedEntity, scope?: SeoRequestScope): Promise<JsonLd[]> {
     return guarded(
       () =>
         cached(SEO_NS, { kind: 'structured', type: entityType, slug }, SEO_TTL, async () => {
           const client = serviceClient();
-          const resolved = await resolveEntity(entityType, slug, client);
-          const canonical = absoluteCanonicalUrl(entityType, resolved.slug);
+          const entity = resolved ?? await resolveEntity(entityType, slug, client, undefined, scope);
+          const canonical = absoluteCanonicalUrl(entityType, entity.slug);
           const out: JsonLd[] = [organizationJsonLd(), websiteJsonLd()];
           if (entityType === 'news') {
             const node = newsJsonLd({
               canonical,
-              title: (resolved.row.title as string) ?? null,
-              excerpt: (resolved.row.excerpt as string) ?? null,
-              publishedAt: (resolved.row.published_at as string) ?? null,
-              updatedAt: (resolved.row.updated_at as string) ?? null,
-              image: resolved.image,
-              articleType: (resolved.row.article_type as string) ?? null,
+              title: (entity.row.title as string) ?? null,
+              excerpt: (entity.row.excerpt as string) ?? null,
+              publishedAt: (entity.row.published_at as string) ?? null,
+              updatedAt: (entity.row.updated_at as string) ?? null,
+              image: entity.image,
+              articleType: (entity.row.article_type as string) ?? null,
             });
             if (node) out.push(node);
           } else if (entityType === 'team') {
-            const node = teamJsonLd({ canonical, name: (resolved.row.name as string) ?? null, logo: resolved.image });
+            const node = teamJsonLd({ canonical, name: (entity.row.name as string) ?? null, logo: entity.image });
             if (node) out.push(node);
           } else if (entityType === 'player') {
             const node = personJsonLd({
               canonical,
-              name: (resolved.row.display_name as string) ?? null,
-              image: resolved.image,
-              teamName: resolved.context.team?.name ?? null,
+              name: (entity.row.display_name as string) ?? null,
+              image: entity.image,
+              teamName: entity.context.team?.name ?? null,
             });
             if (node) out.push(node);
           } else if (entityType === 'match') {
-            const row = resolved.row;
+            const row = entity.row;
             let venueName: string | null = null;
             if (row.venue_id) {
               try {
@@ -298,9 +365,9 @@ export const seoService = {
             }
             const node = matchJsonLd({
               canonical,
-              homeName: resolved.snapshot.homeName ?? null,
-              awayName: resolved.snapshot.awayName ?? null,
-              competitionName: resolved.snapshot.competitionName ?? null,
+              homeName: entity.snapshot.homeName ?? null,
+              awayName: entity.snapshot.awayName ?? null,
+              competitionName: entity.snapshot.competitionName ?? null,
               venueName,
               scheduledAt: (row.scheduled_at as string) ?? null,
               status: (row.status as string) ?? null,
@@ -309,7 +376,7 @@ export const seoService = {
             });
             if (node) out.push(node);
           }
-          const crumbs = await this.getBreadcrumbs(entityType, slug).catch(() => []);
+          const crumbs = await this.getBreadcrumbs(entityType, slug, entity).catch(() => []);
           const crumbNode = breadcrumbJsonLd(crumbs);
           if (crumbNode) out.push(crumbNode);
           for (const node of out) {
@@ -326,36 +393,36 @@ export const seoService = {
     );
   },
 
-  async getBreadcrumbs(entityType: SeoEntityType, slug: string): Promise<BreadcrumbItem[]> {
+  async getBreadcrumbs(entityType: SeoEntityType, slug: string, resolved?: ResolvedEntity, scope?: SeoRequestScope): Promise<BreadcrumbItem[]> {
     return guarded(
       () =>
         cached(SEO_NS, { kind: 'breadcrumbs', type: entityType, slug }, SEO_TTL, async () => {
           const client = serviceClient();
-          const resolved = await resolveEntity(entityType, slug, client);
-          const row = resolved.row;
+          const entity = resolved ?? await resolveEntity(entityType, slug, client, undefined, scope);
+          const row = entity.row;
           switch (entityType) {
             case 'news': {
-              const ctx = resolved.context.competition
-                ? { name: resolved.context.competition.name, type: 'competition' as const, slug: resolved.context.competition.slug }
-                : resolved.context.team
-                  ? { name: resolved.context.team.name, type: 'team' as const, slug: resolved.context.team.slug }
+              const ctx = entity.context.competition
+                ? { name: entity.context.competition.name, type: 'competition' as const, slug: entity.context.competition.slug }
+                : entity.context.team
+                  ? { name: entity.context.team.name, type: 'team' as const, slug: entity.context.team.slug }
                   : null;
-              return breadcrumbsForNews(String(row.title ?? slug), resolved.slug, ctx);
+              return breadcrumbsForNews(String(row.title ?? slug), entity.slug, ctx);
             }
             case 'match': {
-              const label = resolved.snapshot.homeName && resolved.snapshot.awayName
-                ? `${resolved.snapshot.homeName} vs ${resolved.snapshot.awayName}`
+              const label = entity.snapshot.homeName && entity.snapshot.awayName
+                ? `${entity.snapshot.homeName} vs ${entity.snapshot.awayName}`
                 : String((row.slug as string) ?? slug);
-              return breadcrumbsForMatch(label, resolved.slug, resolved.context.competition ?? null);
+              return breadcrumbsForMatch(label, entity.slug, entity.context.competition ?? null);
             }
             case 'team':
-              return breadcrumbsForTeam(String(row.name ?? slug), resolved.slug, resolved.context.competition ?? null);
+              return breadcrumbsForTeam(String(row.name ?? slug), entity.slug, entity.context.competition ?? null);
             case 'player':
-              return breadcrumbsForPlayer(String(row.display_name ?? row.name ?? slug), resolved.slug, resolved.context.team ?? null);
+              return breadcrumbsForPlayer(String(row.display_name ?? row.name ?? slug), entity.slug, entity.context.team ?? null);
             case 'competition':
-              return breadcrumbsForCompetition(String(row.name ?? slug), resolved.slug);
+              return breadcrumbsForCompetition(String(row.name ?? slug), entity.slug);
             default:
-              return [{ name: 'Home', url: `${config.site.baseUrl}/` }, { name: String((row.name as string) ?? (row.title as string) ?? slug), url: absoluteCanonicalUrl(entityType, resolved.slug) }];
+              return [{ name: 'Home', url: `${config.site.baseUrl}/` }, { name: String((row.name as string) ?? (row.title as string) ?? slug), url: absoluteCanonicalUrl(entityType, entity.slug) }];
           }
         }),
       'SEO service unavailable',
@@ -366,17 +433,20 @@ export const seoService = {
     return guarded(async () => {
       if (entityType !== 'news') return { related: [], entities: [] };
       const client = serviceClient();
-      const resolved = await resolveEntity('news', slug, client);
+      // One request-scoped context: the article's relation rows are read once and
+      // shared by the resolver and both link builders, so nothing is resolved twice.
+      const links = createArticleLinkContext(client);
+      const resolved = await resolveEntity('news', slug, client, links);
       const [related, entities] = await Promise.all([
-        relatedArticles(String(resolved.row.id), Math.min(Math.max(limit, 1), 20), client),
-        entityLinksForArticle(String(resolved.row.id), resolved.slug, client),
+        relatedArticles(String(resolved.row.id), Math.min(Math.max(limit, 1), 20), client, links),
+        entityLinksForArticle(String(resolved.row.id), resolved.slug, client, links),
       ]);
       return { related, entities };
     }, 'SEO service unavailable');
   },
 
   /** Validation suite: duplicates, slugs, metadata, sitemap, JSON-LD, loops. */
-  async validate(entityType: SeoEntityType, slug: string): Promise<{
+  async validate(entityType: SeoEntityType, slug: string, scope?: SeoRequestScope): Promise<{
     entityType: string;
     slug: string;
     canonical: string | null;
@@ -398,14 +468,14 @@ export const seoService = {
         push('canonical-valid', true);
       } catch {
         push('canonical-valid', false, 'invalid canonical');
-        return { entityType, slug, canonical: null, indexable: false, checks };
+        return { entityType, slug, canonical, indexable: false, checks };
       }
       const parsed = parseCanonicalPath(new URL(canonical).pathname);
       push('canonical-roundtrip', parsed?.entityType === entityType && parsed?.slug === slug);
       const client = serviceClient();
       let resolved: ResolvedEntity | null = null;
       try {
-        resolved = await resolveEntity(entityType, slug, client);
+        resolved = await resolveEntity(entityType, slug, client, undefined, scope);
         push('entity-found', true);
         push('is-public', true);
       } catch {
@@ -434,9 +504,9 @@ export const seoService = {
       }
       // Sitemap consistency: indexable content must be sitemap-eligible.
       push('sitemap-eligible', indexable, indexable ? undefined : 'non-indexable excluded by design');
-      // JSON-LD validity.
+      // JSON-LD validity - pass the already-resolved entity to avoid re-resolution.
       try {
-        const structured = await this.getStructuredData(entityType, slug);
+        const structured = await this.getStructuredData(entityType, slug, resolved, scope);
         assertValidJsonLd(structured);
         push('jsonld-valid', true);
       } catch {
