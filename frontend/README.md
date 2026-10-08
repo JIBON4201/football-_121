@@ -1,4 +1,4 @@
-# Football Web — frontend foundation (Step 29)
+# omincalc Web — frontend foundation (Step 29)
 
 Production frontend architecture for the global football website: Next.js 14
 App Router, mobile-first, SEO-driven. Phase 1/2/3-ready without a rewrite.

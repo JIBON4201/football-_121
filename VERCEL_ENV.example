@@ -7,13 +7,13 @@
 # Required. Canonical site origin, must be https://, no trailing slash.
 # Drives canonical URLs, robots.txt, sitemaps and the server-side API base
 # (same origin). Non-sensitive by design - it is the site's public address.
-NEXT_PUBLIC_SITE_URL=https://football-121.vercel.app
+NEXT_PUBLIC_SITE_URL=https://omincalc.xyz
 # Optional. Leave EMPTY on Vercel: the API is this same deployment, so the
 # browser calls the same-origin /api/v1/* path. Only set if the API moves
 # to another host.
 NEXT_PUBLIC_API_URL=
-# Optional. Defaults to "Football".
-NEXT_PUBLIC_SITE_NAME=
+# Optional. Defaults to "omincalc".
+NEXT_PUBLIC_SITE_NAME=omincalc
 # Optional feature flags (defaults noted in frontend/.env.example).
 NEXT_PUBLIC_FEATURE_LIVE=
 NEXT_PUBLIC_FEATURE_BREAKING=
@@ -37,13 +37,13 @@ SUPABASE_SERVICE_ROLE_KEY=
 # Server-only. REQUIRED in production. Same-origin POST/PUT/PATCH still send an
 # Origin header, so the Express allowlist must include the deployment origin.
 # Comma-separate to add preview/custom domains. Never '*'.
-CORS_ORIGINS=https://football-121.vercel.app
+CORS_ORIGINS=https://omincalc.xyz
 # Server-only. REQUIRED in production. Canonical origin used by backend SEO
 # (sitemap <loc>, robots Host/Sitemap). Same value as NEXT_PUBLIC_SITE_URL.
 # Keep explicit: Vercel's VERCEL_URL is the per-deployment hostname, not the
 # stable canonical origin, so it must NOT replace this.
-SITE_BASE_URL=https://football-121.vercel.app
-SITE_NAME=
+SITE_BASE_URL=https://omincalc.xyz
+SITE_NAME=omincalc
 # Must stay false/unset in production (the function refuses to boot otherwise).
 ADMIN_BYPASS_AUTH=false
 # Optional tuning (sane defaults ship in backend/src/config.ts):

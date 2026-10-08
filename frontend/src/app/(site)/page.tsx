@@ -63,7 +63,7 @@ export default async function HomePage() {
             '@type': 'Organization',
             name: siteConfig.name,
             url: siteConfig.siteUrl,
-            logo: `${siteConfig.siteUrl}/brand-mark.svg`,
+            logo: `${siteConfig.siteUrl}/logo.png`,
           },
         ]}
       />

@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   title: { default: siteConfig.name, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
   metadataBase: new URL(siteConfig.siteUrl),
+  icons: {
+    icon: '/logo.png',
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export const viewport: Viewport = {

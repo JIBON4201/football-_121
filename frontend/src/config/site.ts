@@ -25,7 +25,7 @@ function apiBase(): string {
 }
 
 export const siteConfig = {
-  name: publicEnv('NEXT_PUBLIC_SITE_NAME', 'Football'),
+  name: publicEnv('NEXT_PUBLIC_SITE_NAME', 'omincalc'),
   /** Canonical public origin, no trailing slash. */
   siteUrl,
   description: 'Football news, fixtures, results, teams, players and competitions.',
