@@ -57,10 +57,55 @@ function clampLimit(limit: number): number {
   return Math.min(Math.floor(limit), MAX_RELATED_ROWS);
 }
 
-function clampIds(ids: readonly string[]): string[] {
+/**
+ * Canonical uuid shape.
+ *
+ * This exists because of a real production failure mode: callers derive id
+ * lists from nullable foreign keys with `String(row.some_uuid)`, and
+ * `String(null)` is the four-character *truthy* string `"null"`. PostgREST then
+ * serialises it into the request as `id=in.(null)` and Postgres rejects the
+ * entire query with `22P02 invalid input syntax for type uuid: "null"` — taking
+ * down the whole endpoint, not just the one row.
+ *
+ * Because `"null"` is truthy, a downstream `.filter(Boolean)` or falsy check
+ * does not catch it. Only a shape check does.
+ */
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Collect the well-formed uuids from a list of raw column values.
+ *
+ * Replaces `.map((row) => String(row.some_uuid))` at call sites, which is the
+ * direct cause of the 22P02 failures. SQL NULL, the strings `"null"` /
+ * `"undefined"`, and any other non-uuid value are dropped. Duplicates are
+ * removed and input order is preserved.
+ */
+export function uuidList(values: readonly unknown[]): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const value of values) {
+    if (typeof value !== 'string') continue;
+    const id = value.trim();
+    if (!UUID_PATTERN.test(id) || seen.has(id)) continue;
+    seen.add(id);
+    out.push(id);
+  }
+  return out;
+}
+
+/**
+ * De-duplicate and bound an id list.
+ *
+ * Only strings are considered: `listWhereIn` is also used for slug and country
+ * code lookups, so shape is validated by the caller (`uuidList`) rather than
+ * here.
+ */
+function clampIds(ids: readonly unknown[]): string[] {
   const unique: string[] = [];
   const seen = new Set<string>();
-  for (const id of ids) {
+  for (const raw of ids) {
+    if (typeof raw !== 'string') continue;
+    const id = raw.trim();
     if (!id || seen.has(id)) continue;
     seen.add(id);
     unique.push(id);
@@ -76,11 +121,14 @@ export async function listByIds(
   client: DbClient,
   table: string,
   columns: string,
-  ids: readonly string[],
+  ids: readonly unknown[],
   order: OrderSpec | undefined,
   limit: number,
 ): Promise<Record<string, unknown>[]> {
-  const unique = clampIds(ids);
+  // `id` is always the uuid primary key here, so this is the last line of
+  // defence: a value that is not a well-formed uuid is dropped rather than
+  // handed to Postgres, which would reject the whole query with 22P02.
+  const unique = clampIds(uuidList(ids));
   if (unique.length === 0) return [];
   let query = client.from(table).select(columns).in('id', unique);
   if (order) query = query.order(order.col, { ascending: order.asc });
@@ -98,7 +146,7 @@ export async function listWhereIn(
   table: string,
   columns: string,
   column: string,
-  values: readonly string[],
+  values: readonly unknown[],
   order: OrderSpec | undefined,
   limit: number,
 ): Promise<Record<string, unknown>[]> {

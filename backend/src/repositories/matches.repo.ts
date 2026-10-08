@@ -13,6 +13,7 @@ import {
   listByIds,
   listWhereIn,
   maybeById,
+  uuidList,
 } from './related';
 
 export const MATCH_COLUMNS =
@@ -31,7 +32,26 @@ export interface MatchListInput {
   from?: string;
   to?: string;
   sort?: 'asc' | 'desc';
+  /**
+   * `card` returns rows pre-enriched with the entities a match card renders
+   * (home/away team, competition, venue, minimal events) so list surfaces
+   * never need the heavyweight per-match details endpoint.
+   */
+  include?: 'card';
 }
+
+/** Event types a card actually surfaces. */
+export const CARD_EVENT_TYPES = ['goal', 'own_goal', 'penalty_goal', 'yellow_card', 'red_card'] as const;
+
+/**
+ * Per-match cap on card events. The card UI never renders more than this many
+ * (`CARD_EVENT_LIMIT` in the frontend), so rows above it are pure payload.
+ */
+export const CARD_EVENT_LIMIT = 6;
+
+const CARD_EVENT_COLUMNS = 'id,match_id,team_id,type,minute,extra_minute';
+/** Shared ceiling on the batched event read; covers every row on a full page. */
+const CARD_EVENT_LOOKBACK = 400;
 
 async function resolveId(client: DbClient, table: string, slug: string): Promise<string | null> {
   const { data, error } = await client.from(table).select('id').eq('slug', slug).maybeSingle();
@@ -84,7 +104,55 @@ export async function listMatches(input: MatchListInput) {
     .range(page.from, page.to);
 
   if (error) throw upstream('Failed to load matches');
-  return { rows: (data as unknown[]) ?? [], pagination: buildPagination(count ?? 0, page) };
+  const rows = (data as unknown[]) ?? [];
+  if (input.include !== 'card') return { rows, pagination: buildPagination(count ?? 0, page) };
+  const enriched = await attachCardRelations(client, rows as Record<string, unknown>[]);
+  return { rows: enriched, pagination: buildPagination(count ?? 0, page) };
+}
+
+/**
+ * Batch-resolve the entities a match card renders, plus the few event types a
+ * card displays. Four queries regardless of row count — never the per-match
+ * details fan-out.
+ */
+async function attachCardRelations(
+  client: DbClient,
+  rows: Record<string, unknown>[],
+): Promise<Record<string, unknown>[]> {
+  if (rows.length === 0) return rows;
+  const teamIds = uuidList(rows.flatMap((row) => [row.home_team_id, row.away_team_id]));
+  const competitionIds = uuidList(rows.map((row) => row.competition_id));
+  const venueIds = uuidList(rows.map((row) => row.venue_id));
+  const matchIds = uuidList(rows.map((row) => row.id));
+  const [teams, competitions, venues, rawEvents] = await Promise.all([
+    listByIds(client, 'teams', TEAM_COLUMNS, teamIds, undefined, 100),
+    listByIds(client, 'competitions', COMPETITION_COLUMNS, competitionIds, undefined, 100),
+    listByIds(client, 'venues', VENUE_COLUMNS, venueIds, undefined, 100),
+    listWhereIn(client, 'match_events', CARD_EVENT_COLUMNS, 'match_id', matchIds, { col: 'minute', asc: true }, CARD_EVENT_LOOKBACK),
+  ]);
+  const teamIndex = indexBy(teams);
+  const competitionIndex = indexBy(competitions);
+  const venueIndex = indexBy(venues);
+  const eventsByMatch = new Map<string, Record<string, unknown>[]>();
+  const wanted = new Set<string>(CARD_EVENT_TYPES);
+  // `rawEvents` is ordered by minute, so each per-match list arrives in
+  // chronological order and the first CARD_EVENT_LIMIT are the ones a card shows.
+  for (const event of rawEvents) {
+    if (!wanted.has(String(event.type))) continue;
+    const key = String(event.match_id);
+    const list = eventsByMatch.get(key) ?? [];
+    if (list.length >= CARD_EVENT_LIMIT) continue;
+    list.push(event);
+    eventsByMatch.set(key, list);
+  }
+  return rows.map((row) => ({
+    ...row,
+    homeTeam: teamIndex.get(String(row.home_team_id)) ?? null,
+    awayTeam: teamIndex.get(String(row.away_team_id)) ?? null,
+    competition: competitionIndex.get(String(row.competition_id)) ?? null,
+    venue: venueIndex.get(String(row.venue_id)) ?? null,
+    events: eventsByMatch.get(String(row.id)) ?? [],
+  }));
 }
 
 export async function getMatchBySlug(slug: string) {
@@ -157,7 +225,9 @@ export async function getMatchDetails(slug: string): Promise<MatchDetails> {
       listBy(client, 'match_player_statistics', PLAYER_STAT_COLUMNS, 'match_id', matchId, undefined, 100),
     ]);
 
-  const lineupIds = lineups.map((lineup) => String(lineup.id));
+  // `lineup.id` is a NOT NULL primary key, so these always are uuids; the
+  // nullable foreign keys (`player_id`) below need `uuidList` to drop NULLs.
+  const lineupIds = [...new Set(lineups.map((lineup) => String(lineup.id)))];
   const lineupPlayers = await listWhereIn(
     client,
     'match_lineup_players',
@@ -167,12 +237,10 @@ export async function getMatchDetails(slug: string): Promise<MatchDetails> {
     { col: 'shirt_number', asc: true },
     60,
   );
-  const playerIds = [
-    ...new Set([
-      ...lineupPlayers.map((p) => String(p.player_id)),
-      ...playerStats.map((s) => String(s.player_id)),
-    ]),
-  ];
+  const playerIds = uuidList([
+    ...lineupPlayers.map((p) => p.player_id),
+    ...playerStats.map((s) => s.player_id),
+  ]);
   const playerIndex = indexBy(
     await listByIds(client, 'players', PLAYER_COLUMNS, playerIds, undefined, 100),
   );

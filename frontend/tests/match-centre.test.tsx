@@ -68,6 +68,18 @@ function details(overrides: Partial<MatchDetails> = {}): MatchDetails {
   };
 }
 
+/** A list row as served with `include=card`. */
+function cardRow(overrides: Partial<Match> = {}, events: MatchEvent[] = []): Record<string, unknown> {
+  return {
+    ...matchRow(overrides),
+    homeTeam: team(),
+    awayTeam: awayTeam(),
+    competition: competition(),
+    venue: null,
+    events,
+  };
+}
+
 function jsonResponse(status: number, body: unknown) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 }
@@ -200,11 +212,9 @@ describe('match feed loading', () => {
     expect(empty.matches).toEqual([]);
   });
 
-  it('enriches rows through the details endpoint and keeps the rest on failure', async () => {
+  it('keeps card rows and drops ones whose teams cannot be resolved', async () => {
     mockMatchApi((pathname) => {
-      if (pathname === '/matches/finished') return { status: 200, body: listBody([matchRow(), matchRow({ id: 'm2', slug: 'broken-v-nobody' })]) };
-      if (pathname === '/matches/northbridge-v-eastvale-2026-09-12/details') return { status: 200, body: { data: details({ events: [event()] }), requestId: 'r' } };
-      if (pathname === '/matches/broken-v-nobody/details') return { status: 404, body: { error: { code: 'NOT_FOUND', message: 'gone' } } };
+      if (pathname === '/matches/finished') return { status: 200, body: listBody([cardRow({}, [event()]), matchRow({ id: 'm2', slug: 'broken-v-nobody' })]) };
       return null;
     });
     const feed = await loadMatchFeed('finished', { limit: 10, revalidateSeconds: 300, tag: 'matches:results' });
@@ -224,9 +234,8 @@ describe('match centre page data', () => {
   it('live asks only for the two match feeds it renders', async () => {
     const seen: string[] = [];
     mockMatchApi((pathname) => {
-      if (pathname === '/matches/live') return { status: 200, body: listBody([matchRow({ status: 'live' })]) };
-      if (pathname === '/matches/upcoming') return { status: 200, body: listBody([matchRow({ status: 'scheduled', slug: 'upcoming-v-x' })]) };
-      if (pathname.endsWith('/details')) return { status: 200, body: { data: details({ match: matchRow() }), requestId: 'r' } };
+      if (pathname === '/matches/live') return { status: 200, body: listBody([cardRow({ status: 'live' })]) };
+      if (pathname === '/matches/upcoming') return { status: 200, body: listBody([cardRow({ status: 'scheduled', slug: 'upcoming-v-x' })]) };
       return null;
     }, seen);
     const data = await getLivePageData();
@@ -244,9 +253,8 @@ describe('match centre page data', () => {
     const seen: string[] = [];
     mockMatchApi((pathname) => {
       if (pathname === '/matches/live') return { status: 200, body: listBody([]) };
-      if (pathname === '/matches/upcoming') return { status: 200, body: listBody([matchRow({ status: 'scheduled' })]) };
-      if (pathname === '/matches/finished') return { status: 200, body: listBody([matchRow()]) };
-      if (pathname.endsWith('/details')) return { status: 200, body: { data: details(), requestId: 'r' } };
+      if (pathname === '/matches/upcoming') return { status: 200, body: listBody([cardRow({ status: 'scheduled' })]) };
+      if (pathname === '/matches/finished') return { status: 200, body: listBody([cardRow()]) };
       return null;
     }, seen);
     const data = await getMatchCentreData();

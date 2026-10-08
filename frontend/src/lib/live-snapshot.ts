@@ -3,10 +3,10 @@ import { fetchMatchList, type MatchFilters, type MatchListItem } from '@/lib/mat
 /**
  * Server-side live snapshot.
  *
- * `fetchMatchList` already narrows and enriches rows through one bounded,
- * parallel fan-out, so this is a single request plus that internal fan-out. A
- * fixture whose teams cannot be resolved is dropped upstream rather than
- * rendered with a placeholder name.
+ * `fetchMatchList` requests the backend's `include=card` list shape, so the
+ * snapshot carries resolved teams, competition and venue without any
+ * per-match details fan-out. A fixture whose teams cannot be resolved is
+ * dropped upstream rather than rendered with a placeholder name.
  *
  * The page is server-rendered from this snapshot so the first paint is
  * meaningful without JavaScript; `LiveFeed` then keeps it current in the

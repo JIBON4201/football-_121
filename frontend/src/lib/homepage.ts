@@ -29,9 +29,7 @@ export const HOMEPAGE_REVALIDATE = {
   entities: 3600,
 } as const;
 
-/** Cap on per-match details fan-out so enrichment stays bounded. */
-export const MAX_MATCH_DETAILS_FANOUT = 12;
-
+/** Sections degrade independently and load from the card-shaped list feed. */
 export type SectionStatus = 'ready' | 'empty' | 'error';
 
 export interface SectionData<T> {
@@ -98,55 +96,29 @@ function asCompetition(value: unknown): Competition | null {
 }
 
 /**
- * Attach display entities to raw matches. A match is kept only when both
- * teams resolve — nameless fixtures are dropped, never fabricated.
+ * Narrow a card-shaped list row (`/matches/*?include=card`) into an EnrichedMatch.
+ * A match is kept only when both teams resolve — nameless fixtures are dropped.
  */
-export function attachMatchDetails(
-  matches: Match[],
-  detailsBySlug: Map<string, { homeTeam: unknown; awayTeam: unknown; competition: unknown; venue: unknown }>,
-): EnrichedMatch[] {
-  const enriched: EnrichedMatch[] = [];
-  for (const match of matches) {
-    const details = detailsBySlug.get(match.slug);
-    const homeTeam = asTeam(details?.homeTeam);
-    const awayTeam = asTeam(details?.awayTeam);
-    if (!homeTeam || !awayTeam) continue;
-    const competition = asCompetition(details?.competition);
-    const venue = details?.venue;
-    enriched.push({
-      match,
-      homeTeam,
-      awayTeam,
-      competition,
-      venueName: isRecord(venue) && typeof venue.name === 'string' ? venue.name : null,
-    });
-  }
-  return enriched;
+export function toEnrichedMatch(value: unknown): EnrichedMatch | null {
+  if (!isRecord(value)) return null;
+  const match = value as unknown as Match;
+  if (typeof match.slug !== 'string' || typeof match.status !== 'string') return null;
+  const homeTeam = asTeam(value.homeTeam);
+  const awayTeam = asTeam(value.awayTeam);
+  if (!homeTeam || !awayTeam) return null;
+  const competition = asCompetition(value.competition);
+  const venue = value.venue;
+  return {
+    match,
+    homeTeam,
+    awayTeam,
+    competition,
+    venueName: isRecord(venue) && typeof venue.name === 'string' ? venue.name : null,
+  };
 }
 
-async function enrichMatches(matches: Match[], revalidate: number): Promise<EnrichedMatch[]> {
-  const capped = matches.slice(0, MAX_MATCH_DETAILS_FANOUT);
-  const settled = await Promise.allSettled(
-    capped.map(async (match) => {
-      const envelope = await homepageClient().get<{
-        homeTeam: unknown;
-        awayTeam: unknown;
-        competition: unknown;
-        venue: unknown;
-      }>(`/matches/${match.slug}/details`, {
-        next: { revalidate, tags: ['homepage:matches'] },
-        timeoutMs: 5000,
-      });
-      return { slug: match.slug, details: envelope.data };
-    }),
-  );
-  const bySlug = new Map<string, { homeTeam: unknown; awayTeam: unknown; competition: unknown; venue: unknown }>();
-  for (const result of settled) {
-    if (result.status === 'fulfilled' && result.value.details) {
-      bySlug.set(result.value.slug, result.value.details);
-    }
-  }
-  return attachMatchDetails(capped, bySlug);
+export function toEnrichedMatches(values: unknown[]): EnrichedMatch[] {
+  return values.map(toEnrichedMatch).filter((item): item is EnrichedMatch => item !== null);
 }
 
 function toEnrichedSection(matches: Match[], enriched: EnrichedMatch[], listStatus: SectionStatus): SectionData<EnrichedMatch> {
@@ -205,13 +177,13 @@ export async function loadHomepage(): Promise<HomepageData> {
 
 /** Individual section loaders (used by streaming async sections). */
 export async function loadLiveMatches(): Promise<SectionData<EnrichedMatch>> {
-  const list = await fetchList<Match>('/matches/live', { limit: HOMEPAGE_LIMITS.live }, HOMEPAGE_REVALIDATE.live, 'homepage:live');
-  return toEnrichedSection(list.items, await enrichMatches(list.items, HOMEPAGE_REVALIDATE.live), list.status);
+  const list = await fetchList<unknown>('/matches/live', { limit: HOMEPAGE_LIMITS.live, include: 'card' }, HOMEPAGE_REVALIDATE.live, 'homepage:live');
+  return toEnrichedSection(list.items as Match[], toEnrichedMatches(list.items), list.status);
 }
 
 export async function loadUpcomingMatches(): Promise<SectionData<EnrichedMatch>> {
-  const list = await fetchList<Match>('/matches/upcoming', { limit: HOMEPAGE_LIMITS.upcoming }, HOMEPAGE_REVALIDATE.upcoming, 'homepage:upcoming');
-  return toEnrichedSection(list.items, await enrichMatches(list.items, HOMEPAGE_REVALIDATE.upcoming), list.status);
+  const list = await fetchList<unknown>('/matches/upcoming', { limit: HOMEPAGE_LIMITS.upcoming, include: 'card' }, HOMEPAGE_REVALIDATE.upcoming, 'homepage:upcoming');
+  return toEnrichedSection(list.items as Match[], toEnrichedMatches(list.items), list.status);
 }
 
 export async function loadBreakingNews(): Promise<SectionData<Article>> {

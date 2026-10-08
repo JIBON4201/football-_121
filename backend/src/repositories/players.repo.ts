@@ -13,6 +13,7 @@ import {
   listBy,
   listByIds,
   maybeById,
+  uuidList,
 } from './related';
 
 const COLUMNS =
@@ -151,7 +152,7 @@ export async function getPlayerDetails(slug: string): Promise<PlayerDetails> {
       client,
       'teams',
       TEAM_COLUMNS,
-      history.map((h) => String(h.team_id)),
+      uuidList(history.map((h) => h.team_id)),
       undefined,
       100,
     ),
@@ -159,7 +160,7 @@ export async function getPlayerDetails(slug: string): Promise<PlayerDetails> {
       client,
       'seasons',
       SEASON_COLUMNS,
-      history.map((h) => String(h.season_id)),
+      uuidList(history.map((h) => h.season_id)),
       undefined,
       100,
     ),
@@ -167,7 +168,7 @@ export async function getPlayerDetails(slug: string): Promise<PlayerDetails> {
       client,
       'matches',
       MATCH_COLUMNS,
-      stats.map((s) => String(s.match_id)),
+      uuidList(stats.map((s) => s.match_id)),
       undefined,
       20,
     ),
@@ -176,9 +177,7 @@ export async function getPlayerDetails(slug: string): Promise<PlayerDetails> {
   // Reached through the seasons on the history rows, so a competition is only
   // listed when the team history actually names one. Two steps, because the
   // season records are what carry the competition id.
-  const competitionIds = seasons
-    .map((season) => String(season.competition_id))
-    .filter((id) => id.length > 0);
+  const competitionIds = uuidList(seasons.map((season) => season.competition_id));
   const competitions = await listByIds(
     client,
     'competitions',

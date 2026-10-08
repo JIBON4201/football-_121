@@ -7,7 +7,7 @@ import {
   type PlayerStatsScope,
 } from '../lib/player-stats';
 import { anonClient, type DbClient } from '../lib/supabase';
-import { COMPETITION_COLUMNS, TEAM_COLUMNS, listByIds } from './related';
+import { COMPETITION_COLUMNS, TEAM_COLUMNS, listByIds, uuidList } from './related';
 
 /**
  * Player statistics.
@@ -161,12 +161,8 @@ export async function getPlayerStatistics(
   }
   const totalStats = (statRows.length as number) ?? 0;
 
-  const teamIds = Array.from(
-    new Set(
-      eligible.flatMap((match) => [String(match.home_team_id), String(match.away_team_id)]),
-    ),
-  );
-  const competitionIds = Array.from(new Set(eligible.map((match) => String(match.competition_id))));
+  const teamIds = uuidList(eligible.flatMap((match) => [match.home_team_id, match.away_team_id]));
+  const competitionIds = uuidList(eligible.map((match) => match.competition_id));
   const [teams, competitions] = await Promise.all([
     listByIds(client, 'teams', TEAM_COLUMNS, teamIds, undefined, 100),
     listByIds(client, 'competitions', COMPETITION_COLUMNS, competitionIds, undefined, 100),

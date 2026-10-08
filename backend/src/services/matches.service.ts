@@ -32,31 +32,36 @@ export const matchesService = {
   getDetails: (slug: string) =>
     guarded(() => cached(NS, { kind: 'details', slug }, TTL, () => getMatchDetails(slug))),
 
-  getLive: (limit: number) =>
+  getLive: (limit: number, include?: 'card') =>
     guarded(() =>
-      cached(NS, { kind: 'live', limit }, TTL, () => listMatches({ page: 1, limit, phase: 'live', sort: 'asc' })),
+      cached(NS, { kind: 'live', limit, include }, TTL, () =>
+        listMatches({ page: 1, limit, phase: 'live', sort: 'asc', include }),
+      ),
     ),
 
-  getUpcoming: (limit: number, filters: Pick<MatchListInput, 'competition' | 'team' | 'season'> = {}) =>
+  getUpcoming: (
+    limit: number,
+    filters: Pick<MatchListInput, 'competition' | 'team' | 'season' | 'include'> = {},
+  ) =>
     guarded(() =>
       cached(NS, { kind: 'upcoming', limit, ...filters }, TTL, () =>
         listMatches({ page: 1, limit, phase: 'upcoming', sort: 'asc', ...filters }),
       ),
     ),
 
-  getToday: (limit: number) => {
+  getToday: (limit: number, include?: 'card') => {
     const today = todayISO();
     return guarded(() =>
-      cached(NS, { kind: 'today', limit, today }, TTL, () =>
-        listMatches({ page: 1, limit, from: today, to: today, sort: 'asc' }),
+      cached(NS, { kind: 'today', limit, today, include }, TTL, () =>
+        listMatches({ page: 1, limit, from: today, to: today, sort: 'asc', include }),
       ),
     );
   },
 
-  getFinished: (limit: number) =>
+  getFinished: (limit: number, include?: 'card') =>
     guarded(() =>
-      cached(NS, { kind: 'finished', limit }, TTL, () =>
-        listMatches({ page: 1, limit, phase: 'finished', sort: 'desc' }),
+      cached(NS, { kind: 'finished', limit, include }, TTL, () =>
+        listMatches({ page: 1, limit, phase: 'finished', sort: 'desc', include }),
       ),
     ),
 

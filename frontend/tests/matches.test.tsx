@@ -29,7 +29,6 @@ import {
   isUpcomingStatus,
   isVoidStatus,
   lineupsBySide,
-  MATCH_ENRICH_FANOUT,
   MATCH_PAGE_SIZE,
   MATCH_REVALIDATE,
   matchDateKey,
@@ -160,6 +159,17 @@ const detailsBody = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+/** A list row as served with `include=card`. */
+const cardRow = (overrides: Partial<Match> = {}, extra: Record<string, unknown> = {}) => ({
+  ...match(overrides),
+  homeTeam,
+  awayTeam,
+  competition,
+  venue: { id: 'venue-1', name: 'Example Arena', city: 'Dhaka', capacity: 30000 },
+  events: [],
+  ...extra,
+});
+
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -284,14 +294,11 @@ describe('match response validation', () => {
 });
 
 describe('match listing data layer', () => {
-  it('filters on the backend and enriches rows with real teams', async () => {
+  it('requests the card shape and enriches rows with real teams', async () => {
     const seen: Array<{ url: string; init?: unknown }> = [];
     mockApi(
       (pathname) => {
-        if (pathname === '/matches') return { status: 200, body: envelope([match()], { page: 1, limit: 12, total: 1, totalPages: 1 }) };
-        if (pathname === '/matches/fc-example-vs-real-sample/details') {
-          return { status: 200, body: envelope(detailsBody()) };
-        }
+        if (pathname === '/matches') return { status: 200, body: envelope([cardRow()], { page: 1, limit: 12, total: 1, totalPages: 1 }) };
         return null;
       },
       seen,
@@ -308,6 +315,7 @@ describe('match listing data layer', () => {
     expect(listCall.searchParams.get('phase')).toBe('upcoming');
     expect(listCall.searchParams.get('competition')).toBe('premier-league');
     expect(listCall.searchParams.get('team')).toBe('fc-example');
+    expect(listCall.searchParams.get('include')).toBe('card');
     expect((seen[0].init as { next?: { revalidate?: number } }).next?.revalidate).toBe(MATCH_REVALIDATE.scheduled);
   });
 
@@ -327,7 +335,6 @@ describe('match listing data layer', () => {
   it('drops fixtures whose teams cannot be resolved instead of inventing names', async () => {
     mockApi((pathname) => {
       if (pathname === '/matches') return { status: 200, body: envelope([match()], { page: 1, limit: 12, total: 1, totalPages: 1 }) };
-      if (pathname.endsWith('/details')) return { status: 200, body: envelope({ match: match(), homeTeam: null, awayTeam: null }) };
       return null;
     });
     const result = await fetchMatchList(parseMatchFilters({}));
@@ -353,26 +360,23 @@ describe('match listing data layer', () => {
     expect(result.rows).toEqual([]);
   });
 
-  it('caps the enrichment fan-out', async () => {
-    const many = Array.from({ length: MATCH_ENRICH_FANOUT + 6 }, (_, index) =>
-      match({ id: `m${index}`, slug: `match-${index}` }),
+  it('never requests per-match details for a full page', async () => {
+    const many = Array.from({ length: 24 }, (_, index) =>
+      cardRow({ id: `m${index}`, slug: `match-${index}` }),
     );
     const calls: string[] = [];
-    const originalFetch = globalThis.fetch;
     mockApi((pathname) => (pathname === '/matches' ? { status: 200, body: envelope(many, { page: 1, limit: 24, total: many.length, totalPages: 1 }) } : null));
+    const originalFetch = globalThis.fetch;
     vi.stubGlobal(
       'fetch',
       vi.fn(async (url: string, init?: RequestInit) => {
         calls.push(new URL(url).pathname);
-        if (url.includes('/details')) {
-          return { ok: true, status: 200, json: async () => envelope(detailsBody({ match: match({ id: 'x', slug: 'x' }) })) };
-        }
         return originalFetch(url, init);
       }) as unknown as typeof fetch,
     );
     const result = await fetchMatchList(parseMatchFilters({ limit: '24' }));
-    expect(calls.filter((path) => path.endsWith('/details')).length).toBeLessThanOrEqual(MATCH_ENRICH_FANOUT);
-    expect(result.rows.length).toBeLessThanOrEqual(MATCH_ENRICH_FANOUT);
+    expect(calls.filter((path) => path.endsWith('/details'))).toHaveLength(0);
+    expect(result.rows).toHaveLength(24);
   });
 });
 

@@ -14,6 +14,7 @@ import {
   listBy,
   listByIds,
   maybeById,
+  uuidList,
 } from './related';
 
 const COLUMNS =
@@ -156,7 +157,7 @@ export async function getTeamDetails(slug: string): Promise<TeamDetails> {
       client,
       'competitions',
       COMPETITION_COLUMNS,
-      links.map((l) => String(l.competition_id)),
+      uuidList(links.map((l) => l.competition_id)),
       undefined,
       200,
     ),
@@ -164,7 +165,7 @@ export async function getTeamDetails(slug: string): Promise<TeamDetails> {
       client,
       'seasons',
       SEASON_COLUMNS,
-      links.map((l) => String(l.season_id)),
+      uuidList(links.map((l) => l.season_id)),
       undefined,
       200,
     ),
@@ -172,7 +173,7 @@ export async function getTeamDetails(slug: string): Promise<TeamDetails> {
       client,
       'players',
       PLAYER_COLUMNS,
-      history.map((h) => String(h.player_id)),
+      uuidList(history.map((h) => h.player_id)),
       undefined,
       300,
     ),

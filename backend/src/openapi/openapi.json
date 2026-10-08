@@ -741,6 +741,17 @@
                 "desc"
               ]
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "card: pre-resolve the entities a match card renders (home/away team, competition, venue, minimal events) so list surfaces never fan out to /matches/{slug}/details",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "card"
+              ]
+            }
           }
         ],
         "responses": {
@@ -814,6 +825,17 @@
               "minimum": 1,
               "default": 20
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "card: pre-resolve team, competition, venue and minimal events in each row",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "card"
+              ]
+            }
           }
         ],
         "responses": {
@@ -834,6 +856,17 @@
               "type": "integer",
               "minimum": 1,
               "default": 20
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "card: pre-resolve team, competition, venue and minimal events in each row",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "card"
+              ]
             }
           }
         ],
@@ -856,6 +889,17 @@
               "minimum": 1,
               "default": 20
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "card: pre-resolve team, competition, venue and minimal events in each row",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "card"
+              ]
+            }
           }
         ],
         "responses": {
@@ -876,6 +920,17 @@
               "type": "integer",
               "minimum": 1,
               "default": 20
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "card: pre-resolve team, competition, venue and minimal events in each row",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "card"
+              ]
             }
           },
           {

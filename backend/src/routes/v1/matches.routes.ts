@@ -29,14 +29,16 @@ const listQuery = z.object({
   from: dateSchema.optional(),
   to: dateSchema.optional(),
   sort: sortOrderSchema.optional(),
+  include: z.enum(['card']).optional(),
 });
 
-const feedQuery = z.object({ limit: limitSchema });
+const feedQuery = z.object({ limit: limitSchema, include: z.enum(['card']).optional() });
 const upcomingQuery = z.object({
   limit: limitSchema,
   competition: slugSchema.optional(),
   team: slugSchema.optional(),
   season: uuidSchema.optional(),
+  include: z.enum(['card']).optional(),
 });
 
 const router = Router();
@@ -46,7 +48,8 @@ router.get(
   validateRequest({ query: listQuery }),
   cacheable(config.cache.matchesTtl),
   asyncHandler(async (req, res) => {
-    const { rows, pagination } = await matchesService.list(req.query as unknown as MatchListInput);
+    const q = req.query as unknown as MatchListInput;
+    const { rows, pagination } = await matchesService.list(q);
     ok(res, rows, { pagination });
   }),
 );
@@ -56,7 +59,10 @@ router.get(
   validateRequest({ query: feedQuery }),
   cacheable(config.cache.matchesTtl),
   asyncHandler(async (req, res) => {
-    const { rows, pagination } = await matchesService.getLive(Number(req.query.limit));
+    const { rows, pagination } = await matchesService.getLive(
+      Number(req.query.limit),
+      req.query.include === 'card' ? 'card' : undefined,
+    );
     // A server-time anchor lets a client compute elapsed time without trusting
     // the device clock. It reveals nothing about the upstream provider.
     ok(res, rows, { pagination, meta: { server_time: new Date().toISOString() } });
@@ -68,11 +74,12 @@ router.get(
   validateRequest({ query: upcomingQuery }),
   cacheable(config.cache.matchesTtl),
   asyncHandler(async (req, res) => {
-    const q = req.query as unknown as { limit: number; competition?: string; team?: string; season?: string };
+    const q = req.query as unknown as { limit: number; competition?: string; team?: string; season?: string; include?: string };
     const { rows, pagination } = await matchesService.getUpcoming(Number(q.limit), {
       competition: q.competition,
       team: q.team,
       season: q.season,
+      include: q.include === 'card' ? 'card' : undefined,
     });
     ok(res, rows, { pagination });
   }),
@@ -83,7 +90,10 @@ router.get(
   validateRequest({ query: feedQuery }),
   cacheable(config.cache.matchesTtl),
   asyncHandler(async (req, res) => {
-    const { rows, pagination } = await matchesService.getToday(Number(req.query.limit));
+    const { rows, pagination } = await matchesService.getToday(
+      Number(req.query.limit),
+      req.query.include === 'card' ? 'card' : undefined,
+    );
     ok(res, rows, { pagination });
   }),
 );
@@ -93,7 +103,10 @@ router.get(
   validateRequest({ query: feedQuery }),
   cacheable(config.cache.matchesTtl),
   asyncHandler(async (req, res) => {
-    const { rows, pagination } = await matchesService.getFinished(Number(req.query.limit));
+    const { rows, pagination } = await matchesService.getFinished(
+      Number(req.query.limit),
+      req.query.include === 'card' ? 'card' : undefined,
+    );
     ok(res, rows, { pagination });
   }),
 );

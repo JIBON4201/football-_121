@@ -9,6 +9,7 @@ import {
   indexBy,
   listByIds,
   listWhereIn,
+  uuidList,
   COUNTRY_COLUMNS,
   COMPETITION_COLUMNS,
   TEAM_COLUMNS,
@@ -290,12 +291,14 @@ export const searchService = {
       ]);
 
       // Bounded enrichment (no N+1): countries, match teams/competitions, player
-      // current clubs, article images.
-      const countryIds = compRows.map((row) => String(row.country_id)).filter(Boolean);
-      const matchTeamIds = matchRows.flatMap((row) => [String(row.home_team_id), String(row.away_team_id)]);
-      const matchCompIds = matchRows.map((row) => String(row.competition_id));
-      const playerIds = playerRows.map((row) => String(row.id));
-      const imageIds = articleRows.map((row) => String(row.featured_image_id)).filter(Boolean);
+      // current clubs, article images. `uuidList` drops SQL NULL instead of
+      // stringifying it into the truthy value "null", which Postgres rejects
+      // with 22P02 and which a `.filter(Boolean)` guard would not catch.
+      const countryIds = uuidList(compRows.map((row) => row.country_id));
+      const matchTeamIds = uuidList(matchRows.flatMap((row) => [row.home_team_id, row.away_team_id]));
+      const matchCompIds = uuidList(matchRows.map((row) => row.competition_id));
+      const playerIds = uuidList(playerRows.map((row) => row.id));
+      const imageIds = uuidList(articleRows.map((row) => row.featured_image_id));
       const client = anonClient();
       const [countries, enrichTeams, enrichComps, histories, images] = await Promise.all([
         listByIds(client, 'countries', COUNTRY_COLUMNS, countryIds, undefined, 300),

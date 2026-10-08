@@ -8,7 +8,6 @@ import type {
   Transfer,
 } from "@/types/api";
 import { entityUrl } from "@/config/routes";
-import { apiGet } from "./api-client";
 import { fetchList, fetchListSafely, hasIdentity } from "./data-fetch";
 import { formatRelative, toFiniteNumber } from "./dates";
 import { initials, statusSlug } from "./directory-data";
@@ -66,17 +65,14 @@ export const HOMEPAGE_REVALIDATE = {
 } as const;
 
 /**
- * Match list endpoints return bare foreign keys, so team and competition records
- * are resolved through `/matches/:slug/details`. The fan-out is capped, matching
- * the shared enrichment pattern, and any match that cannot resolve both teams is
- * dropped rather than rendered with placeholder names.
+ * Match listing endpoints return bare foreign keys unless asked for the card
+ * shape. Every feed requests `include=card`, which batch-resolves team,
+ * competition and venue records server-side plus the few event types a card
+ * renders, so the homepage never fans out to per-match details requests.
  */
-export const MATCH_DETAILS_FANOUT = 12;
 
 /**
- * Rows per feed on the match centre (`/live`, `/matches`). Larger than the
- * homepage slices because these pages are the whole product surface for a match,
- * and still bounded by `MATCH_DETAILS_FANOUT` details requests per feed.
+ * Rows per feed on the match centre (`/live`, `/matches`).
  */
 export const MATCH_CENTRE_LIMITS = {
   live: 12,
@@ -95,18 +91,6 @@ export const MATCH_CENTRE_REVALIDATE = {
 const LIVE_STATUSES = new Set(["live", "half_time", "extra_time", "penalty_shootout", "suspended"]);
 /** `scheduled` and `pre_match`, from `UPCOMING_MATCH_STATUSES`. */
 const UPCOMING_STATUSES = new Set(["scheduled", "pre_match"]);
-
-/** No competition slug may contain anything outside this set. */
-const UPCOMING_SLUG_PATTERN = /^[A-Za-z0-9_.-]+$/;
-
-/**
- * A slug is embedded in generated hrefs, so a value carrying unexpected characters
- * is rejected rather than interpolated into a URL. Slugs are additionally escaped
- * with `encodeURIComponent` at every request site.
- */
-function isSafeSlug(value: string | undefined | null): value is string {
-  return typeof value === "string" && UPCOMING_SLUG_PATTERN.test(value);
-}
 
 /**
  * A three-letter badge. The API's `short_name` is nullable and unconstrained in
@@ -302,27 +286,61 @@ export function toFootballMatch(details: MatchDetails): FootballMatch | null {
   };
 }
 
-/**
- * Resolves bare match rows into renderable matches, capped and failure-tolerant.
- * A single unresolvable match is dropped; the rest of the feed still renders.
- */
-async function enrichMatches(rows: Match[], revalidateSeconds: number): Promise<FootballMatch[]> {
-  // Rows without a usable slug are dropped before any URL is built, so an
-  // unexpected value from the API can never reach a request path.
-  const capped = rows.filter((row): row is Match & { slug: string } => hasIdentity(row) && isSafeSlug(row.slug)).slice(0, MATCH_DETAILS_FANOUT);
-  const settled = await Promise.allSettled(
-    capped.map(async (row) => {
-      const envelope = await apiGet<MatchDetails>(`/matches/${encodeURIComponent(row.slug)}/details`, {
-        next: { revalidate: revalidateSeconds, tags: [`match-details:${row.slug}`] },
-      });
-      return toFootballMatch(envelope.data);
-    }),
-  );
-  const results: FootballMatch[] = [];
-  for (const outcome of settled) {
-    if (outcome.status === "fulfilled" && outcome.value) results.push(outcome.value);
-  }
-  return results;
+/** Narrow a `/matches` row served with `include=card` into renderable parts. */
+function parseMatchCard(value: unknown): MatchDetails | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  const row = value as Record<string, unknown>;
+  const match = row as unknown as Match;
+  if (typeof match?.slug !== "string" || typeof match?.status !== "string") return null;
+  const team = (v: unknown): Team | null => {
+    if (typeof v !== "object" || v === null) return null;
+    const t = v as Record<string, unknown>;
+    return typeof t.name === "string" && typeof t.slug === "string"
+      ? {
+          id: typeof t.id === "string" ? t.id : t.slug,
+          name: t.name,
+          short_name: typeof t.short_name === "string" ? t.short_name : null,
+          slug: t.slug,
+          logo_url: typeof t.logo_url === "string" ? t.logo_url : null,
+        }
+      : null;
+  };
+  const competition = (v: unknown): Competition | null => {
+    if (typeof v !== "object" || v === null) return null;
+    const c = v as Record<string, unknown>;
+    return typeof c.name === "string" && typeof c.slug === "string"
+      ? {
+          id: typeof c.id === "string" ? c.id : c.slug,
+          name: c.name,
+          short_name: typeof c.short_name === "string" ? c.short_name : null,
+          slug: c.slug,
+          logo_url: typeof c.logo_url === "string" ? c.logo_url : null,
+          ...(typeof c.type === "string" ? { type: c.type } : {}),
+        }
+      : null;
+  };
+  const events = Array.isArray(row.events)
+    ? (row.events
+        .filter((e): e is Record<string, unknown> => typeof e === "object" && e !== null)
+        .map((e) => ({
+          id: typeof e.id === "string" ? e.id : "",
+          team_id: typeof e.team_id === "string" ? e.team_id : null,
+          player_id: typeof e.player_id === "string" ? e.player_id : null,
+          assist_player_id: typeof e.assist_player_id === "string" ? e.assist_player_id : null,
+          type: typeof e.type === "string" ? e.type : "",
+          minute: typeof e.minute === "number" ? e.minute : null,
+          extra_minute: typeof e.extra_minute === "number" ? e.extra_minute : null,
+          description: typeof e.description === "string" ? e.description : null,
+        }))
+        .filter((e) => e.type !== ""))
+    : [];
+  return {
+    match,
+    homeTeam: team(row.homeTeam),
+    awayTeam: team(row.awayTeam),
+    competition: competition(row.competition),
+    events,
+  };
 }
 
 /** The three match lists the API serves, each with its own endpoint and status set. */
@@ -338,7 +356,7 @@ export interface MatchFeedResult {
 }
 
 /**
- * One match feed, enriched through `/matches/:slug/details`.
+ * One match feed, served with the `include=card` shape.
  *
  * `fetchListSafely` collapses a transport failure into an empty list, which would
  * render as "no matches" and quietly hide an outage. This reports the two cases
@@ -348,16 +366,23 @@ export async function loadMatchFeed(
   feed: MatchFeed,
   options: { limit: number; revalidateSeconds: number; tag: string },
 ): Promise<MatchFeedResult> {
-  let rows: Match[];
+  let rows: unknown[];
   try {
-    ({ rows } = await fetchList<Match>(`/matches/${feed}`, {
+    ({ rows } = await fetchList<unknown>(`/matches/${feed}`, {
       limit: options.limit,
+      query: { include: "card" },
       next: { revalidate: options.revalidateSeconds, tags: [options.tag] },
     }));
   } catch {
     return { matches: [], failed: true };
   }
-  return { matches: await enrichMatches(rows, options.revalidateSeconds), failed: false };
+  const matches: FootballMatch[] = [];
+  for (const row of rows) {
+    const card = parseMatchCard(row);
+    const match = card ? toFootballMatch(card) : null;
+    if (match) matches.push(match);
+  }
+  return { matches, failed: false };
 }
 
 export function loadLiveMatches(): Promise<FootballMatch[]> {

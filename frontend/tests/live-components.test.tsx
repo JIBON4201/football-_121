@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { LiveMatchCard } from '@/components/live/LiveMatchCard';
 import { LiveMatchBanner } from '@/components/live/LiveMatchBanner';
-import { mergeLiveRows, nextResolveBatch, LIVE_RESOLVE_BATCH } from '@/lib/live-feed';
+import { mergeLiveRows } from '@/lib/live-feed';
 import type { MatchListItem } from '@/lib/matches';
 import type { Competition, Match, Team } from '@/types/api';
 
@@ -136,10 +136,9 @@ describe('LiveMatchBanner', () => {
 describe('mergeLiveRows', () => {
   it('takes the score and status from the poll, never from the snapshot', () => {
     const snapshot = [listItem()];
-    const { items, unknownSlugs } = mergeLiveRows(snapshot, [
-      { match: matchRow({ home_score: 3, away_score: 3, status: 'half_time' }), serverTime: null },
+    const { items } = mergeLiveRows(snapshot, [
+      { item: listItem({ match: matchRow({ home_score: 3, away_score: 3, status: 'half_time' }) }), serverTime: null },
     ]);
-    expect(unknownSlugs).toEqual([]);
     expect(items).toHaveLength(1);
     expect(items[0].match.home_score).toBe(3);
     expect(items[0].match.status).toBe('half_time');
@@ -147,24 +146,24 @@ describe('mergeLiveRows', () => {
 
   it('drops a match the backend no longer reports as in progress', () => {
     const { items } = mergeLiveRows([listItem()], [
-      { match: matchRow({ status: 'finished' }), serverTime: null },
+      { item: listItem({ match: matchRow({ status: 'finished' }) }), serverTime: null },
     ]);
     expect(items).toEqual([]);
   });
 
   it('keeps a suspended match in the feed', () => {
     const { items } = mergeLiveRows([listItem()], [
-      { match: matchRow({ status: 'suspended' }), serverTime: null },
+      { item: listItem({ match: matchRow({ status: 'suspended' }) }), serverTime: null },
     ]);
     expect(items).toHaveLength(1);
   });
 
-  it('reports an unknown match as a slug to resolve instead of inventing a name', () => {
-    const { items, unknownSlugs } = mergeLiveRows([], [
-      { match: matchRow({ slug: 'liverpool-v-city', id: 'm9' }), serverTime: null },
+  it('adds a new live match directly from its enriched poll row', () => {
+    const { items } = mergeLiveRows([], [
+      { item: listItem({ match: matchRow({ slug: 'liverpool-v-city', id: 'm9' }) }), serverTime: null },
     ]);
-    expect(items).toEqual([]);
-    expect(unknownSlugs).toEqual(['liverpool-v-city']);
+    expect(items).toHaveLength(1);
+    expect(items[0].match.slug).toBe('liverpool-v-city');
   });
 
   it('surfaces the server time anchor and sorts in-play matches first', () => {
@@ -174,8 +173,8 @@ describe('mergeLiveRows', () => {
         listItem({ match: matchRow({ id: 'm1', slug: 'arsenal-v-chelsea', status: 'live' }) }),
       ],
       [
-        { match: matchRow({ id: 'm2', slug: 'a-v-b', status: 'half_time' }), serverTime: '2024-05-01T16:07:00.000Z' },
-        { match: matchRow({ id: 'm1', slug: 'arsenal-v-chelsea', status: 'live' }), serverTime: '2024-05-01T16:07:00.000Z' },
+        { item: listItem({ match: matchRow({ id: 'm2', slug: 'a-v-b', status: 'half_time' }) }), serverTime: '2024-05-01T16:07:00.000Z' },
+        { item: listItem({ match: matchRow({ id: 'm1', slug: 'arsenal-v-chelsea', status: 'live' }) }), serverTime: '2024-05-01T16:07:00.000Z' },
       ],
     );
     expect(serverTime).toBe('2024-05-01T16:07:00.000Z');
@@ -183,21 +182,6 @@ describe('mergeLiveRows', () => {
   });
 
   it('returns an empty feed rather than throwing on no rows', () => {
-    expect(mergeLiveRows([], [])).toEqual({ items: [], unknownSlugs: [], serverTime: null });
-  });
-});
-
-describe('nextResolveBatch', () => {
-  it('caps how many new matches a single tick resolves', () => {
-    const many = Array.from({ length: 10 }, (_, index) => `match-${index}`);
-    expect(nextResolveBatch(many, new Set())).toHaveLength(LIVE_RESOLVE_BATCH);
-  });
-
-  it('never retries a slug that already failed to resolve', () => {
-    expect(nextResolveBatch(['a', 'b'], new Set(['a']))).toEqual(['b']);
-  });
-
-  it('returns nothing when everything has been tried', () => {
-    expect(nextResolveBatch(['a'], new Set(['a']))).toEqual([]);
+    expect(mergeLiveRows([], [])).toEqual({ items: [], serverTime: null });
   });
 });

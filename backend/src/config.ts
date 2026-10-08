@@ -53,6 +53,8 @@ export const config = {
     staticTtl: num('CACHE_TTL_STATIC', 300),
     newsTtl: num('CACHE_TTL_NEWS', 60),
     matchesTtl: num('CACHE_TTL_MATCHES', 30),
+    // Hard bound on entries held by the per-instance in-memory store.
+    maxEntries: num('CACHE_MAX_ENTRIES', 1000),
   },
 
   media: {

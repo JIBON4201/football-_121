@@ -12,13 +12,12 @@ import { PopularPlayersView, PopularTeamsView } from '@/components/home/PopularS
 import { SectionShell } from '@/components/home/SectionShell';
 import { trackAttributes, trackEvent } from '@/lib/analytics';
 import {
-  attachMatchDetails,
   HOMEPAGE_LIMITS,
   HOMEPAGE_REVALIDATE,
   loadHomepage,
   loadUpcomingMatches,
-  MAX_MATCH_DETAILS_FANOUT,
   selectHeroArticle,
+  toEnrichedMatches,
   withoutId,
   type EnrichedMatch,
 } from '@/lib/homepage';
@@ -106,34 +105,27 @@ describe('homepage data layer', () => {
   });
 
   it('keeps only matches with both teams resolved', () => {
-    const matches = [match({ slug: 'm1' }), match({ slug: 'm2' })];
-    const bySlug = new Map([
-      ['m1', { homeTeam: team(), awayTeam: team({ id: 't2', name: 'B', slug: 'b' }), competition: null, venue: { name: 'Arena' } }],
-      ['m2', { homeTeam: team(), awayTeam: null, competition: null, venue: null }],
-    ]);
-    const result = attachMatchDetails(matches, bySlug);
+    const rows = [
+      { ...match({ slug: 'm1' }), homeTeam: team(), awayTeam: team({ id: 't2', name: 'B', slug: 'b' }), competition: null, venue: { name: 'Arena' } },
+      { ...match({ slug: 'm2' }), homeTeam: team(), awayTeam: null, competition: null, venue: null },
+    ];
+    const result = toEnrichedMatches(rows);
     expect(result).toHaveLength(1);
     expect(result[0].venueName).toBe('Arena');
-    expect(attachMatchDetails(matches, new Map())).toHaveLength(0);
+    expect(toEnrichedMatches([])).toHaveLength(0);
   });
 
   it('fetches sections in parallel with per-section freshness tiers', async () => {
     const seen: Array<{ url: string; init?: unknown }> = [];
     mockApi((pathname) => {
       if (pathname === '/matches/live') return { status: 200, body: listBody([]) };
-      if (pathname === '/matches/upcoming') return { status: 200, body: listBody([match()]) };
+      if (pathname === '/matches/upcoming') return { status: 200, body: listBody([{ ...match(), homeTeam: team(), awayTeam: team({ id: 't2', name: 'B', slug: 'b' }), competition: null, venue: null }]) };
       if (pathname === '/news/breaking') return { status: 200, body: listBody([]) };
       if (pathname === '/news/latest') return { status: 200, body: listBody([article()]) };
       if (pathname === '/news') return { status: 200, body: listBody([]) };
       if (pathname === '/competitions') return { status: 200, body: listBody([]) };
       if (pathname === '/teams') return { status: 200, body: listBody([]) };
       if (pathname === '/players') return { status: 200, body: listBody([]) };
-      if (pathname.endsWith('/details')) {
-        return {
-          status: 200,
-          body: { data: { homeTeam: team(), awayTeam: team({ id: 't2', name: 'B', slug: 'b' }), competition: null, venue: null }, requestId: 't' },
-        };
-      }
       return null;
     }, seen);
     const data = await loadHomepage();
@@ -170,9 +162,9 @@ describe('homepage data layer', () => {
     expect(data.breaking.status).toBe('ready');
   });
 
-  it('caps the details fan-out for large match lists', async () => {
-    const many = Array.from({ length: MAX_MATCH_DETAILS_FANOUT + 5 }, (_, index) =>
-      match({ id: `m${index}`, slug: `match-${index}` }),
+  it('never fans out to per-match details', async () => {
+    const many = Array.from({ length: 20 }, (_, index) =>
+      ({ ...match({ id: `m${index}`, slug: `match-${index}` }), homeTeam: team(), awayTeam: team({ id: 't2', name: 'B', slug: 'b' }), competition: null, venue: null, events: [] }),
     );
     mockApi(() => ({ status: 200, body: listBody(many) }));
     const calls: string[] = [];
@@ -186,8 +178,8 @@ describe('homepage data layer', () => {
     );
     const section = await loadUpcomingMatches();
     const detailsCalls = calls.filter((path) => path.endsWith('/details'));
-    expect(detailsCalls.length).toBeLessThanOrEqual(MAX_MATCH_DETAILS_FANOUT);
-    expect(section.items.length).toBeLessThanOrEqual(MAX_MATCH_DETAILS_FANOUT);
+    expect(detailsCalls.length).toBe(0);
+    expect(section.items.length).toBe(20);
   });
 });
 

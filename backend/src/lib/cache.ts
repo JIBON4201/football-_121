@@ -107,11 +107,23 @@ export function resetCacheStore(): void {
 /** Keys issued per namespace, enabling explicit invalidation hooks. */
 const keyRegistry = new Map<string, Set<string>>();
 
+/**
+ * Bound on tracked keys per namespace. When exceeded the oldest tracked keys
+ * are dropped from the registry only — their store entries still expire by
+ * TTL/eviction, so memory stays bounded and reads stay correct; they just
+ * stop receiving early explicit invalidation.
+ */
+const MAX_REGISTERED_KEYS_PER_NAMESPACE = 5000;
+
 function registerKey(namespace: string, key: string): void {
   let keys = keyRegistry.get(namespace);
   if (!keys) {
     keys = new Set();
     keyRegistry.set(namespace, keys);
+  }
+  if (!keys.has(key) && keys.size >= MAX_REGISTERED_KEYS_PER_NAMESPACE) {
+    const oldest = keys.values().next().value as string | undefined;
+    if (oldest !== undefined) keys.delete(oldest);
   }
   keys.add(key);
 }

@@ -1,5 +1,6 @@
 import express, { type Express } from 'express';
 import { config } from './config';
+import { MemoryCacheStore, setCacheStore } from './lib/cache';
 import { rateLimit } from './lib/rateLimit';
 import { authenticate } from './middleware/auth';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
@@ -8,6 +9,12 @@ import { applySecurity } from './middleware/security';
 import v1 from './routes';
 
 export function createApp(): Express {
+  // Install the read-through service cache. Per-process memory only: on
+  // serverless each instance holds its own store, a cold instance simply
+  // starts empty (correct by design), and admin writes invalidate namespaces
+  // through the same hooks. Bounded by CACHE_MAX_ENTRIES.
+  setCacheStore(new MemoryCacheStore(config.cache.maxEntries));
+
   const app = express();
 
   // Behind N trusted proxy hops so req.ip reflects the client, not the

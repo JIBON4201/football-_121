@@ -582,11 +582,12 @@ export async function fetchTeamMatches(
         to: selection.to ?? undefined,
         // Results read newest-first; fixtures read soonest-first.
         sort: selection.window === 'results' ? 'desc' : selection.window === 'upcoming' ? 'asc' : undefined,
+        include: 'card',
       },
       revalidate: TEAM_REVALIDATE.matches,
       tags: [`team-matches:${slug}`],
     });
-    const items = await enrichMatchRows(Array.isArray(envelope.data) ? envelope.data : [], TEAM_REVALIDATE.matches);
+    const items = enrichMatchRows(Array.isArray(envelope.data) ? envelope.data : []);
     return {
       status: items.length === 0 ? 'empty' : 'ready',
       items,

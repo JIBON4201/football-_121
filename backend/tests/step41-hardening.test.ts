@@ -162,6 +162,26 @@ describe('step 41: no N+1 in detail endpoints (query-count budgets)', () => {
     // blow up. The batching itself is asserted by the query-count budget above.
     expect([200, 401, 403]).toContain(res.status);
   });
+
+  it('resolves a card-shaped match list in a fixed number of queries', async () => {
+    // 42 rows on the page. A per-row enrichment would scale with them; the card
+    // shape must stay at one batched read per relation regardless of row count.
+    const seed = fake.store.matches[0];
+    for (let i = 0; i < 40; i += 1) {
+      fake.store.matches.push({
+        ...seed,
+        id: `dddddddd-0000-4000-8000-${String(i + 100).padStart(12, '0')}`,
+        slug: `card-fixture-${i}`,
+      });
+    }
+
+    const count = await queriesFor(() =>
+      request(app).get('/api/v1/matches?include=card&limit=100'),
+    );
+    // 1 count query + teams + competitions + venues + events.
+    expect(count).toBeGreaterThan(0);
+    expect(count).toBeLessThanOrEqual(8);
+  });
 });
 
 describe('step 41: public list endpoints stay bounded', () => {

@@ -127,9 +127,10 @@ export interface MatchEvent {
 }
 
 /**
- * `GET /matches/:slug/details`. List endpoints return bare foreign keys; only this
- * endpoint embeds the competition and both clubs, so it is the seam used to
- * resolve a match row into something renderable.
+ * `GET /matches/:slug/details`. List endpoints return bare foreign keys unless
+ * asked for `include=card`, which embeds the competition and both clubs (plus
+ * minimal events) directly in each row. The details endpoint remains the seam
+ * for a full match page, and the fallback when a list row carries no card shape.
  */
 export interface MatchDetails {
   match: Match;

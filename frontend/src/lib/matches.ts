@@ -7,11 +7,11 @@ import type { Article, Competition, Match, Player, Team, Venue } from '@/types/a
  * Matches data layer.
  *
  * Every filter is applied by the backend — the browser never downloads bulk
- * fixtures to filter locally. Listing rows are enriched through one bounded,
- * parallel fan-out to the aggregated details endpoint (same pattern the
- * homepage uses), so a match is only rendered when both teams resolve; a
- * nameless fixture is dropped rather than invented. Optional detail datasets
- * (events, lineups, team and player statistics) degrade independently.
+ * fixtures to filter locally. Listing rows come pre-enriched with the fields a
+ * card renders (teams, competition, venue, minimal events) from the list
+ * endpoint's `include=card` shape, so listing surfaces never fan out to the
+ * heavyweight per-match details endpoint. Optional detail datasets (events,
+ * lineups, team and player statistics) degrade independently.
  */
 
 export const MATCH_PAGE_SIZE = 12;
@@ -23,9 +23,6 @@ export const MATCH_REVALIDATE = {
   scheduled: 60,
   finished: 300,
 } as const;
-
-/** Cap on per-match details fan-out so listing enrichment stays bounded. */
-export const MATCH_ENRICH_FANOUT = 12;
 
 export const MATCH_PHASES = ['upcoming', 'live', 'finished'] as const;
 export type MatchPhase = (typeof MATCH_PHASES)[number];
@@ -501,48 +498,26 @@ export function toMatchDetails(value: unknown): MatchDetails | null {
 // Fetching
 // ---------------------------------------------------------------------------
 
-async function fetchDetails(slug: string, revalidate: number): Promise<MatchDetails | null> {
-  try {
-    const envelope = await fetchServer<unknown>(`/matches/${slug}/details`, {
-      revalidate,
-      tags: [`match-details:${slug}`],
-    });
-    return toMatchDetails(envelope.data);
-  } catch {
-    return null;
-  }
+/** Narrow a card-shaped list row into a renderable MatchListItem. */
+export function toMatchListItem(value: unknown): MatchListItem | null {
+  if (!isRecord(value)) return null;
+  const match = asMatch(value);
+  const homeTeam = asTeam(value.homeTeam);
+  const awayTeam = asTeam(value.awayTeam);
+  if (!match || !homeTeam || !awayTeam) return null;
+  return {
+    match,
+    homeTeam,
+    awayTeam,
+    competition: asCompetition(value.competition),
+    venue: asVenue(value.venue),
+  };
 }
 
-/** Attach resolved teams/competition/venue to raw rows, dropping unresolved ones. */
-function attachDetails(rows: Match[], bySlug: Map<string, MatchDetails>): MatchListItem[] {
-  const items: MatchListItem[] = [];
-  for (const match of rows) {
-    const details = bySlug.get(match.slug);
-    if (!details) continue;
-    items.push({
-      match,
-      homeTeam: details.homeTeam,
-      awayTeam: details.awayTeam,
-      competition: details.competition,
-      venue: details.venue,
-    });
-  }
-  return items;
-}
-
-/** Bounded, parallel details fan-out (one request per row, capped). */
-async function enrichRows(rows: Match[], revalidate: number): Promise<MatchListItem[]> {
-  const capped = rows.slice(0, MATCH_ENRICH_FANOUT);
-  const settled = await Promise.allSettled(
-    capped.map(async (row) => ({ slug: row.slug, details: await fetchDetails(row.slug, revalidate) })),
-  );
-  const bySlug = new Map<string, MatchDetails>();
-  for (const result of settled) {
-    if (result.status === 'fulfilled' && result.value.details) {
-      bySlug.set(result.value.slug, result.value.details);
-    }
-  }
-  return attachDetails(capped, bySlug);
+export function toMatchListItems(values: unknown[]): MatchListItem[] {
+  return values
+    .map(toMatchListItem)
+    .filter((item): item is MatchListItem => item !== null);
 }
 
 export type MatchListStatus = 'ready' | 'empty' | 'error';
@@ -572,6 +547,7 @@ export async function fetchMatchList(filters: MatchFilters): Promise<MatchListRe
         from: filters.from ?? undefined,
         to: filters.to ?? undefined,
         sort: filters.sort ?? undefined,
+        include: 'card',
       },
       revalidate,
       tags: tagsFor(filters),
@@ -584,26 +560,18 @@ export async function fetchMatchList(filters: MatchFilters): Promise<MatchListRe
   if (page.rows.length === 0) {
     return { status: 'empty', rows: [], pagination: page.pagination, filters };
   }
-  const rows = await enrichRows(page.rows, revalidate);
+  const rows = toMatchListItems(page.rows);
   return { ...page, rows, status: rows.length > 0 ? 'ready' : 'error', filters };
 }
 
 /**
- * Narrow and enrich raw match rows from any list endpoint.
+ * Narrow raw card-shaped rows from any list endpoint into list items.
  *
- * The single entry point other surfaces (competition pages, feeds) use so team
- * enrichment is never reimplemented. Rows that fail validation are dropped and
- * a fixture without two resolvable teams is never rendered.
+ * Rows that fail validation are dropped and a fixture without two resolvable
+ * teams is never rendered.
  */
-export async function enrichMatchRows(
-  values: unknown[],
-  revalidateSeconds: number = MATCH_REVALIDATE.scheduled,
-): Promise<MatchListItem[]> {
-  const rows = values
-    .map(asMatch)
-    .filter((row): row is Match => row !== null)
-    .slice(0, MATCH_ENRICH_FANOUT);
-  return enrichRows(rows, revalidateSeconds);
+export function enrichMatchRows(values: unknown[]): MatchListItem[] {
+  return toMatchListItems(values);
 }
 
 export type MatchDetailStatus = 'ready' | 'not-found' | 'error';

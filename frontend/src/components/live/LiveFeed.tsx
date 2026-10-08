@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { entityUrl } from '@/config/routes';
 import { createDefaultClient } from '@/lib/api-client';
 import {
@@ -16,13 +16,12 @@ import {
   pollIntervalFor,
   type LivePhase,
 } from '@/lib/live-state';
-import { mergeLiveRows, nextResolveBatch, type LiveFeedPayload } from '@/lib/live-feed';
-import { toMatchDetails, type MatchListItem } from '@/lib/matches';
+import { mergeLiveRows, type LiveFeedPayload } from '@/lib/live-feed';
+import { enrichMatchRows, type MatchListItem } from '@/lib/matches';
 import { sanitizeText } from '@/lib/validation';
 import { Alert, EmptyState } from '@/components/ui/Feedback';
 import { LiveMatchListSkeleton } from '@/components/ui/Skeleton';
 import { LiveMatchCard } from '@/components/live/LiveMatchCard';
-import type { Match } from '@/types/api';
 
 const LIVE_LIMIT = 24;
 
@@ -53,37 +52,23 @@ interface LiveFeedProps {
 export function LiveFeed({ initialItems, initialServerTime }: LiveFeedProps) {
   const [phaseFilter, setPhaseFilter] = useState<PhaseFilter>('all');
   const [competitionFilter, setCompetitionFilter] = useState<string>('all');
-  const [triedSlugs, setTriedSlugs] = useState<Set<string>>(new Set());
-  // Extra matches resolved on demand once they appear in the feed.
-  const [resolved, setResolved] = useState<MatchListItem[]>([]);
   // Server-anchored "now", advanced locally between polls.
   const [nowMs, setNowMs] = useState(() => Date.parse(initialServerTime ?? '') || Date.now());
-
-  const resolvedRef = useRef(resolved);
-  resolvedRef.current = resolved;
-  const triedRef = useRef(triedSlugs);
-  triedRef.current = triedSlugs;
 
   const createSource = useCallback(
     () =>
       createPollingSource<LiveFeedPayload>(async (signal) => {
         const client = createDefaultClient();
-        const response = await client.get<Match[]>('/matches/live', {
-          query: { limit: LIVE_LIMIT },
+        const response = await client.get<unknown[]>('/matches/live', {
+          query: { limit: LIVE_LIMIT, include: 'card' },
           signal,
         });
-        const payload = mergeLiveRows(
-          [...initialItems, ...resolvedRef.current],
-          (response.data ?? []).map((match) => ({
-            match,
-            serverTime: typeof response.meta?.server_time === 'string' ? response.meta.server_time : null,
-          })),
+        const serverTime = typeof response.meta?.server_time === 'string' ? response.meta.server_time : null;
+        return mergeLiveRows(
+          initialItems,
+          enrichMatchRows(response.data ?? []).map((item) => ({ item, serverTime })),
         );
-        return payload;
       }, {
-        // Faster while something is actually being played, and easing off to a
-        // slow idle check when the feed is empty — so a match that kicks off
-        // while the page is open still appears, without a request storm.
         intervalFor: (value) => pollIntervalFor((value?.items ?? []).map((item) => item.match.status)),
         onTelemetry: (event: TelemetryEvent) => {
           if (typeof window === 'undefined') return;
@@ -104,55 +89,14 @@ export function LiveFeed({ initialItems, initialServerTime }: LiveFeedProps) {
     return () => clearInterval(id);
   }, []);
 
-  // Resolve matches that became live after the page loaded, a few at a time.
-  useEffect(() => {
-    const unknown = data?.unknownSlugs ?? [];
-    if (unknown.length === 0) return;
-    const batch = nextResolveBatch(unknown, triedRef.current);
-    if (batch.length === 0) return;
-    let cancelled = false;
-    setTriedSlugs((prev) => {
-      const next = new Set(prev);
-      for (const slug of batch) next.add(slug);
-      return next;
-    });
-    (async () => {
-      const client = createDefaultClient();
-      const results = await Promise.all(
-        batch.map(async (slug) => {
-          try {
-            const response = await client.get<unknown>(`/matches/${slug}/details`);
-            const details = toMatchDetails(response.data);
-            if (!details) return null;
-            return {
-              match: details.match,
-              homeTeam: details.homeTeam,
-              awayTeam: details.awayTeam,
-              competition: details.competition ?? null,
-              venue: details.venue ?? null,
-            } satisfies MatchListItem;
-          } catch {
-            return null;
-          }
-        }),
-      );
-      if (cancelled) return;
-      const found = results.filter((item): item is MatchListItem => item !== null);
-      if (found.length > 0) setResolved((prev) => [...prev, ...found]);
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [data?.unknownSlugs]);
-
   const allItems = useMemo(() => {
     const seen = new Set<string>();
-    return [...(data?.items ?? []), ...resolved].filter((item) => {
+    return (data?.items ?? []).filter((item) => {
       if (seen.has(item.match.id)) return false;
       seen.add(item.match.id);
       return true;
     });
-  }, [data?.items, resolved]);
+  }, [data?.items]);
 
   const competitions = useMemo(() => {
     const seen = new Map<string, string>();

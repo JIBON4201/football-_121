@@ -4,7 +4,7 @@ import { anonClient, type DbClient } from '../lib/supabase';
 import { escapeIlike } from '../lib/validate';
 import { MATCH_COLUMNS } from './matches.repo';
 import { ARTICLE_LIST_COLUMNS } from './news.repo';
-import { SEASON_COLUMNS, TEAM_COLUMNS, COUNTRY_COLUMNS, listBy, listByIds, maybeById } from './related';
+import { SEASON_COLUMNS, TEAM_COLUMNS, COUNTRY_COLUMNS, listBy, listByIds, maybeById, uuidList } from './related';
 
 const COLUMNS = 'id,name,short_name,slug,country_id,logo_url,type,gender,is_active';
 
@@ -151,7 +151,7 @@ export async function getCompetitionDetails(slug: string): Promise<CompetitionDe
     client,
     'teams',
     TEAM_COLUMNS,
-    links.map((l) => String(l.team_id)),
+    uuidList(links.map((l) => l.team_id)),
     { col: 'name', asc: true },
     200,
   );

@@ -1,7 +1,7 @@
 import { notFound, upstream } from '../lib/errors';
 import { buildPagination, paginateInput } from '../lib/pagination';
 import { anonClient, type DbClient } from '../lib/supabase';
-import { COMPETITION_COLUMNS, PLAYER_COLUMNS, SEASON_COLUMNS, TEAM_COLUMNS, indexBy, listByIds, maybeById } from './related';
+import { COMPETITION_COLUMNS, PLAYER_COLUMNS, SEASON_COLUMNS, TEAM_COLUMNS, indexBy, listByIds, maybeById, uuidList } from './related';
 
 const COLUMNS =
   'id,player_id,from_team_id,to_team_id,transfer_type,status,fee,currency,' +
@@ -111,10 +111,8 @@ async function attachRelations(
   rows: Array<Record<string, unknown>>,
 ): Promise<Array<Record<string, unknown>>> {
   if (rows.length === 0) return rows;
-  const playerIds = Array.from(new Set(rows.map((row) => String(row.player_id))));
-  const teamIds = Array.from(
-    new Set(rows.flatMap((row) => [row.from_team_id, row.to_team_id]).filter((id): id is string => typeof id === 'string' && id.length > 0)),
-  );
+  const playerIds = uuidList(rows.map((row) => row.player_id));
+  const teamIds = uuidList(rows.flatMap((row) => [row.from_team_id, row.to_team_id]));
   const [players, teams] = await Promise.all([
     listByIds(client, 'players', PLAYER_COLUMNS, playerIds, undefined, 300),
     listByIds(client, 'teams', TEAM_COLUMNS, teamIds, undefined, 300),

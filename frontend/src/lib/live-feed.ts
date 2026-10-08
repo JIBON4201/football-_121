@@ -5,23 +5,19 @@ import type { Match } from '@/types/api';
 /**
  * Live feed assembly.
  *
- * The live endpoint returns lightweight match rows, while a card needs resolved
- * team names, logos and a competition link. Rather than re-fetching every match
- * on every tick — which would be an N+1 request storm — the feed is built from
- * an enriched server snapshot and then *updated* from the polled rows:
+ * The live endpoint returns card-shaped rows (`include=card`), so every polled
+ * row already carries resolved teams, competition and minimal event data. The
+ * feed is still built from the enriched server snapshot and *updated* from the
+ * polled rows rather than re-fetching every match on every tick:
  *
- *  - team names, logos and competitions are stable, so they are read once;
  *  - only the volatile fields (status and scores) come from each poll, so the
  *    score is always backend truth and is never computed on the client;
- *  - a match that becomes live after the page loaded cannot be named from the
- *    snapshot, so it is reported as `unknownSlugs` for the caller to resolve
- *    through the aggregated details endpoint.
+ *  - a match that becomes live after the page loaded arrives fully enriched in
+ *    the poll payload and is added directly — no per-match details lookup.
  */
 
 export interface LiveFeedPayload {
   items: MatchListItem[];
-  /** Slugs of matches present in the feed but absent from the snapshot. */
-  unknownSlugs: string[];
   /** Latest server time reported alongside the feed, if any. */
   serverTime: string | null;
 }
@@ -46,43 +42,26 @@ function applyVolatileFields(item: MatchListItem, row: Match): MatchListItem {
 }
 
 /**
- * Merge polled rows into the enriched snapshot.
+ * Merge polled card rows into the enriched snapshot.
  *
  * Rows the backend reports as no longer live are dropped, so a match that ends
- * or is postponed leaves the live page without a page reload. Rows that are new
- * to the snapshot are returned as `unknownSlugs` instead of being rendered with
- * an invented team name.
+ * or is postponed leaves the live page without a page reload. Rows that are
+ * new to the snapshot are included directly, already fully enriched.
  */
 export function mergeLiveRows(
   snapshot: MatchListItem[],
-  rows: Array<{ match: Match; serverTime: string | null }>,
+  rows: Array<{ item: MatchListItem; serverTime: string | null }>,
 ): LiveFeedPayload {
   const bySlug = new Map(snapshot.map((item) => [item.match.slug, item]));
   const items: MatchListItem[] = [];
-  const unknownSlugs: string[] = [];
   let serverTime: string | null = null;
 
-  for (const { match, serverTime: rowServerTime } of rows) {
+  for (const { item, serverTime: rowServerTime } of rows) {
     if (rowServerTime) serverTime = rowServerTime;
-    if (!isLiveStatus(match.status)) continue;
-    const existing = bySlug.get(match.slug);
-    if (!existing) {
-      unknownSlugs.push(match.slug);
-      continue;
-    }
-    items.push(applyVolatileFields(existing, match));
+    if (!isLiveStatus(item.match.status)) continue;
+    const existing = bySlug.get(item.match.slug);
+    items.push(existing ? applyVolatileFields(existing, item.match) : item);
   }
 
-  return { items: sortLiveMatches(items, (item) => item.match), unknownSlugs, serverTime };
-}
-
-/** Cap on how many new matches a single tick may resolve. */
-export const LIVE_RESOLVE_BATCH = 4;
-
-/**
- * Pick which unknown slugs to resolve now, keeping the feed responsive when
- * several matches kick off at once.
- */
-export function nextResolveBatch(unknownSlugs: string[], alreadyTried: Set<string>, batch = LIVE_RESOLVE_BATCH): string[] {
-  return unknownSlugs.filter((slug) => !alreadyTried.has(slug)).slice(0, batch);
+  return { items: sortLiveMatches(items, (item) => item.match), serverTime };
 }
