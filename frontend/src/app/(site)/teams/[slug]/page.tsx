@@ -6,7 +6,7 @@ import { LiveMatchCard, TeamCrest } from "@/components/touchline/match-cards";
 import { PlayerCard } from "@/components/touchline/discovery-cards";
 import { BreadcrumbStructuredData, Breadcrumbs, ContentSection, PageLayout, StructuredData } from "@/components/touchline/page-components";
 import { buildPageMetadata } from "@/lib/touchline/seo";
-import { getFootballSiteData, getRelatedStories, getSiteUrl, getTeamBySlug } from "@/lib/touchline/site-data";
+import { getRelatedStories, getSiteUrl, getTeamDetailPageData, getTeamBySlug } from "@/lib/touchline/site-data";
 import type { FootballMatch } from "@/lib/touchline/homepage-types";
 
 type RouteProps = { params: { slug: string } };
@@ -138,15 +138,20 @@ function managerInitials(name: string) {
 
 export default async function TeamDetailPage({ params }: RouteProps) {
   const { slug } = params;
-  const [team, data] = await Promise.all([getTeamBySlug(slug), getFootballSiteData()]);
+  // The club record, the match phases this page tabulates and the newsroom pool
+  // its coverage links are matched against — no transfer tracker, player
+  // directory, competition directory or club pool.
+  const { team, matches, stories, isDemo } = await getTeamDetailPageData(slug);
   if (!team) notFound();
   const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "Teams", href: "/teams" }, { label: team.name, href: `/teams/${slug}` }];
-  const matches = data.allMatches.filter((match) => match.homeTeam.id === team.id || match.awayTeam.id === team.id);
-  const live = matches.filter((match) => match.status === "live");
-  const upcoming = matches.filter((match) => match.status === "scheduled").slice().sort((a, b) => new Date(a.kickoffAt ?? 0).getTime() - new Date(b.kickoffAt ?? 0).getTime());
-  const recent = matches.filter((match) => match.status === "finished").slice().sort((a, b) => new Date(b.kickoffAt ?? 0).getTime() - new Date(a.kickoffAt ?? 0).getTime());
-  const related = getRelatedStories(data.allNews, [team.name, team.shortName]).slice(0, 3);
-  const squad = team.squad ?? data.players.filter((player) => (player.teamName ?? "").toLocaleLowerCase() === team.name.toLocaleLowerCase());
+  const teamMatches = matches.filter((match) => match.homeTeam.id === team.id || match.awayTeam.id === team.id);
+  const live = teamMatches.filter((match) => match.status === "live");
+  const upcoming = teamMatches.filter((match) => match.status === "scheduled").slice().sort((a, b) => new Date(a.kickoffAt ?? 0).getTime() - new Date(b.kickoffAt ?? 0).getTime());
+  const recent = teamMatches.filter((match) => match.status === "finished").slice().sort((a, b) => new Date(b.kickoffAt ?? 0).getTime() - new Date(a.kickoffAt ?? 0).getTime());
+  const related = getRelatedStories(stories, [team.name, team.shortName]).slice(0, 3);
+  // The squad comes from the club record itself. The player directory carries no
+  // club name, so the previous pool-based squad fallback could only ever be empty.
+  const squad = team.squad ?? [];
   const squadByPosition = new Map<string, typeof squad>();
   for (const p of squad) {
     const g = squadByPosition.get(p.position) ?? [];
@@ -163,7 +168,7 @@ export default async function TeamDetailPage({ params }: RouteProps) {
   const entityJsonLd = { "@context": "https://schema.org", "@type": "SportsTeam", name: team.name, sport: "Soccer", url: new URL(`/teams/${slug}`, getSiteUrl()).toString() };
   const nextMatch = upcoming[0];
   return (
-    <PageLayout isDemo={data.isDemo}>
+    <PageLayout isDemo={isDemo}>
       <BreadcrumbStructuredData items={breadcrumbItems} /><StructuredData data={entityJsonLd} />
       <div className="page-container page-container--content">
         <Breadcrumbs items={breadcrumbItems} />

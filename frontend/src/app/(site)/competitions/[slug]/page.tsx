@@ -7,7 +7,8 @@ import { LiveMatchCard, UpcomingMatchCard, ResultMatchCard } from "@/components/
 import { TeamCard } from "@/components/touchline/discovery-cards";
 import { BreadcrumbStructuredData, Breadcrumbs, ContentSection, PageLayout, StructuredData } from "@/components/touchline/page-components";
 import { buildPageMetadata } from "@/lib/touchline/seo";
-import { getCompetitionBySlug, getFootballSiteData, getRelatedStories, getSiteUrl } from "@/lib/touchline/site-data";
+import type { TeamProfile } from "@/lib/touchline/homepage-types";
+import { getCompetitionBySlug, getCompetitionDetailPageData, getRelatedStories, getSiteUrl } from "@/lib/touchline/site-data";
 
 type RouteProps = { params: { slug: string } };
 
@@ -20,32 +21,35 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
 
 export default async function CompetitionDetailPage({ params }: RouteProps) {
   const { slug } = params;
-  const [competition, data] = await Promise.all([getCompetitionBySlug(slug), getFootballSiteData()]);
+  // The competition record, the match phases this page tabulates and the
+  // newsroom pool for related coverage. Participating clubs come from the
+  // fixtures themselves, so no club, player or transfer feed is read.
+  const { competition, matches, stories, isDemo } = await getCompetitionDetailPageData(slug);
   if (!competition) notFound();
   const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "Competitions", href: "/competitions" }, { label: competition.name, href: `/competitions/${slug}` }];
-  const matches = data.allMatches.filter((match) => match.competition.id === competition.id);
-  const live = matches.filter((match) => match.status === "live");
-  const upcoming = matches.filter((match) => match.status === "scheduled").slice().sort((a, b) => new Date(a.kickoffAt ?? 0).getTime() - new Date(b.kickoffAt ?? 0).getTime());
-  const recent = matches.filter((match) => match.status === "finished").slice().sort((a, b) => new Date(b.kickoffAt ?? 0).getTime() - new Date(a.kickoffAt ?? 0).getTime());
-  const teamsById = new Map(data.teams.map((team) => [team.id, team]));
-  for (const match of matches) {
+  const competitionMatches = matches.filter((match) => match.competition.id === competition.id);
+  const live = competitionMatches.filter((match) => match.status === "live");
+  const upcoming = competitionMatches.filter((match) => match.status === "scheduled").slice().sort((a, b) => new Date(a.kickoffAt ?? 0).getTime() - new Date(b.kickoffAt ?? 0).getTime());
+  const recent = competitionMatches.filter((match) => match.status === "finished").slice().sort((a, b) => new Date(b.kickoffAt ?? 0).getTime() - new Date(a.kickoffAt ?? 0).getTime());
+  const teamsById = new Map<string, TeamProfile>();
+  for (const match of competitionMatches) {
     for (const teamRef of [match.homeTeam, match.awayTeam]) {
       if (!teamsById.has(teamRef.id)) teamsById.set(teamRef.id, { ...teamRef, href: `/teams/${teamRef.id}` });
     }
   }
-  const matchTeamIds = new Set(matches.flatMap((match) => [match.homeTeam.id, match.awayTeam.id]));
+  const matchTeamIds = new Set(competitionMatches.flatMap((match) => [match.homeTeam.id, match.awayTeam.id]));
   const selectedTeamIds = new Set([...(competition.teamIds ?? []), ...matchTeamIds]);
   const competitionTeams = [...teamsById.values()].filter((team) => selectedTeamIds.has(team.id));
-  const related = getRelatedStories(data.allNews, [competition.name, competition.abbreviation]).slice(0, 3);
+  const related = getRelatedStories(stories, [competition.name, competition.abbreviation]).slice(0, 3);
   const entityJsonLd = { "@context": "https://schema.org", "@type": "SportsOrganization", name: competition.name, sport: "Soccer", url: new URL(`/competitions/${slug}`, getSiteUrl()).toString(), description: `${competition.name} competition coverage on Touchline.` };
   return (
-    <PageLayout isDemo={data.isDemo}>
+    <PageLayout isDemo={isDemo}>
       <BreadcrumbStructuredData items={breadcrumbItems} /><StructuredData data={entityJsonLd} />
       <div className="page-container page-container--content">
         <Breadcrumbs items={breadcrumbItems} />
         <header className="entity-hero entity-hero--competition" id="overview">
           <span className="entity-hero__mark" style={{ "--entity-accent": competition.accent ?? "#0d1f14" } as CSSProperties}>{competition.logoUrl ? <img src={competition.logoUrl} alt={`${competition.name} logo`} /> : <span>{competition.abbreviation}</span>}</span>
-          <div className="entity-hero__copy"><p className="eyebrow">Competition · {competition.region}</p><h1>{competition.name}</h1><p>{competition.type ?? "Competition"} · {matches.length ? `${matches.length} ${matches.length === 1 ? "fixture" : "fixtures"} tracked` : "Fixtures, results, standings and news"}</p></div>
+          <div className="entity-hero__copy"><p className="eyebrow">Competition · {competition.region}</p><h1>{competition.name}</h1><p>{competition.type ?? "Competition"} · {competitionMatches.length ? `${competitionMatches.length} ${competitionMatches.length === 1 ? "fixture" : "fixtures"} tracked` : "Fixtures, results, standings and news"}</p></div>
           <a className="button button--dark" href="#fixtures">View fixtures</a>
         </header>
         <div className="entity-facts entity-facts--competition">
@@ -77,7 +81,7 @@ export default async function CompetitionDetailPage({ params }: RouteProps) {
                     <caption className="sr-only">{competition.name} standings</caption>
                     <thead><tr><th scope="col">#</th><th scope="col">Team</th><th scope="col">P</th><th scope="col">W</th><th scope="col">D</th><th scope="col">L</th><th scope="col">GD</th><th scope="col">Pts</th></tr></thead>
                     <tbody>{competition.standings.slice().sort((a, b) => a.position - b.position).map((standing) => {
-                      const team = data.teams.find((item) => item.id === standing.teamId);
+                      const team = teamsById.get(standing.teamId);
                       return <tr key={standing.teamId}>
                         <td>{standing.position}</td>
                         <td>{team ? <a className="standings-table__team" href={team.href}><span>{team.abbreviation}</span>{team.name}</a> : <span className="standings-table__team">Team information unavailable</span>}</td>

@@ -4,11 +4,9 @@ import { IndexHero } from "@/components/touchline/index-shell";
 import { CompetitionIndex } from "@/components/touchline/competition-index";
 import { buildCompetitionDirectory } from "@/lib/touchline/directory-data";
 import { buildPageMetadata } from "@/lib/touchline/seo";
-import { getFootballSiteData } from "@/lib/touchline/site-data";
+import { getCompetitionsPageData } from "@/lib/touchline/site-data";
 import { getPageParams } from "@/lib/data-fetch";
-import { fetchCompetitionList, COMPETITION_PAGE_SIZE } from "@/lib/competitions";
 import { siteConfig } from "@/config/site";
-import type { CompetitionRef } from "@/lib/touchline/homepage-types";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -30,22 +28,10 @@ export async function generateMetadata({ searchParams }: { searchParams?: Search
 
 export default async function CompetitionsPage({ searchParams }: { searchParams?: SearchParams }) {
   const { page } = getPageParams(searchParams ?? {});
-  const [list, data] = await Promise.all([
-    fetchCompetitionList({ page, limit: COMPETITION_PAGE_SIZE }),
-    getFootballSiteData(),
-  ]);
-  const poolById = new Map(data.competitions.map((c) => [c.id, c]));
-  const refs: CompetitionRef[] = list.rows.map((row) => poolById.get(row.slug) ?? {
-    id: row.slug,
-    name: row.name,
-    abbreviation: (row.short_name?.trim() || row.name).slice(0, 3).toUpperCase(),
-    logoUrl: row.logo_url ?? undefined,
-    href: `/competitions/${row.slug}`,
-    type: row.type ?? undefined,
-    region: row.country?.name ?? undefined,
-  });
-  const competitions = refs.length > 0 ? refs : data.competitions;
-  const directory = buildCompetitionDirectory(competitions, data.allMatches);
+  // The paginated competition list plus the match phases the directory counts
+  // fixtures from. No club, player, news or transfer feeds are read.
+  const { competitions, matches, totalPages, isDemo } = await getCompetitionsPageData(page);
+  const directory = buildCompetitionDirectory(competitions, matches);
   const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "Competitions" }];
   const itemListJsonLd = {
     "@context": "https://schema.org",
@@ -59,11 +45,11 @@ export default async function CompetitionsPage({ searchParams }: { searchParams?
   };
 
   return (
-    <PageLayout isDemo={data.isDemo}>
+    <PageLayout isDemo={isDemo}>
       <BreadcrumbStructuredData items={breadcrumbItems} />
       <StructuredData data={itemListJsonLd} />
       <div className="page-container page-container--content hub-page hub-page--competitions">
-        <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Competitions" }]} />
+        <Breadcrumbs items={breadcrumbItems} />
         <IndexHero
           eyebrow="Competitions"
           title="Leagues & tournaments"
@@ -74,11 +60,11 @@ export default async function CompetitionsPage({ searchParams }: { searchParams?
 
         <div className="hub-body">
           <CompetitionIndex directory={directory} />
-          {list.pagination.totalPages > 1 && (
+          {totalPages > 1 && (
             <nav aria-label="Competitions pages" style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
               {page > 1 && <a className="filter-chip" href={page === 2 ? "/competitions" : `/competitions?page=${page - 1}`}>← Previous</a>}
-              <span aria-current="page">Page {page} of {list.pagination.totalPages}</span>
-              {page < list.pagination.totalPages && <a className="filter-chip" href={`/competitions?page=${page + 1}`}>Next →</a>}
+              <span aria-current="page">Page {page} of {totalPages}</span>
+              {page < totalPages && <a className="filter-chip" href={`/competitions?page=${page + 1}`}>Next →</a>}
             </nav>
           )}
         </div>

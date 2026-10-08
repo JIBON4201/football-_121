@@ -12,6 +12,7 @@ import { fetchList, fetchListSafely, hasIdentity } from "./data-fetch";
 import { formatRelative, toFiniteNumber } from "./dates";
 import { initials, statusSlug } from "./directory-data";
 import type {
+  BreakingItem,
   CompetitionRef,
   EditorialImage,
   FootballMatch,
@@ -432,28 +433,42 @@ export function loadTransferNews(): Promise<NewsStory[]> {
   return loadStories("/news", HOMEPAGE_LIMITS.transferNews, HOMEPAGE_REVALIDATE.transferNews, "homepage:transfers", { type: "transfer" });
 }
 
-/**
- * Lead and supporting stories from one ordered window: a featured article leads
- * when the newsroom has marked one, otherwise the newest published article does.
- */
-export async function loadLeadStories(): Promise<{ featured?: NewsStory; supporting: NewsStory[] }> {
-  const { rows } = await fetchListSafely<Article>("/news/latest", {
-    limit: HOMEPAGE_LIMITS.latestNews,
-    next: { revalidate: HOMEPAGE_REVALIDATE.latestNews, tags: ["homepage:latest"] },
-  });
-  const stories = rows.filter(hasIdentity).map(toNewsStory);
-  const featuredIndex = rows.findIndex((row) => row.is_featured && hasIdentity(row));
-  const featured = stories[featuredIndex === -1 ? 0 : featuredIndex];
-  const supporting = stories.filter((story) => story.id !== featured?.id).slice(0, 2);
-  return { featured, supporting };
+export interface LatestNewsWindow {
+  /** The whole ordered window, exactly as the API returned it. */
+  latest: NewsStory[];
+  /** A newsroom-marked article leads; otherwise the newest published one does. */
+  featured?: NewsStory;
+  supporting: NewsStory[];
 }
 
-export async function loadLatestNews(): Promise<NewsStory[]> {
+/**
+ * The ordered latest-news window, read once and split three ways.
+ *
+ * The lead story, its supporting pair and the "latest" list are all views of the
+ * same `/news/latest` response. Fetching it per view meant asking the API for an
+ * identical payload two or three times in a single render, so the window is read
+ * once here and every caller reads a different slice of the same records.
+ */
+export async function loadLatestWindow(): Promise<LatestNewsWindow> {
   const { rows } = await fetchListSafely<Article>("/news/latest", {
     limit: HOMEPAGE_LIMITS.latestNews,
     next: { revalidate: HOMEPAGE_REVALIDATE.latestNews, tags: ["homepage:latest"] },
   });
-  return rows.filter(hasIdentity).map(toNewsStory);
+  const latest = rows.filter(hasIdentity).map(toNewsStory);
+  const featuredIndex = rows.findIndex((row) => row.is_featured && hasIdentity(row));
+  const featured = latest[featuredIndex === -1 ? 0 : featuredIndex];
+  const supporting = latest.filter((story) => story.id !== featured?.id).slice(0, 2);
+  return { latest, ...(featured ? { featured } : {}), supporting };
+}
+
+/** The three headline slots a breaking strip shows. */
+export function toBreakingItems(stories: NewsStory[]): BreakingItem[] {
+  return stories.slice(0, 3).map((story) => ({
+    id: story.id,
+    headline: story.title,
+    publishedAt: story.publishedAt,
+    href: story.href,
+  }));
 }
 
 export async function loadCompetitions(): Promise<CompetitionRef[]> {

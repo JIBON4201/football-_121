@@ -6,7 +6,7 @@ import { TeamCrest } from "@/components/touchline/match-cards";
 import { BreadcrumbStructuredData, Breadcrumbs, ContentSection, PageLayout, StructuredData } from "@/components/touchline/page-components";
 import { readFee, statusSlug } from "@/lib/touchline/directory-data";
 import { buildPageMetadata } from "@/lib/touchline/seo";
-import { getFootballSiteData, getPlayerBySlug, getRelatedStories, getSiteUrl } from "@/lib/touchline/site-data";
+import { getPlayerBySlug, getPlayerDetailPageData, getRelatedStories, getSiteUrl } from "@/lib/touchline/site-data";
 
  type RouteProps = { params: { slug: string } };
 
@@ -35,20 +35,19 @@ function transferMatchesPlayer(transferName: string, playerName: string) {
 
 export default async function PlayerProfilePage({ params }: RouteProps) {
   const { slug } = params;
-  const [player, data] = await Promise.all([getPlayerBySlug(slug), getFootballSiteData()]);
+  // The profile, the club pool that resolves its current side, the newsroom pool
+  // for coverage links and the tracked-move pool for career history. No match
+  // feeds, no competition directory.
+  const { player, teams, stories, transfers, isDemo } = await getPlayerDetailPageData(slug);
   if (!player) notFound();
   const teamName = player.teamName;
   // The player list endpoint returns no club name, so team resolution is skipped
   // entirely when the record carries none.
-  const teamRecord = teamName ? data.teams.find((item) => item.name.toLocaleLowerCase() === teamName.toLocaleLowerCase()) : undefined;
-  const teamFromMatches = teamName
-    ? data.allMatches.flatMap((match) => [match.homeTeam, match.awayTeam]).find((item) => item.name.toLocaleLowerCase() === teamName.toLocaleLowerCase())
-    : undefined;
-  const team = teamRecord ?? (teamFromMatches ? { ...teamFromMatches, href: `/teams/${teamFromMatches.id}` } : undefined);
+  const team = teamName ? teams.find((item) => item.name.toLocaleLowerCase() === teamName.toLocaleLowerCase()) : undefined;
   const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "Players", href: "/players" }, { label: player.name, href: `/players/${slug}` }];
-  const related = getRelatedStories(data.allNews, [player.name]).slice(0, 3);
-  const teamNews = teamName ? getRelatedStories(data.allNews.filter((s) => !related.some((r) => r.href === s.href)), [teamName]).slice(0, 3) : [];
-  const transferHistory = data.transfers.filter((transfer) => transferMatchesPlayer(transfer.playerName, player.name));
+  const related = getRelatedStories(stories, [player.name]).slice(0, 3);
+  const teamNews = teamName ? getRelatedStories(stories.filter((s) => !related.some((r) => r.href === s.href)), [teamName]).slice(0, 3) : [];
+  const transferHistory = transfers.filter((transfer) => transferMatchesPlayer(transfer.playerName, player.name));
   const previousClubs = transferHistory
     .flatMap((transfer) => [transfer.fromTeam, transfer.toTeam])
     .filter((club, index, list) => list.findIndex((item) => item.id === club.id) === index)
@@ -65,7 +64,7 @@ export default async function PlayerProfilePage({ params }: RouteProps) {
   ].filter((item): item is { label: string; value: number } => typeof item.value === "number");
   const entityJsonLd = { "@context": "https://schema.org", "@type": "Person", name: player.name, jobTitle: "Footballer", nationality: player.country, image: player.image?.src, affiliation: team ? { "@type": "SportsTeam", name: team.name } : { "@type": "SportsTeam", name: player.teamName }, url: new URL(`/players/${slug}`, getSiteUrl()).toString() };
   return (
-    <PageLayout isDemo={data.isDemo}>
+    <PageLayout isDemo={isDemo}>
       <BreadcrumbStructuredData items={breadcrumbItems} /><StructuredData data={entityJsonLd} />
       <div className="page-container page-container--content player-detail-page">
         <Breadcrumbs items={breadcrumbItems} />

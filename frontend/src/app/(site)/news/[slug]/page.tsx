@@ -5,9 +5,42 @@ import { NewsCard } from "@/components/touchline/news-card";
 import { BreadcrumbStructuredData, Breadcrumbs, ContentSection, PageLayout, StructuredData } from "@/components/touchline/page-components";
 import { buildPageMetadata } from "@/lib/touchline/seo";
 import { siteConfig } from "@/config/site";
-import { getArticleBySlug, getFootballSiteData, getRelatedStories, getSiteUrl } from "@/lib/touchline/site-data";
+import { getArticlePageData, getArticleBySlug, getRelatedStories, getSiteUrl } from "@/lib/touchline/site-data";
 
 type RouteProps = { params: { slug: string } };
+
+interface ArticleLink {
+  title: string;
+  url: string;
+}
+
+interface RelatedCoverage {
+  entities: ArticleLink[];
+  related: ArticleLink[];
+}
+
+/**
+ * Entity and article relations for the story, from real relation rows only.
+ * A failure here is reported as "no relations" so the article still renders.
+ */
+async function fetchRelatedCoverage(slug: string): Promise<RelatedCoverage> {
+  try {
+    const mod = await import("@/lib/news");
+    const rel = await mod.fetchRelatedArticles(slug, 6);
+    return {
+      entities: (rel.entities ?? [])
+        .slice(0, 8)
+        .map((e) => ({ title: e.title, url: e.url.replace(/^https?:\/\/[^/]+/, "") }))
+        .filter((e) => e.url.startsWith("/")),
+      related: (rel.related ?? [])
+        .slice(0, 6)
+        .map((e) => ({ title: e.title, url: e.url.replace(/^https?:\/\/[^/]+/, "") }))
+        .filter((e) => e.url.startsWith("/news/")),
+    };
+  } catch {
+    return { entities: [], related: [] };
+  }
+}
 
 export async function generateMetadata({ params }: RouteProps): Promise<Metadata> {
   const { slug } = params;
@@ -24,28 +57,22 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
 
 export default async function NewsArticlePage({ params }: RouteProps) {
   const { slug } = params;
-  const [article, data] = await Promise.all([
-    getArticleBySlug(slug),
-    getFootballSiteData(),
+  // The article plus the newsroom pool its sidebar and related-coverage links
+  // are matched against. The related-entity feed is read alongside them rather
+  // than after them.
+  const [{ article, stories, isDemo }, relations] = await Promise.all([
+    getArticlePageData(slug),
+    fetchRelatedCoverage(slug),
   ]);
   if (!article) notFound();
   // Entity-specific internal links from real article relations (no invented links).
   // Falls back to empty so the page still renders when the SEO service is down.
-  let entityLinks: Array<{ title: string; url: string }> = [];
-  let relatedSeo: Array<{ title: string; url: string }> = [];
-  try {
-    const mod = await import("@/lib/news");
-    const rel = await mod.fetchRelatedArticles(slug, 6);
-    entityLinks = (rel.entities ?? []).slice(0, 8).map((e) => ({ title: e.title, url: e.url.replace(/^https?:\/\/[^/]+/, "") })).filter((e) => e.url.startsWith("/"));
-    relatedSeo = (rel.related ?? []).slice(0, 6).map((e) => ({ title: e.title, url: e.url.replace(/^https?:\/\/[^/]+/, "") })).filter((e) => e.url.startsWith("/news/"));
-  } catch {
-    entityLinks = [];
-    relatedSeo = [];
-  }
+  const entityLinks = relations.entities;
+  const relatedSeo = relations.related;
   const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "News", href: "/news" }, { label: article.story.title, href: `/news/${slug}` }];
-  const related = getRelatedStories(data.allNews.filter((story) => story.href !== article.story.href), [article.story.category]).slice(0, 3);
+  const related = getRelatedStories(stories.filter((story) => story.href !== article.story.href), [article.story.category]).slice(0, 3);
   const relatedHrefs = new Set(related.map((story) => story.href));
-  const sidebarStories = data.allNews.filter((story) => story.href !== article.story.href && !relatedHrefs.has(story.href)).slice(0, 4);
+  const sidebarStories = stories.filter((story) => story.href !== article.story.href && !relatedHrefs.has(story.href)).slice(0, 4);
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
@@ -63,7 +90,7 @@ export default async function NewsArticlePage({ params }: RouteProps) {
     datePublished: article.publishedIso,
   };
   return (
-    <PageLayout isDemo={data.isDemo}>
+    <PageLayout isDemo={isDemo}>
       <BreadcrumbStructuredData items={breadcrumbItems} />
       <StructuredData data={articleJsonLd} />
       <article className="page-container article-page">

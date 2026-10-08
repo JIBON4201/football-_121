@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { buildPageMetadata } from '@/lib/touchline/seo';
-import { getFootballSiteData } from '@/lib/touchline/site-data';
+import { getBreakingNewsPageData } from '@/lib/touchline/site-data';
 import { BreadcrumbStructuredData, PageLayout, PageIntro, StructuredData } from '@/components/touchline/page-components';
 import { NewsExplorer } from '@/components/touchline/directory-explorer';
+import { siteConfig } from '@/config/site';
 
 const TITLE = 'Breaking football news';
 const DESCRIPTION = 'Breaking football news and official updates as they are published.';
@@ -16,9 +17,9 @@ export const metadata: Metadata = buildPageMetadata({
 export const revalidate = 60;
 
 export default async function BreakingNewsPage() {
-  const data = await getFootballSiteData();
-  const stories = data.allNews.filter((story) => story.category.toLowerCase() === 'breaking');
-  const { siteConfig } = await import('@/config/site');
+  // Breaking headlines only: the breaking feed and the latest window they are
+  // also published in. No matches, transfers, clubs, players or competitions.
+  const { stories } = await getBreakingNewsPageData();
   const itemListJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',

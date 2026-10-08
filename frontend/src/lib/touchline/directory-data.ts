@@ -2,9 +2,10 @@
  * Presentation-layer derivations for the Transfers, Competitions and Teams directories.
  *
  * These helpers only reshape records that the existing providers already return
- * (`getHomepageData()` / `getFootballSiteData()`). No endpoint, database shape or
- * API contract is changed, and nothing is invented: every derived value is either
- * copied from an existing field or counted from records that are present.
+ * (`getHomepageData()` and the route loaders in `site-data.ts`). No endpoint,
+ * database shape or API contract is changed, and nothing is invented: every
+ * derived value is either copied from an existing field or counted from records
+ * that are present.
  */
 import type { CompetitionRef, FootballMatch, TeamProfile } from "./homepage-types";
 

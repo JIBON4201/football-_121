@@ -1,9 +1,8 @@
-import type { BreakingItem, HomepageData, NewsStory } from "./homepage-types";
+import type { HomepageData } from "./homepage-types";
 import {
   loadBreakingNews,
   loadCompetitions,
-  loadLeadStories,
-  loadLatestNews,
+  loadLatestWindow,
   loadLiveMatches,
   loadPlayers,
   loadRecentMatches,
@@ -11,6 +10,7 @@ import {
   loadTransferNews,
   loadTransfers,
   loadUpcomingMatches,
+  toBreakingItems,
 } from "./homepage-api";
 
 /**
@@ -20,15 +20,18 @@ import {
  * `homepage-api.ts`. Sections are loaded independently, so a failing or empty feed
  * degrades to the section's own empty state instead of failing the page, and no
  * section is ever populated with demo content.
+ *
+ * This is the only loader that needs the whole site dataset: the homepage renders
+ * every section. Routes that need a subset ask `site-data.ts` for just their feeds,
+ * so they never pay for sections they do not show.
  */
 export async function getHomepageData(): Promise<HomepageData> {
-  const [liveMatches, upcomingMatches, recentMatches, lead, latestNews, breakingNews, transferNews, competitions, teams, players, transfers] =
+  const [liveMatches, upcomingMatches, recentMatches, latestWindow, breakingNews, transferNews, competitions, teams, players, transfers] =
     await Promise.all([
       loadLiveMatches(),
       loadUpcomingMatches(),
       loadRecentMatches(),
-      loadLeadStories(),
-      loadLatestNews(),
+      loadLatestWindow(),
       loadBreakingNews(),
       loadTransferNews(),
       loadCompetitions(),
@@ -37,23 +40,15 @@ export async function getHomepageData(): Promise<HomepageData> {
       loadTransfers(),
     ]);
 
-  const toBreakingItems = (stories: NewsStory[]): BreakingItem[] =>
-    stories.slice(0, 3).map((story) => ({
-      id: story.id,
-      headline: story.title,
-      publishedAt: story.publishedAt,
-      href: story.href,
-    }));
-
   return {
     isDemo: false,
-    featuredStory: lead.featured,
-    supportingStories: lead.supporting,
+    featuredStory: latestWindow.featured,
+    supportingStories: latestWindow.supporting,
     liveMatches,
     breakingNews: toBreakingItems(breakingNews),
     upcomingMatches,
     recentMatches,
-    latestNews,
+    latestNews: latestWindow.latest,
     transfers,
     transferStories: transferNews,
     competitions,

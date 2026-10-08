@@ -2,11 +2,9 @@ import type { Metadata } from "next";
 import { DirectoryExplorer } from "@/components/touchline/directory-explorer";
 import { BreadcrumbStructuredData, PageIntro, PageLayout, StructuredData } from "@/components/touchline/page-components";
 import { buildPageMetadata } from "@/lib/touchline/seo";
-import { getFootballSiteData } from "@/lib/touchline/site-data";
+import { getPlayersPageData } from "@/lib/touchline/site-data";
 import { getPageParams } from "@/lib/data-fetch";
-import { fetchPlayerList, PLAYER_PAGE_SIZE } from "@/lib/players";
 import { siteConfig } from "@/config/site";
-import type { PlayerProfile } from "@/lib/touchline/homepage-types";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -28,19 +26,9 @@ export async function generateMetadata({ searchParams }: { searchParams?: Search
 
 export default async function PlayersPage({ searchParams }: { searchParams?: SearchParams }) {
   const { page } = getPageParams(searchParams ?? {});
-  const [list, data] = await Promise.all([
-    fetchPlayerList({ page, limit: PLAYER_PAGE_SIZE }),
-    getFootballSiteData(),
-  ]);
-  const poolById = new Map(data.players.map((p) => [p.id, p]));
-  const profiles: PlayerProfile[] = list.rows.map((row) => poolById.get(row.slug) ?? {
-    id: row.slug,
-    name: row.display_name,
-    position: row.position ?? "",
-    href: `/players/${row.slug}`,
-    ...(row.photo_url ? { image: { src: row.photo_url, alt: row.display_name } } : {}),
-  });
-  const items = profiles.length > 0 ? profiles : data.players;
+  // One feed: the paginated player list. The directory renders no matches, clubs,
+  // competitions or coverage, so none of those are read.
+  const { players: items, totalPages, isDemo } = await getPlayersPageData(page);
   const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "Players" }];
   const itemListJsonLd = {
     "@context": "https://schema.org",
@@ -52,14 +40,14 @@ export default async function PlayersPage({ searchParams }: { searchParams?: Sea
       name: p.name,
     })),
   };
-  return <PageLayout isDemo={data.isDemo}><BreadcrumbStructuredData items={breadcrumbItems} /><StructuredData data={itemListJsonLd} /><div className="page-container page-container--content players-directory-page">
+  return <PageLayout isDemo={isDemo}><BreadcrumbStructuredData items={breadcrumbItems} /><StructuredData data={itemListJsonLd} /><div className="page-container page-container--content players-directory-page">
     <PageIntro eyebrow="Players" title="Player profiles" breadcrumbs={[{ label: "Home", href: "/" }, { label: "Players" }]} />
     <DirectoryExplorer kind="players" items={items} />
-    {list.pagination.totalPages > 1 && (
+    {totalPages > 1 && (
       <nav aria-label="Players pages" style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
         {page > 1 && <a className="filter-chip" href={page === 2 ? "/players" : `/players?page=${page - 1}`}>← Previous</a>}
-        <span aria-current="page">Page {page} of {list.pagination.totalPages}</span>
-        {page < list.pagination.totalPages && <a className="filter-chip" href={`/players?page=${page + 1}`}>Next →</a>}
+        <span aria-current="page">Page {page} of {totalPages}</span>
+        {page < totalPages && <a className="filter-chip" href={`/players?page=${page + 1}`}>Next →</a>}
       </nav>
     )}
   </div></PageLayout>;
