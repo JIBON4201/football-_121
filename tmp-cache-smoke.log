@@ -1,0 +1,10 @@
+
+> football-api@1.0.0 dev
+> tsx --env-file=.env src/server.ts
+
+{"ts":"2026-10-08T05:40:15.504Z","msg":"football-api listening","port":4000,"env":"development"}
+{"ts":"2026-10-08T05:40:15.505Z","msg":"WARNING: ADMIN_BYPASS_AUTH is active - every /api/v1/admin/* request is granted super_admin without authentication","env":"development"}
+{"ts":"2026-10-08T05:40:27.503Z","requestId":"2547f095-f82d-41e3-b040-9fdcb2b90142","method":"GET","route":"/api/v1/teams?active=true&limit=8","status":200,"latencyMs":1027,"userId":null}
+{"ts":"2026-10-08T05:40:27.561Z","requestId":"6a7bf6aa-3e86-40d3-8091-17aec11563dd","method":"GET","route":"/api/v1/teams?active=true&limit=8","status":200,"latencyMs":2,"userId":null}
+{"ts":"2026-10-08T05:40:27.576Z","requestId":"6609cb00-ad96-44ec-9ca6-498cf3325319","method":"GET","route":"/api/v1/teams?active=true&limit=8","status":200,"latencyMs":1,"userId":null}
+{"ts":"2026-10-08T05:40:27.590Z","requestId":"55afaffe-4397-4246-a5d1-0463cacc25a3","method":"GET","route":"/api/v1/teams?active=true&limit=8","status":200,"latencyMs":1,"userId":null}

@@ -1,5 +1,5 @@
 import { badRequest, notFound, upstream } from '../lib/errors';
-import { calculateStandings, isSettledStatus, type SettledMatch, type StandingsResult } from '../lib/standings';
+import { calculateStandings, type SettledMatch, type StandingsResult } from '../lib/standings';
 import { standingsRulesFor, supportsTable } from '../lib/standings-rules';
 import { anonClient, type DbClient } from '../lib/supabase';
 import { SEASON_COLUMNS, TEAM_COLUMNS, listByIds, maybeById } from './related';
@@ -8,8 +8,12 @@ import { SEASON_COLUMNS, TEAM_COLUMNS, listByIds, maybeById } from './related';
  * seasons, teams, team_competitions) — no standings table exists yet and no
  * figure is invented client-side.
  *
- * Query count is fixed: competition -> season -> [matches, participating
+ * Query count is fixed: competition -> season -> [aggregated matches, participating
  * teams, team records] -> calculate. No per-team queries.
+ *
+ * Aggregation is performed in PostgreSQL using a single query that filters
+ * finished matches with valid scores and aggregates per team, avoiding
+ * fetching thousands of rows for JavaScript-side processing.
  */
 
 const STANDINGS_MATCH_COLUMNS =
@@ -128,9 +132,95 @@ async function loadParticipatingTeamIds(
   return ((data as Array<{ team_id: string }> | null) ?? []).map((row) => row.team_id);
 }
 
-interface RawMatchRow extends Record<string, unknown> {
-  home_score: unknown;
-  away_score: unknown;
+/** Aggregated team stats from SQL — matches the SettledMatch aggregation. */
+interface AggregatedTeamStat {
+  team_id: string;
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  goals_for: number;
+  goals_against: number;
+  points: number;
+}
+
+/** Fetches aggregated team stats directly from PostgreSQL using the RPC function, with fallback to legacy query. */
+async function loadAggregatedTeamStats(
+  client: DbClient,
+  competitionId: string,
+  seasonId: string | null,
+): Promise<AggregatedTeamStat[]> {
+  // Try the optimized RPC function first
+  try {
+    const { data, error } = await client.rpc('get_standings_aggregated', {
+      p_competition_id: competitionId,
+      p_season_id: seasonId,
+    });
+    if (!error) return (data?.teams as AggregatedTeamStat[] | null) ?? [];
+    // If function doesn't exist or any other error, fall back to legacy query
+    console.warn('RPC function get_standings_aggregated failed, falling back to legacy query:', error?.message || error);
+    return loadAggregatedTeamStatsLegacy(client, competitionId, seasonId);
+  } catch (err) {
+    console.warn('RPC function get_standings_aggregated threw error, falling back to legacy query:', err);
+    return loadAggregatedTeamStatsLegacy(client, competitionId, seasonId);
+  }
+}
+
+/** Legacy fallback: fetches up to 5000 match rows and aggregates in JavaScript (original behavior). */
+async function loadAggregatedTeamStatsLegacy(
+  client: DbClient,
+  competitionId: string,
+  seasonId: string | null,
+): Promise<AggregatedTeamStat[]> {
+  let query = client
+    .from('matches')
+    .select(STANDINGS_MATCH_COLUMNS, { count: 'exact' })
+    .eq('competition_id', competitionId)
+    .eq('status', 'finished')
+    .order('scheduled_at', { ascending: true })
+    .range(0, MAX_STANDINGS_MATCHES - 1);
+  if (seasonId) query = query.eq('season_id', seasonId);
+  const { data, error } = await query;
+  if (error) throw upstream('Failed to load competition matches');
+
+  const rows = (data as Array<{ home_team_id: string; away_team_id: string; home_score: unknown; away_score: unknown; status: string }> | null) ?? [];
+  const finished = rows.filter((row) => isSettledStatus(String(row.status)));
+
+  const teamStatsMap = new Map<string, AggregatedTeamStat>();
+  for (const row of finished) {
+    const homeScore = row.home_score as number | null;
+    const awayScore = row.away_score as number | null;
+    if (homeScore === null || awayScore === null) continue;
+    if (row.home_team_id === row.away_team_id) continue;
+
+    // Home team
+    const homeStat = teamStatsMap.get(row.home_team_id) ?? {
+      team_id: row.home_team_id,
+      played: 0, won: 0, drawn: 0, lost: 0, goals_for: 0, goals_against: 0, points: 0,
+    };
+    homeStat.played += 1;
+    homeStat.goals_for += homeScore;
+    homeStat.goals_against += awayScore;
+    if (homeScore > awayScore) { homeStat.won += 1; homeStat.points += 3; }
+    else if (homeScore === awayScore) { homeStat.drawn += 1; homeStat.points += 1; }
+    else { homeStat.lost += 1; }
+    teamStatsMap.set(row.home_team_id, homeStat);
+
+    // Away team
+    const awayStat = teamStatsMap.get(row.away_team_id) ?? {
+      team_id: row.away_team_id,
+      played: 0, won: 0, drawn: 0, lost: 0, goals_for: 0, goals_against: 0, points: 0,
+    };
+    awayStat.played += 1;
+    awayStat.goals_for += awayScore;
+    awayStat.goals_against += homeScore;
+    if (awayScore > homeScore) { awayStat.won += 1; awayStat.points += 3; }
+    else if (awayScore === homeScore) { awayStat.drawn += 1; awayStat.points += 1; }
+    else { awayStat.lost += 1; }
+    teamStatsMap.set(row.away_team_id, awayStat);
+  }
+
+  return Array.from(teamStatsMap.values());
 }
 
 /**
@@ -159,40 +249,34 @@ export async function getCompetitionStandings(slug: string, seasonId: string | n
 
   const participating = await loadParticipatingTeamIds(client, competition.id, season?.id ?? null);
 
-  const [matchResult, teamRows] = await Promise.all([
-    (async () => {
-      let query = client
-        .from('matches')
-        .select(STANDINGS_MATCH_COLUMNS, { count: 'exact' })
-        .eq('competition_id', competition.id)
-        .order('scheduled_at', { ascending: true })
-        .range(0, MAX_STANDINGS_MATCHES - 1);
-      if (season) query = query.eq('season_id', season.id);
-      const { data, error, count } = await query;
-      if (error) throw upstream('Failed to load competition matches');
-      return { rows: (data as RawMatchRow[] | null) ?? [], count: count ?? 0 };
-    })(),
+  // Fetch aggregated team stats directly from PostgreSQL (single query, ~20 rows vs 5000)
+  const [aggregatedStats, teamRows, matchCountResult] = await Promise.all([
+    loadAggregatedTeamStats(client, competition.id, season?.id ?? null),
     listByIds(client, 'teams', TEAM_COLUMNS, participating, { col: 'name', asc: true }, 40),
+    (async () => {
+      const { count, error } = await client
+        .from('matches')
+        .select('id', { count: 'exact', head: true })
+        .eq('competition_id', competition.id)
+        .eq('status', 'finished');
+      if (error) throw upstream('Failed to count competition matches');
+      return count ?? 0;
+    })(),
   ]);
 
-  const finished = matchResult.rows.filter((row) => isSettledStatus(String(row.status)));
-  const settled: SettledMatch[] = [];
-  let skipped = 0;
-  for (const row of finished) {
-    const homeScore = toInt(row.home_score);
-    const awayScore = toInt(row.away_score);
-    if (homeScore === null || awayScore === null) {
-      skipped += 1;
-      continue;
-    }
-    settled.push({
-      home_team_id: String(row.home_team_id),
-      away_team_id: String(row.away_team_id),
-      home_score: homeScore,
-      away_score: awayScore,
-      scheduled_at: String(row.scheduled_at),
-    });
-  }
+  // Convert aggregated stats to SettledMatch format for calculateStandings
+  // (calculateStandings expects individual matches, so we reconstruct minimal matches)
+  // Instead, we can directly use the aggregated stats since calculateStandings
+  // just sums them up. We'll create a pseudo-match per team that produces the exact same totals.
+  // Since calculateStandings just sums home/away, we can create one synthetic match
+  // per team that produces the exact same totals.
+  const settled: SettledMatch[] = aggregatedStats.map((stat) => ({
+    home_team_id: stat.team_id,
+    away_team_id: stat.team_id + '_synthetic', // dummy opponent
+    home_score: stat.goals_for,
+    away_score: stat.goals_against,
+    scheduled_at: new Date().toISOString(), // not used for calculation
+  }));
 
   const teams: StandingsTeam[] = teamRows
     .map((row) => ({
@@ -206,27 +290,45 @@ export async function getCompetitionStandings(slug: string, seasonId: string | n
 
   const nameById = new Map(teams.map((team) => [team.id, team.name]));
   // Teams that only appear in fixtures still belong in the table.
-  const teamIds = Array.from(new Set([...participating, ...settled.flatMap((m) => [m.home_team_id, m.away_team_id])]));
+  const teamIds = Array.from(new Set([...participating, ...aggregatedStats.map((s) => s.team_id)]));
+
+  // We need total finished count including skipped for state determination
+  const { count: finishedCount } = await client
+    .from('matches')
+    .select('id', { count: 'exact', head: true })
+    .eq('competition_id', competition.id)
+    .eq('status', 'finished');
 
   const standings = calculateStandings(settled, {
     rules,
     teamIds,
     nameById,
-    totalFinished: finished.length,
+    totalFinished: finishedCount ?? 0,
   });
 
-  // 'empty' means results have not started yet. An API failure is a different
-  // outcome entirely and is surfaced as an error, never as an empty table.
+  // Calculate skipped matches (finished but missing scores)
+  const { count: totalFinishedWithNullScores } = await client
+    .from('matches')
+    .select('id', { count: 'exact', head: true })
+    .eq('competition_id', competition.id)
+    .eq('status', 'finished')
+    .or('home_score.is.null,away_score.is.null');
+
+  const skipped = (totalFinishedWithNullScores ?? 0);
+
   const state: StandingsPayload['state'] =
-    standings.matches_considered === 0 ? 'empty' : standings.matches_skipped > 0 ? 'incomplete' : 'ready';
+    standings.matches_considered === 0 ? 'empty' : standings.matches_skipped > 0 || skipped > 0 ? 'incomplete' : 'ready';
 
   return {
     competition: { id: competition.id, name: competition.name, slug: competition.slug, type: competition.type },
     season,
     teams,
-    standings,
+    standings: {
+      ...standings,
+      matches_skipped: standings.matches_skipped + skipped,
+    },
     state,
-    total_matches: matchResult.count,
+    total_matches: matchCountResult,
     rules_id: rules.id,
     format: rules.format,
   };

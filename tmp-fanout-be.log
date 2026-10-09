@@ -1,0 +1,29 @@
+
+> football-api@1.0.0 dev
+> tsx --env-file=.env src/server.ts
+
+{"ts":"2026-10-08T05:44:57.702Z","msg":"football-api listening","port":4000,"env":"development"}
+{"ts":"2026-10-08T05:44:57.703Z","msg":"WARNING: ADMIN_BYPASS_AUTH is active - every /api/v1/admin/* request is granted super_admin without authentication","env":"development"}
+{"ts":"2026-10-08T05:45:10.308Z","requestId":"052db3cd-18c9-4090-b0b4-80503896f748","method":"GET","route":"/api/v1/health","status":200,"latencyMs":4,"userId":null}
+{"ts":"2026-10-08T05:45:18.727Z","requestId":"c0678ec3-e852-4ffb-ac19-31b6971c41b2","method":"GET","route":"/api/v1/matches/live?page=1&limit=12","status":200,"latencyMs":613,"userId":null}
+{"ts":"2026-10-08T05:45:18.875Z","requestId":"32d4deee-e4e2-48eb-b504-e5c89f3f265b","method":"GET","route":"/api/v1/matches/finished?page=1&limit=12","status":200,"latencyMs":704,"userId":null}
+{"ts":"2026-10-08T05:45:18.876Z","requestId":"87466014-e200-4a44-a595-10e2b4189306","method":"GET","route":"/api/v1/matches/upcoming?page=1&limit=12","status":200,"latencyMs":709,"userId":null}
+{"ts":"2026-10-08T05:45:20.075Z","requestId":"51f710bf-8d89-4a20-ae85-0ae4dcdca1fc","method":"GET","route":"/api/v1/matches/seed-team-nbu-vs-seed-team-spr-2030-02-01/details","status":200,"latencyMs":1189,"userId":null}
+{"ts":"2026-10-08T05:45:20.082Z","requestId":"d733a6ee-1a9c-4043-92d4-098500e75a10","method":"GET","route":"/api/v1/matches/seed-team-spr-vs-seed-team-wfa-2026-09-13/details","status":200,"latencyMs":1199,"userId":null}
+{"ts":"2026-10-08T05:45:20.385Z","requestId":"4f93a43e-a969-4e63-824a-930131423ede","method":"GET","route":"/api/v1/matches/seed-team-nbu-vs-seed-team-evc-2026-09-12/details","status":200,"latencyMs":1499,"userId":null}
+{"ts":"2026-10-08T05:45:21.287Z","requestId":"9426da18-1af9-40b8-b303-153551ead0dc","method":"GET","route":"/api/v1/matches/upcoming?page=1&limit=6","status":200,"latencyMs":146,"userId":null}
+{"ts":"2026-10-08T05:45:21.288Z","requestId":"60795eb4-97cb-4762-91cb-001e2426538d","method":"GET","route":"/api/v1/news/latest?page=1&limit=8","status":200,"latencyMs":150,"userId":null}
+{"ts":"2026-10-08T05:45:21.291Z","requestId":"d7bf51f8-3bc2-423d-a6f2-8dec7ceb3b4d","method":"GET","route":"/api/v1/matches/finished?page=1&limit=6","status":200,"latencyMs":148,"userId":null}
+{"ts":"2026-10-08T05:45:21.298Z","requestId":"a77e8960-1cfd-41d9-972f-e2399bd679cc","method":"GET","route":"/api/v1/matches/live?page=1&limit=6","status":200,"latencyMs":152,"userId":null}
+{"ts":"2026-10-08T05:45:21.309Z","requestId":"f4722f62-5e5f-4d36-a1da-c34e78d2f2db","method":"GET","route":"/api/v1/news?page=1&limit=4&type=transfer","status":200,"latencyMs":161,"userId":null}
+{"ts":"2026-10-08T05:45:21.310Z","requestId":"d2392f8a-34fc-4ce8-aa15-fe3212cef9bf","method":"GET","route":"/api/v1/teams?page=1&limit=8&active=true","status":200,"latencyMs":160,"userId":null}
+{"ts":"2026-10-08T05:45:21.312Z","requestId":"ea9978e6-0a04-4567-a031-b07d32ab69cf","method":"GET","route":"/api/v1/news/breaking?page=1&limit=4","status":200,"latencyMs":165,"userId":null}
+{"ts":"2026-10-08T05:45:21.314Z","requestId":"01dfde7c-85c4-47ac-acb1-afc6f9e0a6e0","method":"GET","route":"/api/v1/players?page=1&limit=8","status":200,"latencyMs":163,"userId":null}
+{"ts":"2026-10-08T05:45:21.315Z","requestId":"efb718ab-bab6-4dbb-b17b-7c19508c6e84","method":"GET","route":"/api/v1/competitions?page=1&limit=6&active=true","status":200,"latencyMs":166,"userId":null}
+{"ts":"2026-10-08T05:45:21.489Z","requestId":"a6d90e0d-2959-4ed1-80d1-8a8f0daedc81","method":"GET","route":"/api/v1/transfers?page=1&limit=6","status":200,"latencyMs":335,"userId":null}
+{"ts":"2026-10-08T05:46:49.916Z","requestId":"1a740c7d-9c40-4e00-a1b9-84e507409422","method":"GET","route":"/api/v1/matches/upcoming?page=1&limit=12","status":200,"latencyMs":367,"userId":null}
+{"ts":"2026-10-08T05:46:49.919Z","requestId":"00e27121-ff29-4797-9003-c0761d0c4022","method":"GET","route":"/api/v1/matches/live?page=1&limit=12","status":200,"latencyMs":368,"userId":null}
+{"ts":"2026-10-08T05:46:50.318Z","requestId":"c437b8e9-592d-4cdd-ab07-acac64c64dcc","method":"GET","route":"/api/v1/matches/seed-team-nbu-vs-seed-team-spr-2030-02-01/details","status":200,"latencyMs":398,"userId":null}
+{"ts":"2026-10-08T05:46:59.801Z","requestId":"e460594f-4783-4262-b86b-cbb0ebf90e48","method":"GET","route":"/api/v1/news/breaking?page=1&limit=4","status":200,"latencyMs":173,"userId":null}
+{"ts":"2026-10-08T05:46:59.804Z","requestId":"65e22dad-537b-40ec-9ebf-0a755f482755","method":"GET","route":"/api/v1/matches/live?page=1&limit=6","status":200,"latencyMs":180,"userId":null}
+{"ts":"2026-10-08T05:46:59.809Z","requestId":"05774e6b-d90c-4ce6-9270-733e7ca827e0","method":"GET","route":"/api/v1/matches/upcoming?page=1&limit=6","status":200,"latencyMs":182,"userId":null}

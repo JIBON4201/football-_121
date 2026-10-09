@@ -1,0 +1,24 @@
+
+> football-api@1.0.0 dev
+> tsx --env-file=.env src/server.ts
+
+{"ts":"2026-10-08T06:18:09.139Z","msg":"football-api listening","port":4000,"env":"development"}
+{"ts":"2026-10-08T06:18:09.140Z","msg":"WARNING: ADMIN_BYPASS_AUTH is active - every /api/v1/admin/* request is granted super_admin without authentication","env":"development"}
+{"ts":"2026-10-08T06:19:31.207Z","requestId":"70fcb6be-5c96-468a-8510-12ff076fe387","method":"GET","route":"/api/v1/matches/live?page=1&limit=12&include=card","status":200,"latencyMs":1007,"userId":null}
+{"ts":"2026-10-08T06:19:31.628Z","requestId":"2f07cd40-6c3a-4a19-9a39-5ed4022b9004","method":"GET","route":"/api/v1/matches/finished?page=1&limit=12&include=card","status":200,"latencyMs":1424,"userId":null}
+{"ts":"2026-10-08T06:19:31.645Z","requestId":"38b385f6-dc09-45ab-abe3-61a7d7de8084","method":"GET","route":"/api/v1/matches/upcoming?page=1&limit=12&include=card","status":200,"latencyMs":1489,"userId":null}
+{"ts":"2026-10-08T06:19:42.610Z","requestId":"3eae9b16-1682-4c90-9652-1d9431726396","method":"GET","route":"/api/v1/matches/live?page=1&limit=6&include=card","status":200,"latencyMs":205,"userId":null}
+{"ts":"2026-10-08T06:19:42.621Z","requestId":"94a10f11-b245-4f79-913c-6a3b247c5535","method":"GET","route":"/api/v1/news/latest?page=1&limit=8","status":200,"latencyMs":212,"userId":null}
+{"ts":"2026-10-08T06:19:42.623Z","requestId":"c7502007-dae2-4b34-b01a-be3689beaac2","method":"GET","route":"/api/v1/news?page=1&limit=4&type=transfer","status":200,"latencyMs":211,"userId":null}
+{"ts":"2026-10-08T06:19:42.629Z","requestId":"08ed6bbc-8e77-4d36-b798-6d0d552f8413","method":"GET","route":"/api/v1/news/breaking?page=1&limit=4","status":200,"latencyMs":219,"userId":null}
+{"ts":"2026-10-08T06:19:42.778Z","requestId":"cc0584a5-6251-4e6c-b38e-df267eecccd2","method":"GET","route":"/api/v1/transfers?page=1&limit=6","status":200,"latencyMs":365,"userId":null}
+{"ts":"2026-10-08T06:19:42.786Z","requestId":"7acdd196-934f-47c7-8ee2-8e2a4742d469","method":"GET","route":"/api/v1/matches/finished?page=1&limit=6&include=card","status":200,"latencyMs":383,"userId":null}
+{"ts":"2026-10-08T06:19:43.018Z","requestId":"7888bd69-4948-4b2d-a6da-690baa446798","method":"GET","route":"/api/v1/matches/upcoming?page=1&limit=6&include=card","status":200,"latencyMs":612,"userId":null}
+{"ts":"2026-10-08T06:19:47.535Z","requestId":"723471bf-c6e0-4cec-92e8-7336ebe1ea5c","method":"GET","route":"/api/v1/matches?limit=3&include=card","status":200,"latencyMs":815,"userId":null}
+{"ts":"2026-10-08T06:19:55.070Z","requestId":"f11b2799-fb4a-457b-9f58-9cedfbdcd55b","method":"GET","route":"/api/v1/matches/seed-team-nbu-vs-seed-team-spr-2030-02-01","status":200,"latencyMs":205,"userId":null}
+{"ts":"2026-10-08T06:19:55.230Z","requestId":"fea46d41-0a0f-4328-b2d3-ed352e161bf0","method":"GET","route":"/api/v1/news?page=1&limit=5&match=seed-team-nbu-vs-seed-team-spr-2030-02-01","status":200,"latencyMs":360,"userId":null}
+{"ts":"2026-10-08T06:19:55.643Z","requestId":"077cbbb6-dcfb-4842-a855-187e5a097072","method":"GET","route":"/api/v1/matches/seed-team-nbu-vs-seed-team-spr-2030-02-01/details","status":200,"latencyMs":568,"userId":null}
+{"ts":"2026-10-08T06:19:55.674Z","msg":"seo_metadata_fallback","entityType":"match","slug":"seed-team-nbu-vs-seed-team-spr-2030-02-01"}
+{"ts":"2026-10-08T06:19:55.674Z","requestId":"f8f4f930-5bac-43ef-8971-6f6a506019b2","method":"GET","route":"/api/v1/seo/metadata?type=match&slug=seed-team-nbu-vs-seed-team-spr-2030-02-01","status":200,"latencyMs":805,"userId":null}
+{"ts":"2026-10-08T06:19:55.713Z","requestId":"fdb31305-aa75-4b23-8350-903303b1214b","method":"GET","route":"/api/v1/seo/breadcrumbs?type=match&slug=seed-team-nbu-vs-seed-team-spr-2030-02-01","status":200,"latencyMs":845,"userId":null}
+{"ts":"2026-10-08T06:19:55.854Z","requestId":"8df78ee5-e0c9-41ae-ba92-d1f8d8a1495e","method":"GET","route":"/api/v1/seo/structured?type=match&slug=seed-team-nbu-vs-seed-team-spr-2030-02-01","status":200,"latencyMs":988,"userId":null}
