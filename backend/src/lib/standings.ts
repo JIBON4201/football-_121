@@ -29,6 +29,18 @@ export interface StandingRow {
   points: number;
 }
 
+/** Per-team totals, as aggregated by SQL or by `calculateStandings` callers. */
+export interface TeamAggregate {
+  team_id: string;
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  goals_for: number;
+  goals_against: number;
+  points: number;
+}
+
 export interface StandingsResult {
   rows: StandingRow[];
   /** Matches that counted towards the table. */
@@ -93,9 +105,14 @@ function applyMatch(
   }
 }
 
-interface HeadToHead {
+export interface HeadToHead {
   points: Map<string, number>;
   goalDifference: Map<string, number>;
+}
+
+/** Head-to-head totals from a plain match list, for callers aggregating in SQL. */
+export function headToHeadFrom(matches: SettledMatch[], teamIds: string[]): HeadToHead {
+  return buildHeadToHead(matches, teamIds);
 }
 
 /** Points and goal difference earned in direct meetings only. */
@@ -252,6 +269,69 @@ export function calculateStandings(matches: SettledMatch[], options: CalculateOp
     rows: list,
     matches_considered: settled.length,
     matches_skipped: skipped + unreported,
+    rules_id: rules.id,
+    format: rules.format,
+  };
+}
+
+/**
+ * Rank a table from per-team totals that were already aggregated (in SQL).
+ *
+ * Produces the same rows as `calculateStandings` would from the equivalent match
+ * list, without re-reading every fixture. Head-to-head tie-breaks need per-match
+ * data, so they are only honoured when the caller supplies them; otherwise the
+ * remaining tie-breaks decide and `team_id` settles a genuine tie.
+ */
+export function rankAggregates(
+  aggregates: TeamAggregate[],
+  options: CalculateOptions & { headToHead?: HeadToHead | null } = {},
+): StandingsResult {
+  const rules = options.rules ?? DEFAULT_LEAGUE_RULES;
+
+  if (!supportsTable(rules)) {
+    return { rows: [], matches_considered: 0, matches_skipped: 0, rules_id: rules.id, format: rules.format };
+  }
+
+  const rows = new Map<string, StandingRow>();
+  const ensure = (teamId: string): StandingRow => {
+    let row = rows.get(teamId);
+    if (!row) {
+      row = emptyRow(teamId);
+      rows.set(teamId, row);
+    }
+    return row;
+  };
+
+  for (const teamId of options.teamIds ?? []) ensure(teamId);
+
+  for (const aggregate of aggregates) {
+    const row = ensure(aggregate.team_id);
+    row.played = aggregate.played;
+    row.won = aggregate.won;
+    row.drawn = aggregate.drawn;
+    row.lost = aggregate.lost;
+    row.goals_for = aggregate.goals_for;
+    row.goals_against = aggregate.goals_against;
+    row.points = aggregate.points;
+    row.goal_difference = row.goals_for - row.goals_against;
+  }
+
+  const nameById = options.nameById ?? new Map<string, string>();
+  const list = Array.from(rows.values());
+  list.sort(comparator(rules, options.headToHead ?? null, nameById));
+  list.forEach((row, index) => {
+    row.position = index + 1;
+  });
+
+  // Every finished match contributes two team appearances.
+  const considered = Math.round(list.reduce((total, row) => total + row.played, 0) / 2);
+  const totalFinished = options.totalFinished;
+  const unreported = totalFinished !== undefined ? Math.max(0, totalFinished - considered) : 0;
+
+  return {
+    rows: list,
+    matches_considered: considered,
+    matches_skipped: unreported,
     rules_id: rules.id,
     format: rules.format,
   };

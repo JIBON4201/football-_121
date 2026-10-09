@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { calculateStandings, isSettledStatus, type SettledMatch } from '../src/lib/standings';
+import { calculateStandings, headToHeadFrom, isSettledStatus, rankAggregates, type SettledMatch } from '../src/lib/standings';
 import {
   DEFAULT_LEAGUE_RULES,
   GROUP_STAGE_RULES,
@@ -164,6 +164,107 @@ describe('standings calculator', () => {
     });
     expect(byId(twoPoint.rows, A)?.points).toBe(2);
     expect(byId(twoPoint.rows, C)?.points).toBe(2);
+  });
+});
+
+/**
+ * `rankAggregates` is what the SQL-aggregated path uses. It must be
+ * indistinguishable from feeding the equivalent matches to
+ * `calculateStandings`, or the league table silently disagrees with itself
+ * depending on whether the RPC is installed.
+ */
+describe('standings from SQL aggregates', () => {
+  const aggregateOf = (matches: SettledMatch[], teamIds: string[]) => {
+    const source = calculateStandings(matches, { teamIds });
+    return source.rows.map((row) => ({
+      team_id: row.team_id,
+      played: row.played,
+      won: row.won,
+      drawn: row.drawn,
+      lost: row.lost,
+      goals_for: row.goals_for,
+      goals_against: row.goals_against,
+      points: row.points,
+    }));
+  };
+
+  it('reproduces the match-based table exactly', () => {
+    const matches = [match(A, B, 2, 1), match(B, C, 0, 0), match(A, C, 1, 3)];
+    const expected = calculateStandings(matches, { teamIds: [A, B, C] });
+    const actual = rankAggregates(aggregateOf(matches, [A, B, C]), { teamIds: [A, B, C] });
+    expect(actual.rows).toEqual(expected.rows);
+    expect(actual.matches_considered).toBe(expected.matches_considered);
+  });
+
+  it('does not invent a team per row the way a synthetic fixture would', () => {
+    // The real table has three sides, so the ranked table must have exactly
+    // three rows and no phantom opponents.
+    const matches = [match(A, B, 1, 0), match(A, C, 1, 0), match(B, C, 1, 0)];
+    const result = rankAggregates(aggregateOf(matches, [A, B, C]));
+    expect(result.rows).toHaveLength(3);
+    expect(result.rows.map((row) => row.team_id).sort()).toEqual([A, B, C].sort());
+  });
+
+  it('counts each match once when deriving matches_considered', () => {
+    const matches = [match(A, B, 1, 0), match(B, C, 1, 0), match(A, C, 1, 0)];
+    const result = rankAggregates(aggregateOf(matches, [A, B, C]));
+    expect(result.matches_considered).toBe(3);
+  });
+
+  it('reports finished matches the aggregate did not account for', () => {
+    const matches = [match(A, B, 1, 0)];
+    const result = rankAggregates(aggregateOf(matches, [A, B]), { totalFinished: 4 });
+    expect(result.matches_skipped).toBe(3);
+  });
+
+  it('keeps a participating team with no results in the table', () => {
+    const result = rankAggregates([], { teamIds: [A, B, C] });
+    expect(result.rows).toHaveLength(3);
+    expect(byId(result.rows, C)).toMatchObject({ played: 0, points: 0, position: 3 });
+  });
+
+  it('produces no table for a knockout format', () => {
+    const result = rankAggregates(aggregateOf([match(A, B, 1, 0)], [A, B]), { rules: KNOCKOUT_RULES });
+    expect(result.rows).toEqual([]);
+    expect(result.format).toBe('knockout');
+  });
+
+  it('ranks with head-to-head when the RPC supplies it', () => {
+    // Level on points and goal difference; B beats A head-to-head.
+    const aggregates = [
+      { team_id: A, played: 2, won: 1, drawn: 0, lost: 1, goals_for: 2, goals_against: 2, points: 3 },
+      { team_id: B, played: 2, won: 1, drawn: 0, lost: 1, goals_for: 2, goals_against: 2, points: 3 },
+    ];
+    const nameById = new Map([[A, 'A'], [B, 'B']]);
+    const withoutH2H = rankAggregates(aggregates, { nameById });
+    expect(withoutH2H.rows[0].team_id).toBe(A); // alphabetical fallback
+
+    const withH2H = rankAggregates(aggregates, {
+      nameById,
+      headToHead: {
+        points: new Map([[A, 0], [B, 3]]),
+        goalDifference: new Map([[A, -1], [B, 1]]),
+      },
+    });
+    expect(withH2H.rows[0].team_id).toBe(B);
+  });
+
+  it('accumulates head-to-head across both venues in either orientation', () => {
+    // A wins at home, then loses away: both legs must count.
+    const h2h = headToHeadFrom([match(A, B, 2, 0), match(B, A, 1, 0)], [A, B]);
+    expect(h2h.points.get(A)).toBe(3);
+    expect(h2h.points.get(B)).toBe(3);
+    expect(h2h.goalDifference.get(A)).toBe(1);
+    expect(h2h.goalDifference.get(B)).toBe(-1);
+  });
+
+  it('ignores head-to-head from a side outside the table', () => {
+    // A only played C, which is not in this table, so A earns nothing from it
+    // and stays on zero rather than being credited with the win.
+    const h2h = headToHeadFrom([match(A, C, 1, 0)], [A, B]);
+    expect(h2h.points.get(A)).toBe(0);
+    expect(h2h.points.get(B)).toBe(0);
+    expect(h2h.points.has(C)).toBe(false);
   });
 });
 

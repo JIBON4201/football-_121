@@ -24,8 +24,6 @@ RETURNS jsonb
 LANGUAGE plpgsql
 STABLE
 AS $$
-DECLARE
-    v_result jsonb;
 BEGIN
     -- Aggregate team stats for the competition/season
     RETURN (
@@ -83,14 +81,29 @@ BEGIN
               AND m.away_score IS NOT NULL
               AND (p_season_id IS NULL OR m.season_id = p_season_id)
             GROUP BY t.id, t.name, t.short_name, t.slug, t.logo_url
-        ) team_stats;
+        ) team_stats);
 END;
 $$;
 
 -- ============================================================================
 -- 2. STANDINGS HEAD-TO-HEAD DATA FUNCTION
 -- ============================================================================
--- Returns head-to-head data for tiebreaker calculations
+-- Returns a FLAT map keyed by team id:
+--     { "<team uuid>": { "points": <int>, "gd": <int> }, ... }
+--
+-- Contract with standings.repo.ts loadHeadToHead(): it reads the top-level keys
+-- as team ids. The previous shape keyed the outer object by a
+-- "<home>_<away>" pair string and nested the teams one level deeper, which the
+-- caller could not read, so head-to-head silently contributed nothing.
+--
+-- Points and goal difference are accumulated per team across every settled
+-- meeting, in either venue orientation. Grouping by the home/away pair (as the
+-- previous version did) lost one leg whenever the same two teams met at both
+-- venues, because each orientation produced a separate row under the same
+-- normalised key and jsonb_object_agg kept only the last.
+--
+-- Only meetings where BOTH sides are participants are counted, matching
+-- buildHeadToHead() in backend/src/lib/standings.ts.
 -- ============================================================================
 
 DROP FUNCTION IF EXISTS public.get_standings_h2h(uuid, uuid);
@@ -103,36 +116,73 @@ RETURNS jsonb
 LANGUAGE sql
 STABLE
 AS $$
-    SELECT jsonb_object_agg(h2h_key, h2h_value)
-    FROM (
-        SELECT
-            CONCAT(LEAST(m.home_team_id, m.away_team_id), '_', GREATEST(m.home_team_id, m.away_team_id)) AS h2h_key,
-            jsonb_build_object(
-                m.home_team_id::text, jsonb_build_object(
-                    'points', SUM(CASE
-                        WHEN m.home_team_id = m.home_team_id AND m.home_score > m.away_score THEN 3
-                        WHEN m.home_score = m.away_score THEN 1
-                        ELSE 0
-                    END)::int,
-                    'gd', SUM(m.home_score - m.away_score)::int
-                ),
-                m.away_team_id::text, jsonb_build_object(
-                    'points', SUM(CASE
-                        WHEN m.away_team_id = m.away_team_id AND m.away_score > m.home_score THEN 3
-                        WHEN m.home_score = m.away_score THEN 1
-                        ELSE 0
-                    END)::int,
-                    'gd', SUM(m.away_score - m.home_score)::int
-                )
-            ) AS h2h_value
+    WITH participants AS (
+        -- Registered sides, plus any side that appears in a settled match but
+        -- was never added to team_competitions. Mirrors the `teamIds` set the
+        -- TypeScript calculator ranks over.
+        SELECT tc.team_id
+        FROM public.team_competitions tc
+        WHERE tc.competition_id = p_competition_id
+          AND (p_season_id IS NULL OR tc.season_id = p_season_id)
+        UNION
+        SELECT m.home_team_id
         FROM public.matches m
-        WHERE m.competition_id = $1
+        WHERE m.competition_id = p_competition_id
           AND m.status = 'finished'
           AND m.home_score IS NOT NULL
           AND m.away_score IS NOT NULL
-          AND ($2 IS NULL OR m.season_id = $2)
-        GROUP BY m.home_team_id, m.away_team_id
-    ) sub;
+          AND (p_season_id IS NULL OR m.season_id = p_season_id)
+        UNION
+        SELECT m.away_team_id
+        FROM public.matches m
+        WHERE m.competition_id = p_competition_id
+          AND m.status = 'finished'
+          AND m.home_score IS NOT NULL
+          AND m.away_score IS NOT NULL
+          AND (p_season_id IS NULL OR m.season_id = p_season_id)
+    ),
+    settled AS (
+        SELECT m.home_team_id, m.away_team_id, m.home_score, m.away_score
+        FROM public.matches m
+        JOIN participants hp ON hp.team_id = m.home_team_id
+        JOIN participants ap ON ap.team_id = m.away_team_id
+        WHERE m.competition_id = p_competition_id
+          AND m.status = 'finished'
+          AND m.home_score IS NOT NULL
+          AND m.away_score IS NOT NULL
+          AND (p_season_id IS NULL OR m.season_id = p_season_id)
+    ),
+    -- One row per team, so a side that was home in some meetings and away in
+    -- others is summed once rather than emitted as two rows.
+    per_team AS (
+        SELECT team_id,
+               SUM(points)::int AS points,
+               SUM(gd)::int     AS gd
+        FROM (
+            SELECT home_team_id AS team_id,
+                   CASE WHEN home_score > away_score THEN 3
+                        WHEN home_score = away_score THEN 1
+                        ELSE 0 END AS points,
+                   (home_score - away_score) AS gd
+            FROM settled
+            UNION ALL
+            SELECT away_team_id AS team_id,
+                   CASE WHEN away_score > home_score THEN 3
+                        WHEN home_score = away_score THEN 1
+                        ELSE 0 END AS points,
+                   (away_score - home_score) AS gd
+            FROM settled
+        ) perspective
+        GROUP BY team_id
+    )
+    SELECT COALESCE(
+        jsonb_object_agg(
+            per_team.team_id::text,
+            jsonb_build_object('points', per_team.points, 'gd', per_team.gd)
+        ),
+        '{}'::jsonb
+    )
+    FROM per_team;
 $$;
 
 -- ============================================================================

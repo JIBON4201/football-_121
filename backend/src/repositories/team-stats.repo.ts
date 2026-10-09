@@ -1,5 +1,6 @@
 import { notFound, upstream } from '../lib/errors';
-import { asCompletedMatch, isSettledStatus, recentForm, resultsForTeam, summariseResults, type CompletedMatch, type TeamResult, type TeamTotals } from '../lib/team-stats';
+import { log } from '../lib/logger';
+import { asCompletedMatch, isSettledStatus, resultsForTeam, summariseResults, teamResultFor, type CompletedMatch, type TeamResult, type TeamTotals } from '../lib/team-stats';
 import { anonClient, type DbClient } from '../lib/supabase';
 
 /**
@@ -28,6 +29,19 @@ export interface TeamStatisticsPayload {
   state: 'ready' | 'empty' | 'incomplete';
 }
 
+/** Numbers every statistics source (RPC or legacy query) must produce. */
+interface TeamStatsResult {
+  totals: TeamTotals;
+  form: TeamResult[];
+  matches_considered: number;
+  matches_skipped: number;
+  state: 'ready' | 'empty' | 'incomplete';
+}
+
+function num(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+}
+
 async function loadTeam(client: DbClient, slug: string) {
   const { data, error } = await client.from('teams').select('id,name,slug').eq('slug', slug).maybeSingle();
   if (error) throw upstream('Failed to load team');
@@ -35,35 +49,73 @@ async function loadTeam(client: DbClient, slug: string) {
   return data as { id: string; name: string; slug: string };
 }
 
-/** Fetches team statistics using the optimized RPC function, with fallback to legacy query. */
+/**
+ * Team statistics via the `get_team_statistics` RPC function.
+ *
+ * Returns null when the function is unavailable or its payload fails shape
+ * validation, so the caller falls back to the legacy query. Never throws for
+ * a missing function: the migrations that create it may not be applied yet.
+ */
 async function loadTeamStatisticsRpc(
   client: DbClient,
   teamId: string,
   seasonId: string | null,
   formLimit: number,
-): Promise<{
-  totals: { played: number; won: number; drawn: number; lost: number; goals_for: number; goals_against: number; goal_difference: number; clean_sheets: number };
-  form: Array<{ id: string; home_team_id: string; away_team_id: string; home_score: number; away_score: number; scheduled_at: string }>;
-  matches_considered: number;
-  matches_skipped: number;
-  state: 'ready' | 'empty' | 'incomplete';
-} | null> {
+): Promise<TeamStatsResult | null> {
   try {
     const { data, error } = await client.rpc('get_team_statistics', {
       p_team_id: teamId,
       p_season_id: seasonId,
     });
-    if (!error) return data as {
-      totals: { played: number; won: number; drawn: number; lost: number; goals_for: number; goals_against: number; goal_difference: number; clean_sheets: number };
-      form: Array<{ id: string; home_team_id: string; away_team_id: string; home_score: number; away_score: number; scheduled_at: string }>;
-      matches_considered: number;
-      matches_skipped: number;
-      state: 'ready' | 'empty' | 'incomplete';
+    if (error) {
+      log({ msg: 'team_stats_rpc_fallback', reason: error?.message ?? 'unknown' });
+      return null;
+    }
+    const payload = data as {
+      totals?: Record<string, unknown>;
+      form?: Array<Record<string, unknown>>;
+      matches_considered?: unknown;
+      matches_skipped?: unknown;
+      state?: unknown;
+    } | null;
+    if (!payload || typeof payload !== 'object' || !payload.totals || typeof payload.totals !== 'object') {
+      log({ msg: 'team_stats_rpc_fallback', reason: 'unexpected payload shape' });
+      return null;
+    }
+    const t = payload.totals as Record<string, unknown>;
+    const totals: TeamTotals = {
+      played: num(t.played),
+      won: num(t.won),
+      drawn: num(t.drawn),
+      lost: num(t.lost),
+      goals_for: num(t.goals_for),
+      goals_against: num(t.goals_against),
+      goal_difference: num(t.goals_for) - num(t.goals_against),
+      clean_sheets: num(t.clean_sheets),
     };
-    console.warn('RPC function get_team_statistics failed, falling back to legacy query:', error?.message || error);
-    return null;
+    // The RPC returns raw match rows newest-first; the payload carries
+    // TeamResult entries, so each row is mapped through the same pure
+    // functions the legacy path uses.
+    const form: TeamResult[] = [];
+    for (const row of Array.isArray(payload.form) ? payload.form : []) {
+      const completed = asCompletedMatch({ ...row, status: 'finished' });
+      if (!completed) continue;
+      const result = teamResultFor(completed, teamId);
+      if (!result) continue;
+      form.push(typeof row.id === 'string' ? { ...result, match_id: row.id } : result);
+      if (form.length >= Math.max(0, Math.trunc(formLimit))) break;
+    }
+    const skipped = num(payload.matches_skipped);
+    const considered = typeof payload.matches_considered === 'number' && Number.isFinite(payload.matches_considered)
+      ? payload.matches_considered
+      : totals.played;
+    const state: TeamStatsResult['state'] =
+      payload.state === 'ready' || payload.state === 'empty' || payload.state === 'incomplete'
+        ? payload.state
+        : totals.played === 0 ? 'empty' : skipped > 0 ? 'incomplete' : 'ready';
+    return { totals, form, matches_considered: considered, matches_skipped: skipped, state };
   } catch (err) {
-    console.warn('RPC function get_team_statistics threw error, falling back to legacy query:', err);
+    log({ msg: 'team_stats_rpc_fallback', reason: err instanceof Error ? err.message : 'threw' });
     return null;
   }
 }
@@ -74,16 +126,10 @@ async function loadTeamStatisticsLegacy(
   teamId: string,
   seasonId: string | null,
   formLimit: number,
-): Promise<{
-  totals: { played: number; won: number; drawn: number; lost: number; goals_for: number; goals_against: number; goal_difference: number; clean_sheets: number };
-  form: Array<{ id: string; home_team_id: string; away_team_id: string; home_score: number; away_score: number; scheduled_at: string }>;
-  matches_considered: number;
-  matches_skipped: number;
-  state: 'ready' | 'empty' | 'incomplete';
-}> {
+): Promise<TeamStatsResult> {
   let query = client
     .from('matches')
-    .select('id,season_id,home_team_id,away_team_id,scheduled_at,status,home_score,away_score', { count: 'exact' })
+    .select(RESULT_COLUMNS, { count: 'exact' })
     .or(`home_team_id.eq.${teamId},away_team_id.eq.${teamId}`)
     .eq('status', 'finished')
     .order('scheduled_at', { ascending: true })
@@ -96,7 +142,7 @@ async function loadTeamStatisticsLegacy(
   const rows = (data as Array<Record<string, unknown>> | null) ?? [];
   const finished = rows.filter((row) => isSettledStatus(String(row.status)));
 
-  const completed: import('../lib/team-stats').CompletedMatch[] = [];
+  const completed: CompletedMatch[] = [];
   let skipped = 0;
   for (const row of finished) {
     const match = asCompletedMatch(row);
@@ -110,40 +156,25 @@ async function loadTeamStatisticsLegacy(
   const results = resultsForTeam(completed, teamId);
   const totals = summariseResults(results);
 
-  // Fetch form matches (newest first, limited)
-  const formQuery = client
-    .from('matches')
-    .select('id,home_team_id,away_team_id,home_score,away_score,scheduled_at')
-    .or(`home_team_id.eq.${teamId},away_team_id.eq.${teamId}`)
-    .eq('status', 'finished')
-    .not('home_score', 'is', null)
-    .not('away_score', 'is', null)
-    .order('scheduled_at', { ascending: false })
-    .limit(5);
-
-  if (seasonId) {
-    // Note: this is a simplified filter; the form matches should also respect season filter
-    // For simplicity in fallback, we don't apply season filter to form matches
+  const form: TeamResult[] = [];
+  for (const row of [...finished].reverse()) {
+    const match = asCompletedMatch(row);
+    if (!match) continue;
+    const result = teamResultFor(match, teamId);
+    if (!result) continue;
+    form.push(typeof row.id === 'string' ? { ...result, match_id: row.id } : result);
+    if (form.length >= Math.max(0, Math.trunc(formLimit))) break;
   }
 
-  const { data: formData } = await formQuery;
-  const formMatches = ((data as Array<{ id: string; home_team_id: string; away_team_id: string; home_score: number; away_score: number; scheduled_at: string }> | null) ?? []);
+  const state: TeamStatsResult['state'] =
+    results.length === 0 ? 'empty' : skipped > 0 ? 'incomplete' : 'ready';
 
   return {
-    totals: {
-      played: totals.played,
-      won: totals.won,
-      drawn: totals.drawn,
-      lost: totals.lost,
-      goals_for: totals.goals_for,
-      goals_against: totals.goals_against,
-      goal_difference: totals.goal_difference,
-      clean_sheets: totals.clean_sheets,
-    },
-    form: formMatches,
+    totals,
+    form,
     matches_considered: results.length,
-    matches_skipped: 0, // will be counted separately
-    state: results.length === 0 ? 'empty' : 'ready',
+    matches_skipped: skipped,
+    state,
   };
 }
 
@@ -160,53 +191,16 @@ export async function getTeamStatistics(
   const client = anonClient();
   const team = await loadTeam(client, slug);
 
-  // Try RPC function first, fall back to legacy implementation if not available
-  let stats = await loadTeamStatisticsRpc(client, team.id, seasonId, formLimit);
-
-  if (!stats) {
-    // RPC function not available, use legacy fallback
-    stats = await loadTeamStatisticsLegacy(client, team.id, seasonId, formLimit);
-  }
-
-  // Count skipped matches (finished but missing scores)
-  const { count: skippedCount } = await anonClient()
-    .from('matches')
-    .select('id', { count: 'exact', head: true })
-    .or(`home_team_id.eq.${team.id},away_team_id.eq.${team.id}`)
-    .eq('status', 'finished')
-    .or('home_score.is.null,away_score.is.null');
-
-  const skipped = stats.totals.played === 0 ? 0 : (stats as any).matches_skipped ?? 0;
-  const matchesConsidered = stats.totals.played;
-
-  // The RPC returns pre-calculated totals, use them directly
-  const totals = {
-    played: totalsResult.played,
-    won: totalsResult.won,
-    drawn: totalsResult.drawn,
-    lost: totalsResult.lost,
-    goals_for: totalsResult.goals_for,
-    goals_against: totalsResult.goals_against,
-    goal_difference: totalsResult.goals_for - totalsResult.goals_against,
-    clean_sheets: totalsResult.clean_sheets,
-  };
+  const stats = (await loadTeamStatisticsRpc(client, team.id, seasonId, formLimit)) ??
+    (await loadTeamStatisticsLegacy(client, team.id, seasonId, formLimit));
 
   return {
     team,
     season_id: seasonId,
-    totals: {
-      played: totalsResult.played,
-      won: totalsResult.won,
-      drawn: totalsResult.drawn,
-      lost: totalsResult.lost,
-      goals_for: totalsResult.goals_for,
-      goals_against: totalsResult.goals_against,
-      goal_difference: totalsResult.goals_for - totalsResult.goals_against,
-      clean_sheets: totalsResult.clean_sheets,
-    },
-    form,
-    matches_considered: matchesConsidered,
-    matches_skipped: skipped,
+    totals: stats.totals,
+    form: stats.form,
+    matches_considered: stats.matches_considered,
+    matches_skipped: stats.matches_skipped,
     state: stats.state,
   };
 }

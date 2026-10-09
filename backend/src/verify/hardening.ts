@@ -55,7 +55,9 @@ export function findUnboundedQueries(
 ): UnboundedQuery[] {
   const findings: UnboundedQuery[] = [];
   const WRITE_VERB = /\.insert\(|\.upsert\(|\.update\(|\.delete\(/;
-  const BOUND = /\.range\(|\.limit\(|\.single\(|\.maybeSingle\(|\.rpc\(/;
+  // `head: true` asks PostgREST for a row count with no rows in the body, so
+    // it cannot pull a table wholesale regardless of any missing range.
+    const BOUND = /\.range\(|\.limit\(|\.single\(|\.maybeSingle\(|\.rpc\(|head:\s*true/;
 
   for (const file of files) {
     const normalized = file.path.replace(/\\/g, '/').toLowerCase();

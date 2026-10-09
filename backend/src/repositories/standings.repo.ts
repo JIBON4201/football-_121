@@ -1,5 +1,6 @@
 import { badRequest, notFound, upstream } from '../lib/errors';
-import { calculateStandings, type SettledMatch, type StandingsResult } from '../lib/standings';
+import { log } from '../lib/logger';
+import { isSettledStatus, rankAggregates, type HeadToHead, type StandingsResult } from '../lib/standings';
 import { standingsRulesFor, supportsTable } from '../lib/standings-rules';
 import { anonClient, type DbClient } from '../lib/supabase';
 import { SEASON_COLUMNS, TEAM_COLUMNS, listByIds, maybeById } from './related';
@@ -144,6 +145,55 @@ interface AggregatedTeamStat {
   points: number;
 }
 
+/**
+ * Points and goal difference from direct meetings, used only as a tie-break.
+ *
+ * Returns null when unavailable so the remaining tie-breaks decide instead of a
+ * missing value silently outranking a real one.
+ */
+/**
+ * A client with no `rpc` at all means migration 030 has not been applied, which
+ * is an expected state that the legacy query already covers — not a fault worth
+ * reporting on every request.
+ */
+function isRpcUnavailable(err: unknown): boolean {
+  return err instanceof TypeError && /rpc is not a function/i.test(err.message);
+}
+
+async function loadHeadToHead(
+  client: DbClient,
+  competitionId: string,
+  seasonId: string | null,
+): Promise<HeadToHead | null> {
+  try {
+    const { data, error } = await client.rpc('get_standings_h2h', {
+      p_competition_id: competitionId,
+      p_season_id: seasonId,
+    });
+    if (error) throw new Error(error?.message ?? 'rpc error');
+
+    const points = new Map<string, number>();
+    const goalDifference = new Map<string, number>();
+    for (const [teamId, value] of Object.entries((data as Record<string, unknown> | null) ?? {})) {
+      const entry = value as { points?: unknown; gd?: unknown } | null;
+      if (!entry || typeof entry !== 'object') continue;
+      const won = toInt(entry.points);
+      const gd = toInt(entry.gd);
+      if (won !== null) points.set(teamId, won);
+      if (gd !== null) goalDifference.set(teamId, gd);
+    }
+    if (points.size === 0 && goalDifference.size === 0) return null;
+    return { points, goalDifference };
+  } catch (err) {
+    // A client without `rpc` simply has migration 030 unapplied, which is an
+    // expected state and needs no log line on every request.
+    if (!isRpcUnavailable(err)) {
+      log({ msg: 'standings_h2h_rpc_fallback', reason: err instanceof Error ? err.message : String(err) });
+    }
+    return null;
+  }
+}
+
 /** Fetches aggregated team stats directly from PostgreSQL using the RPC function, with fallback to legacy query. */
 async function loadAggregatedTeamStats(
   client: DbClient,
@@ -158,10 +208,12 @@ async function loadAggregatedTeamStats(
     });
     if (!error) return (data?.teams as AggregatedTeamStat[] | null) ?? [];
     // If function doesn't exist or any other error, fall back to legacy query
-    console.warn('RPC function get_standings_aggregated failed, falling back to legacy query:', error?.message || error);
+    log({ msg: 'standings_rpc_fallback', reason: error?.message ?? 'unknown' });
     return loadAggregatedTeamStatsLegacy(client, competitionId, seasonId);
   } catch (err) {
-    console.warn('RPC function get_standings_aggregated threw error, falling back to legacy query:', err);
+    if (!isRpcUnavailable(err)) {
+      log({ msg: 'standings_rpc_fallback', reason: err instanceof Error ? err.message : String(err) });
+    }
     return loadAggregatedTeamStatsLegacy(client, competitionId, seasonId);
   }
 }
@@ -250,7 +302,7 @@ export async function getCompetitionStandings(slug: string, seasonId: string | n
   const participating = await loadParticipatingTeamIds(client, competition.id, season?.id ?? null);
 
   // Fetch aggregated team stats directly from PostgreSQL (single query, ~20 rows vs 5000)
-  const [aggregatedStats, teamRows, matchCountResult] = await Promise.all([
+  const [aggregatedStats, teamRows, finishedCountResult] = await Promise.all([
     loadAggregatedTeamStats(client, competition.id, season?.id ?? null),
     listByIds(client, 'teams', TEAM_COLUMNS, participating, { col: 'name', asc: true }, 40),
     (async () => {
@@ -263,20 +315,6 @@ export async function getCompetitionStandings(slug: string, seasonId: string | n
       return count ?? 0;
     })(),
   ]);
-
-  // Convert aggregated stats to SettledMatch format for calculateStandings
-  // (calculateStandings expects individual matches, so we reconstruct minimal matches)
-  // Instead, we can directly use the aggregated stats since calculateStandings
-  // just sums them up. We'll create a pseudo-match per team that produces the exact same totals.
-  // Since calculateStandings just sums home/away, we can create one synthetic match
-  // per team that produces the exact same totals.
-  const settled: SettledMatch[] = aggregatedStats.map((stat) => ({
-    home_team_id: stat.team_id,
-    away_team_id: stat.team_id + '_synthetic', // dummy opponent
-    home_score: stat.goals_for,
-    away_score: stat.goals_against,
-    scheduled_at: new Date().toISOString(), // not used for calculation
-  }));
 
   const teams: StandingsTeam[] = teamRows
     .map((row) => ({
@@ -292,18 +330,14 @@ export async function getCompetitionStandings(slug: string, seasonId: string | n
   // Teams that only appear in fixtures still belong in the table.
   const teamIds = Array.from(new Set([...participating, ...aggregatedStats.map((s) => s.team_id)]));
 
-  // We need total finished count including skipped for state determination
-  const { count: finishedCount } = await client
-    .from('matches')
-    .select('id', { count: 'exact', head: true })
-    .eq('competition_id', competition.id)
-    .eq('status', 'finished');
+  const headToHead = await loadHeadToHead(client, competition.id, season?.id ?? null);
 
-  const standings = calculateStandings(settled, {
+  const standings = rankAggregates(aggregatedStats, {
     rules,
     teamIds,
     nameById,
-    totalFinished: finishedCount ?? 0,
+    headToHead,
+    totalFinished: finishedCountResult,
   });
 
   // Calculate skipped matches (finished but missing scores)
@@ -328,7 +362,7 @@ export async function getCompetitionStandings(slug: string, seasonId: string | n
       matches_skipped: standings.matches_skipped + skipped,
     },
     state,
-    total_matches: matchCountResult,
+    total_matches: finishedCountResult,
     rules_id: rules.id,
     format: rules.format,
   };
