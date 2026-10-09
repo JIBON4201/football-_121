@@ -18,7 +18,19 @@ const buckets = new Map<string, Bucket>();
  * its own bucket, which also stops an attacker from blending classes to bypass
  * one limiter.
  */
-export type RateLimitClass = 'default' | 'expensive' | 'media' | 'auth';
+export type RateLimitClass = 'default' | 'expensive' | 'media' | 'auth' | 'crawl';
+
+/**
+ * Budget for crawler-facing SEO documents (see `classifyRequest`).
+ *
+ * Deliberately enormous: a crawler must never receive 429 for a sitemap. The
+ * frontend `/sitemap.xml` proxy forwards an upstream 429 verbatim to Googlebot,
+ * and Search Console reports that as "Couldn't fetch" - a self-inflicted
+ * indexing failure that no amount of crawl-friendliness elsewhere can repair.
+ * These documents are cheap, edge-cached for an hour, and hold one partition
+ * per request, so a real crawl rate stays in the low thousands per day.
+ */
+const CRAWL_TIER_BUDGET = 60_000;
 
 export interface RateLimitClassConfig {
   /** Max requests per window for this class. */
@@ -53,13 +65,16 @@ export function classifyRequest(path: string): RateLimitClass {
   // Credential endpoints get the tightest budget to blunt password spraying.
   if (normalized === '/auth/login' || normalized === '/auth/register' || normalized === '/auth/forgot-password' || normalized === '/auth/reset-password') return 'auth';
   if (normalized === '/search' || normalized.startsWith('/search/')) return 'expensive';
-  // Sitemap generation walks whole tables and is never on a user-critical path.
+  // Crawler-facing SEO documents. They sit in their own tier rather than the
+  // expensive one: rate-limiting them 429s the very fetcher Google uses to
+  // discover the site, which the frontend sitemap proxy forwards unfiltered.
   if (
+    normalized === '/robots.txt' ||
     normalized === '/sitemap.xml' ||
     normalized === '/news-sitemap.xml' ||
     normalized.startsWith('/sitemaps/')
   ) {
-    return 'expensive';
+    return 'crawl';
   }
   return 'default';
 }
@@ -75,6 +90,9 @@ function limitsFor(authed: boolean): Record<RateLimitClass, number> {
     media: Math.max(10, Math.floor(base / 2)),
     // Auth endpoints: 10/min max, blunts credential stuffing.
     auth: Math.max(5, Math.floor(base / 12)),
+    // Sitemap/robots: effectively unlimited, so a crawl burst can never be
+    // mistaken for abuse. See CRAWL_TIER_BUDGET.
+    crawl: CRAWL_TIER_BUDGET,
   };
 }
 

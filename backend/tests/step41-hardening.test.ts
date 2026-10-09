@@ -22,9 +22,10 @@ import { join } from 'node:path';
 describe('step 41: rate-limit classification', () => {
   it('classifies expensive and media endpoints separately', () => {
     expect(classifyRequest('/api/v1/search?q=test')).toBe('expensive');
-    expect(classifyRequest('/api/v1/sitemap.xml')).toBe('expensive');
-    expect(classifyRequest('/api/v1/news-sitemap.xml')).toBe('expensive');
-    expect(classifyRequest('/api/v1/sitemaps/teams.xml')).toBe('expensive');
+    expect(classifyRequest('/api/v1/sitemap.xml')).toBe('crawl');
+    expect(classifyRequest('/api/v1/news-sitemap.xml')).toBe('crawl');
+    expect(classifyRequest('/api/v1/sitemaps/teams.xml')).toBe('crawl');
+    expect(classifyRequest('/api/v1/robots.txt')).toBe('crawl');
     expect(classifyRequest('/api/v1/media/upload')).toBe('media');
     expect(classifyRequest('/api/v1/news')).toBe('default');
     expect(classifyRequest('/api/v1/matches/live')).toBe('default');
@@ -86,6 +87,39 @@ describe('step 41: rate-limit response headers and tiers', () => {
     // Browsing budget is untouched by the search bucket.
     const news = await request(app).get('/api/v1/news');
     expect(news.status).toBe(200);
+  });
+
+  it('never 429s crawler-facing sitemap documents, even when search has starved the expensive tier', async () => {
+    config.rateLimit.publicMax = 60;
+    resetRateLimits();
+    // Burn the shared expensive budget on search first.
+    const limit = Math.max(5, Math.floor(60 / 6));
+    for (let i = 0; i < limit + 2; i += 1) {
+      await request(app).get('/api/v1/search?q=test');
+    }
+    expect((await request(app).get('/api/v1/search?q=test')).status).toBe(429);
+
+    // A crawler fetching the index plus every partition must still succeed.
+    // A 429 here is forwarded verbatim to Googlebot by the frontend
+    // /sitemap.xml proxy, which Search Console reports as "Couldn't fetch".
+    for (const path of [
+      '/api/v1/robots.txt',
+      '/api/v1/sitemap.xml',
+      '/api/v1/news-sitemap.xml',
+      '/api/v1/sitemaps/news.xml',
+      '/api/v1/sitemaps/articles.xml',
+      '/api/v1/sitemaps/matches.xml',
+      '/api/v1/sitemaps/teams.xml',
+      '/api/v1/sitemaps/players.xml',
+      '/api/v1/sitemaps/competitions.xml',
+      '/api/v1/sitemaps/transfers.xml',
+      '/api/v1/sitemaps/categories.xml',
+      '/api/v1/sitemaps/tags.xml',
+      '/api/v1/sitemaps/pages.xml',
+    ]) {
+      const res = await request(app).get(path);
+      expect(res.status, `${path} must not be rate-limited`).toBe(200);
+    }
   });
 });
 

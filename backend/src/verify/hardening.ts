@@ -158,9 +158,15 @@ export interface RateLimitTierExpectation {
 /** Endpoints Step 41 requires to be protected ahead of ordinary browsing. */
 export const PROTECTED_PATH_SAMPLES: RateLimitTierExpectation[] = [
   { class: 'expensive', samplePath: '/api/v1/search?q=test', mustBeCheaperThanDefault: true },
-  { class: 'expensive', samplePath: '/api/v1/sitemap.xml', mustBeCheaperThanDefault: true },
   { class: 'media', samplePath: '/api/v1/media/upload', mustBeCheaperThanDefault: true },
   { class: 'default', samplePath: '/api/v1/news', mustBeCheaperThanDefault: false },
+];
+
+/** Crawler-facing SEO documents that must stay reachable no matter the load. */
+export const CRAWL_PATH_SAMPLES: RateLimitTierExpectation[] = [
+  { class: 'crawl', samplePath: '/api/v1/robots.txt', mustBeCheaperThanDefault: false },
+  { class: 'crawl', samplePath: '/api/v1/sitemap.xml', mustBeCheaperThanDefault: false },
+  { class: 'crawl', samplePath: '/api/v1/sitemaps/teams.xml', mustBeCheaperThanDefault: false },
 ];
 
 export function checkRateLimitTiers(publicMax: number, authedMax: number): CheckResult {
@@ -168,7 +174,7 @@ export function checkRateLimitTiers(publicMax: number, authedMax: number): Check
   const findings: Finding[] = [];
   const observed: Record<string, string> = {};
 
-  for (const sample of PROTECTED_PATH_SAMPLES) {
+  for (const sample of [...PROTECTED_PATH_SAMPLES, ...CRAWL_PATH_SAMPLES]) {
     const cls = classifyRequest(sample.samplePath);
     observed[sample.samplePath] = cls;
     if (cls !== sample.class) {
@@ -205,7 +211,7 @@ export function checkRateLimitTiers(publicMax: number, authedMax: number): Check
     });
   }
   return pass('sec.rateLimits', 'security', 'Rate-limit tiers for expensive endpoints', {
-    detail: `Search/sitemaps capped at ${expensiveMax}/min, separate from the ${publicMax}/min browsing budget.`,
+    detail: `Search capped at ${expensiveMax}/min, separate from the ${publicMax}/min browsing budget; sitemap/robots stay crawl-tier so Googlebot is never 429'd.`,
     data,
     durationMs: Date.now() - startedAt,
   });
