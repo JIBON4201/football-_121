@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-/* global process, console */
+/* global process, console, URL */
 const isProd = process.env.NODE_ENV === 'production';
 
 /**
@@ -10,14 +10,23 @@ const isProd = process.env.NODE_ENV === 'production';
  * Google is handed `http://localhost:3000/...` as the canonical identity of the
  * site — a defect that is invisible until after indexing.
  *
- * `next build` only warns (so a local build still works); `next start` refuses
- * to boot. This mirrors the backend's `assertEnvIsSane()`.
+ * `next build` only warns for shape problems (so a local build still works);
+ * `next start` refuses to boot. This mirrors the backend's `assertEnvIsSane()`.
+ *
+ * The canonical-origin rule below is different: it *fails the build*. It
+ * catches the case where the configured origin is a real, well-formed https
+ * host that simply is not the domain the site is served on — a mistake no
+ * shape check can see. Failing the build is safe here (the currently deployed
+ * version keeps serving) and prevents the mistake from ever reaching production
+ * again. Mirrored, advisory-only, in backend/src/lib/envRules.ts.
  */
 function assertProductionDomain(phase) {
   if (!isProd) return;
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? '').trim();
   const problems = [];
+  /** Wrong shape -> warn at build, throw at start. Wrong host -> always throw. */
+  let fatal = false;
 
   if (!siteUrl) {
     problems.push('NEXT_PUBLIC_SITE_URL is required in production');
@@ -29,11 +38,33 @@ function assertProductionDomain(phase) {
     problems.push(`NEXT_PUBLIC_SITE_URL must not be a local address in production (got "${siteUrl}")`);
   }
 
+  // Vercel exposes the project's canonical production host (the custom domain
+  // when one is attached). When the configured origin disagrees with it, every
+  // canonical tag and sitemap URL would point at a host the site does not claim.
+  const productionHost = (process.env.VERCEL_PROJECT_PRODUCTION_URL ?? '').trim();
+  if (productionHost && siteUrl) {
+    try {
+      const configured = new URL(siteUrl).host.toLowerCase();
+      const expected = new URL(`https://${productionHost}`).host.toLowerCase();
+      if (configured !== expected) {
+        problems.push(
+          `NEXT_PUBLIC_SITE_URL ("${configured}") is not the production domain ("${expected}"). ` +
+            'Canonical URLs, og:url, robots.txt Host/Sitemap and every sitemap <loc> would all ' +
+            `point at "${configured}". Set NEXT_PUBLIC_SITE_URL to https://${productionHost} for all three environments.`,
+        );
+        fatal = true;
+      }
+    } catch {
+      // An unparseable VERCEL_PROJECT_PRODUCTION_URL is not this rule's problem;
+      // the shape checks above already cover a malformed NEXT_PUBLIC_SITE_URL.
+    }
+  }
+
   if (problems.length === 0) return;
 
   const detail = problems.map((problem) => `  - ${problem}`).join('\n');
-  if (phase === 'phase-production-server') {
-    throw new Error(`Refusing to start with an unsafe production domain configuration:\n${detail}`);
+  if (fatal || phase === 'phase-production-server') {
+    throw new Error(`Refusing to build/start with an unsafe production domain configuration:\n${detail}`);
   }
   console.warn(`[next.config] WARNING: production domain is not configured correctly:\n${detail}`);
 }

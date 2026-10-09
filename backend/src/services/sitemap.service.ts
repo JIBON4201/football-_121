@@ -85,19 +85,41 @@ async function countRows(
   return (count as number | null) ?? 0;
 }
 
-async function publishedArticlePage(client: DbClient, limit: number, offset: number, recentOnly: boolean): Promise<Array<Record<string, unknown>>> {
+/**
+ * Instant separating the `news` partition from the `articles` partition.
+ *
+ * A freshly published article is eligible for the news sitemap; once it falls
+ * out of the news window it becomes eligible for the plain articles partition.
+ * Both partitions read the same table, so this single boundary is what keeps a
+ * URL from being listed twice across the sitemap collection: `news` owns
+ * `published_at >= cutoff`, `articles` owns everything strictly older. The two
+ * sets are disjoint and together cover every published article, with no gap.
+ */
+function newsCutoffIso(): string {
+  return new Date(Date.now() - config.seo.newsWindowHours * 3600 * 1000).toISOString();
+}
+
+/** Which side of the news window an article partition covers. */
+export type ArticleWindow = 'news' | 'archive';
+
+async function publishedArticlePage(
+  client: DbClient,
+  limit: number,
+  offset: number,
+  window: ArticleWindow,
+): Promise<Array<Record<string, unknown>>> {
   const nowIso = new Date().toISOString();
+  const cutoff = newsCutoffIso();
   let query = client
     .from('articles')
     .select('slug,title,published_at,updated_at')
     .eq('status', 'published')
     .not('published_at', 'is', null)
     .lte('published_at', nowIso);
-  if (recentOnly) {
-    const cutoff = new Date(Date.now() - config.seo.newsWindowHours * 3600 * 1000).toISOString();
+  if (window === 'news') {
     query = query.gte('published_at', cutoff).order('published_at', { ascending: false });
   } else {
-    query = query.order('slug', { ascending: true });
+    query = query.lt('published_at', cutoff).order('slug', { ascending: true });
   }
   const { data, error } = await query.range(offset, offset + limit - 1);
   if (error) throw upstream('Sitemap query failed');
@@ -193,16 +215,22 @@ export const sitemapService = {
 
   async partitionCounts(client: DbClient = serviceClient()): Promise<Record<SitemapPartition, number>> {
     const nowIso = new Date().toISOString();
-    const cutoff = new Date(Date.now() - config.seo.newsWindowHours * 3600 * 1000).toISOString();
+    const cutoff = newsCutoffIso();
     const [news, articles, matches, teams, players, competitions, transfers, categories, tags, pages] = await Promise.all([
+      // News owns the recent window, articles owns everything older it, so no
+      // URL is counted by both partitions. See newsCutoffIso().
       countRows(client, 'articles', (q) =>
         q.eq('status', 'published').not('published_at', 'is', null).lte('published_at', nowIso).gte('published_at', cutoff),
       ),
-      countRows(client, 'articles', (q) => q.eq('status', 'published').not('published_at', 'is', null).lte('published_at', nowIso)),
+      countRows(client, 'articles', (q) =>
+        q.eq('status', 'published').not('published_at', 'is', null).lte('published_at', nowIso).lt('published_at', cutoff),
+      ),
       countRows(client, 'matches', (q) => q.in('status', [...INDEXABLE_MATCH_STATUSES])),
-      countRows(client, 'teams', (q) => q),
+      // A deactivated team/competition is served `noindex` by robotsFor(), so it
+      // must not be advertised as indexable. `players` has no is_active column.
+      countRows(client, 'teams', (q) => q.eq('is_active', true)),
       countRows(client, 'players', (q) => q),
-      countRows(client, 'competitions', (q) => q),
+      countRows(client, 'competitions', (q) => q.eq('is_active', true)),
       countRows(client, 'transfers', (q) => q.in('status', ['announced', 'completed'])),
       countRows(client, 'categories', (q) => q.eq('is_active', true)),
       countRows(client, 'tags', (q) => q),
@@ -215,7 +243,11 @@ export const sitemapService = {
     return guarded(() =>
       cached(SITEMAP_NS, { kind: 'index' }, SITEMAP_TTL, async () => {
         const client = serviceClient();
-        const counts = await this.partitionCounts(client).catch(() => ({ news: 0, articles: 0, matches: 0, teams: 0, players: 0, competitions: 0, transfers: 0, categories: 0, tags: 0, pages: STATIC_INDEXABLE_PATHS.length }));
+        // A count failure must not degrade into an index of empty partitions:
+        // a crawler reading ten empty sitemaps concludes "this site has no
+        // URLs" and can drop pages it had already discovered. Propagating the
+        // error yields 503, which a crawler retries instead of acting on.
+        const counts = await this.partitionCounts(client);
         const per = this.maxPerSitemap();
         const refs: SitemapEntry[] = [];
         for (const name of SITEMAP_PARTITIONS) {
@@ -235,7 +267,7 @@ export const sitemapService = {
     return guarded(() =>
       cached(SITEMAP_NS, { kind: 'news', page, per }, SITEMAP_TTL, async () => {
         const client = serviceClient();
-        const rows = await publishedArticlePage(client, per, (page - 1) * per, true);
+        const rows = await publishedArticlePage(client, per, (page - 1) * per, 'news');
         const entries: NewsSitemapEntry[] = [];
         for (const row of rows) {
           const slug = String(row.slug ?? '');
@@ -263,7 +295,7 @@ export const sitemapService = {
         const offset = (page - 1) * per;
         let entries: SitemapEntry[] = [];
         if (partition === 'articles') {
-          const rows = await publishedArticlePage(client, per, offset, false);
+          const rows = await publishedArticlePage(client, per, offset, 'archive');
           entries = rows
             .filter((r) => r.slug)
             .map((r) => ({
@@ -284,7 +316,13 @@ export const sitemapService = {
           const table = partition;
           // Sitemap partitions are plural; canonical entities are singular.
           const entityType = (partition === 'teams' ? 'team' : partition === 'players' ? 'player' : 'competition') as CanonicalEntityType;
-          const rows = await entityPage(client, table, 'slug,updated_at', per, offset);
+          // `teams` and `competitions` carry is_active, and robotsFor() serves a
+          // deactivated entity as noindex — advertising it here would put a
+          // noindex URL in a sitemap. `players` has no such column.
+          const filterActive = partition !== 'players';
+          const rows = await entityPage(client, table, 'slug,updated_at', per, offset, (q) =>
+            filterActive ? q.eq('is_active', true) : q,
+          );
           entries = rows
             .filter((r) => r.slug)
             .map((r) => ({

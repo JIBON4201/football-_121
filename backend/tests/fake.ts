@@ -1,5 +1,5 @@
 /* Minimal in-memory PostgREST-style fake supporting exactly the query
-   surface used by repositories: select/eq/in/gte/lte/ilike/or/not/
+   surface used by repositories: select/eq/in/gte/lt/lte/ilike/or/not/
    order/range/maybeSingle. Records every op for assertion. */
 
 export interface Op {
@@ -61,6 +61,10 @@ export class FakeQueryBuilder {
   }
   gte(col: string, val: unknown): this {
     this.ops.push({ op: 'gte', args: [col, val] });
+    return this;
+  }
+  lt(col: string, val: unknown): this {
+    this.ops.push({ op: 'lt', args: [col, val] });
     return this;
   }
   lte(col: string, val: unknown): this {
@@ -167,7 +171,7 @@ export class FakeQueryBuilder {
         out = out.filter((r) => r[args[0] as string] === args[1]);
       } else if (op === 'in') {
         out = out.filter((r) => (args[1] as unknown[]).includes(r[args[0] as string]));
-      } else if (op === 'gte' || op === 'lte') {
+      } else if (op === 'gte' || op === 'lte' || op === 'lt') {
         // timestamptz semantics: compare chronologically when both sides parse as dates.
         const target = args[1] as unknown;
         const targetTime = typeof target === 'string' ? Date.parse(target) : NaN;
@@ -176,12 +180,14 @@ export class FakeQueryBuilder {
           if (!Number.isNaN(targetTime) && typeof value === 'string') {
             const valueTime = Date.parse(value);
             if (!Number.isNaN(valueTime)) {
-              return op === 'gte' ? valueTime >= targetTime : valueTime <= targetTime;
+              if (op === 'gte') return valueTime >= targetTime;
+              if (op === 'lt') return valueTime < targetTime;
+              return valueTime <= targetTime;
             }
           }
-          return op === 'gte'
-            ? (value as number | string) >= (target as never)
-            : (value as number | string) <= (target as never);
+          if (op === 'gte') return (value as number | string) >= (target as never);
+          if (op === 'lt') return (value as number | string) < (target as never);
+          return (value as number | string) <= (target as never);
         });
       } else if (op === 'ilike') {
         out = out.filter((r) => matchIlike(r[args[0] as string], args[1] as string));

@@ -9,7 +9,7 @@
  *   * frontend code reading server-only variables
  */
 import { join } from 'node:path';
-import { evaluateEnv, resolveEnvMode, envRules } from '../lib/envRules';
+import { evaluateCanonicalOrigin, evaluateEnv, resolveEnvMode, envRules } from '../lib/envRules';
 import {
   collectFiles,
   expandProviderFamily,
@@ -135,7 +135,9 @@ export function checkEnvInventory(repoRoot: string): CheckResult {
 export function checkEnvSeparation(env: Record<string, string | undefined>): CheckResult {
   const startedAt = Date.now();
   const mode = resolveEnvMode(env.NODE_ENV);
-  const violations = evaluateEnv(env);
+  // The canonical-origin rule is advisory at runtime (it must not take the API
+  // down), so it is merged in here rather than into assertEnvIsSane().
+  const violations = [...evaluateEnv(env), ...evaluateCanonicalOrigin(env)];
 
   if (mode !== 'production') {
     // Rules are only enforceable in production; say so explicitly instead of
@@ -175,7 +177,7 @@ export function checkEnvSeparation(env: Record<string, string | undefined>): Che
     return warn('env.separation', 'environment', 'Production environment separation', findings, { data, durationMs });
   }
   return pass('env.separation', 'environment', 'Production environment separation', {
-    detail: 'No placeholder credentials, local origins, or privilege-escalation issues.',
+    detail: 'No placeholder credentials, local origins, privilege-escalation issues, or canonical-origin mismatch.',
     data,
     durationMs,
   });

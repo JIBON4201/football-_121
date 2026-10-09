@@ -226,6 +226,62 @@ export function evaluateEnv(env: Record<string, string | undefined>): EnvViolati
 }
 
 /**
+ * Canonical-origin check.
+ *
+ * Every canonical tag, `og:url`, robots.txt `Host:`/`Sitemap:` directive and
+ * every `<loc>` in a sitemap derives from one configured origin. When that
+ * origin is not the domain the site is actually served on, Google is told the
+ * site's identity is a host that is not the production domain — the defect is
+ * invisible until after indexing and cannot be undone retroactively.
+ *
+ * On Vercel, `VERCEL_PROJECT_PRODUCTION_URL` is the canonical production host
+ * for the project (a custom domain when one is attached, otherwise the
+ * project's own deployment host). Comparing the configured origin against it
+ * catches the exact misconfiguration that produces a wrong-canonical site, and
+ * stays silent when there is nothing to compare against.
+ *
+ * Advisory by design: `assertEnvIsSane()` deliberately does not enforce it,
+ * because refusing to boot the API over a canonical-origin mistake would take
+ * the whole site down instead of leaving it merely mis-canonicalised. The
+ * frontend build guard (frontend/next.config.mjs) enforces the same rule at
+ * the point where it can still prevent a bad deploy.
+ */
+export function evaluateCanonicalOrigin(env: Record<string, string | undefined>): EnvViolation[] {
+  const reference = (env.VERCEL_PROJECT_PRODUCTION_URL ?? '').trim();
+  if (!reference) return [];
+
+  const violations: EnvViolation[] = [];
+  for (const variable of ['SITE_BASE_URL', 'NEXT_PUBLIC_SITE_URL']) {
+    const value = (env[variable] ?? '').trim();
+    if (!value) continue;
+    if (!isSameOriginHost(value, reference)) {
+      violations.push({
+        variable,
+        rule: 'canonical-origin',
+        message: `${variable} does not match the production domain`,
+        severity: 'BLOCKER',
+      });
+    }
+  }
+  return violations;
+}
+
+function hostOf(value: string): string | null {
+  try {
+    return new URL(value.includes('://') ? value : `https://${value}`).host.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+/** True when `configured` and `expected` are the same host, ignoring scheme/port/path. */
+export function isSameOriginHost(configured: string, expected: string): boolean {
+  const a = hostOf(configured);
+  const b = hostOf(expected);
+  return a !== null && b !== null && a === b;
+}
+
+/**
  * Boot-time guard. Throws when the environment cannot legally serve traffic,
  * so a misconfigured production deploy fails immediately and loudly rather
  * than serving placeholder/empty configuration.

@@ -225,7 +225,12 @@ describe('Step 28 — SEO & content discovery', () => {
     const meta = await request(app).get('/api/v1/seo/metadata?type=news&slug=redirect-target-slug');
     expect(meta.body.data.canonical).toBe(`${config.site.baseUrl}/news/redirect-target-slug`);
     const sitemap = await request(app).get('/api/v1/sitemaps/articles.xml');
-    expect(sitemap.text).toContain('/news/redirect-target-slug');
+    // The article was just published, so it falls inside the news window and is
+    // owned by the `news` partition. The two partitions are disjoint by design,
+    // so a fresh article appears in exactly one of them - never both.
+    expect(sitemap.text).not.toContain('/news/redirect-target-slug');
+    const newsSitemap = await request(app).get('/api/v1/sitemaps/news.xml');
+    expect(newsSitemap.text).toContain('/news/redirect-target-slug');
     const validation = await request(app).get('/api/v1/seo/validate?type=news&slug=redirect-target-slug');
     expect(validation.body.data.checks.find((c: { name: string }) => c.name === 'no-redirect-loop')).toMatchObject({ ok: true });
   });
